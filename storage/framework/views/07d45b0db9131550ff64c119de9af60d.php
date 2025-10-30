@@ -3,10 +3,10 @@
     <div class="main-header">
 
         <div class="header-left">
-            <a href="javascript:void(0);" class="logo">
+            <a href="<?php echo e(route('admin.dashboard')); ?>" class="logo">
                 <img src="<?php echo e(asset('admin/img/logo.png')); ?>" alt="Logo">
             </a>
-            <a href="javascript:void(0);" class="dark-logo">
+            <a href="<?php echo e(route('admin.dashboard')); ?>" class="dark-logo">
                 <img src="<?php echo e(asset('admin/img/logo-white.png')); ?>" alt="Logo">
             </a>
         </div>
@@ -278,8 +278,12 @@
                         <a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center"
                             data-bs-toggle="dropdown">
                             <span class="avatar avatar-sm online">
-                                <img src="<?php echo e(asset('admin/img/profiles/avatar-12.jpg')); ?>" alt="Img"
-                                    class="img-fluid rounded-circle">
+                                <?php if(auth()->user()->profile_image): ?>
+                                    <img src="<?php echo e(asset(auth()->user()->profile_image)); ?>"
+                                        class="img-fluid rounded-circle">
+                                <?php else: ?>
+                                    <i class="ti ti-user fs-16"></i>
+                                <?php endif; ?>
                             </span>
                         </a>
                         <div class="dropdown-menu shadow-none">
@@ -287,20 +291,21 @@
                                 <div class="card-header">
                                     <div class="d-flex align-items-center">
                                         <span class="avatar avatar-lg me-2 avatar-rounded">
-                                            <img src="<?php echo e(asset('admin/img/profiles/avatar-12.jpg')); ?>" alt="img">
+                                            <?php if(auth()->user()->profile_image): ?>
+                                                <img src="<?php echo e(asset(auth()->user()->profile_image)); ?>" alt="img">                                                
+                                            <?php else: ?>
+                                                <i class="ti ti-user fs-16"></i>
+                                            <?php endif; ?>
                                         </span>
                                         <div>
-                                            <h5 class="mb-0">Kevin Larry</h5>
-                                            <p class="fs-12 fw-medium mb-0"><a href="javascript:void(0);"
-                                                    class="__cf_email__"
-                                                    data-cfemail="c8bfa9babaada688adb0a9a5b8a4ade6aba7a5">[email&#160;protected]</a>
-                                            </p>
+                                            <h5 class="mb-0"><?php echo e(auth()->user()->name); ?></h5>
+                                            <p class="fs-12 fw-medium mb-0"><?php echo e(auth()->user()->email); ?></p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-body">
                                     <a class="dropdown-item d-inline-flex align-items-center p-0 py-2"
-                                        href="javascript:void(0);">
+                                        href="<?php echo e(route('admin.profile')); ?>">
                                         <i class="ti ti-user-circle me-1"></i>My Profile
                                     </a>
                                     <a class="dropdown-item d-inline-flex align-items-center p-0 py-2"
@@ -319,7 +324,7 @@
                                 </div>
                                 <div class="card-footer py-1">
                                     <a class="dropdown-item d-inline-flex align-items-center p-0 py-2"
-                                        href="javascript:void(0);"><i class="ti ti-login me-2"></i>Logout</a>
+                                        href="<?php echo e(route('admin.logout')); ?>"><i class="ti ti-login me-2"></i>Logout</a>
                                 </div>
                             </div>
                         </div>

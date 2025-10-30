@@ -24,6 +24,12 @@
     <link rel="stylesheet" href="{{ asset('admin/plugins/flatpickr/flatpickr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/plugins/@simonwep/pickr/themes/nano.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+    <script src="{{ asset('admin/js/jquery-3.7.1.min.js') }}"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  
 </head>
 
 <body>
@@ -43,8 +49,7 @@
                 <p>Designed &amp; Developed By <a href="javascript:void(0);" class="text-primary">Dreams</a></p>
             </div>
         </div>
-    </div>
-    <script src="{{ asset('admin/js/jquery-3.7.1.min.js') }}"></script>
+    </div>    
     <script src="{{ asset('admin/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('admin/js/feather.min.js') }}"></script>
     <script src="{{ asset('admin/js/jquery.slimscroll.min.js') }}"></script>
@@ -59,7 +64,8 @@
     <script src="{{ asset('admin/plugins/select2/js/select2.min.js') }}"></script>
     <script src="{{ asset('admin/plugins/@simonwep/pickr/pickr.es5.min.js') }}"></script>
     <script src="{{ asset('admin/js/script.js') }}"></script>
-
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 </body>
 
 </html>
