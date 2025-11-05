@@ -42,14 +42,14 @@
                                 <tr>
                                     <td><?php echo e(ucfirst($role->name)); ?></td>
                                     <td>
-                                        <?php $__currentLoopData = $role->permissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $perm): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <span class="badge bg-success m-1"><?php echo e($perm->name); ?></span>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </td>
-                                    <td>
                                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Edit Roles')): ?>
                                         <a href="<?php echo e(route('admin.roles.edit', $role->id)); ?>" class="btn btn-sm btn-info">Edit</a>
                                         <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php $__currentLoopData = $role->permissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $perm): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <span class="badge bg-success m-1"><?php echo e($perm->name); ?></span>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </td>
                                 </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

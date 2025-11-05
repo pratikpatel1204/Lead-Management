@@ -42,14 +42,14 @@
                                 <tr>
                                     <td>{{ ucfirst($role->name) }}</td>
                                     <td>
-                                        @foreach($role->permissions as $perm)
-                                            <span class="badge bg-success m-1">{{ $perm->name }}</span>
-                                        @endforeach
-                                    </td>
-                                    <td>
                                         @can('Edit Roles')
                                         <a href="{{ route('admin.roles.edit', $role->id) }}" class="btn btn-sm btn-info">Edit</a>
                                         @endcan
+                                    </td>
+                                    <td>
+                                        @foreach($role->permissions as $perm)
+                                            <span class="badge bg-success m-1">{{ $perm->name }}</span>
+                                        @endforeach
                                     </td>
                                 </tr>
                                 @endforeach

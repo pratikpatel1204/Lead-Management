@@ -8,6 +8,7 @@ use Spatie\Permission\Middleware\PermissionMiddleware as MiddlewarePermissionMid
 use Spatie\Permission\Middleware\RoleMiddleware as MiddlewareRoleMiddleware;
 use Spatie\Permission\Middlewares\RoleMiddleware;
 use Spatie\Permission\Middlewares\PermissionMiddleware;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::useBootstrapFive();
         Route::aliasMiddleware('role', MiddlewareRoleMiddleware::class);
         Route::aliasMiddleware('permission', MiddlewarePermissionMiddleware::class);
     }

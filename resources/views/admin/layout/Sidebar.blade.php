@@ -33,11 +33,11 @@
                     <li>
                         <ul>
                             <li class="submenu">
-                                <a href="javascript:void(0);" class="subdrop">
+                                <a href="javascript:void(0);">
                                     <i class="ti ti-users"></i><span>Employees</span>
                                     <span class="menu-arrow"></span>
                                 </a>
-                                <ul style="display: block;">
+                                <ul>
                                     @can('Create Employee')
                                         <li>
                                             <a href="{{ route('admin.create.employee') }}">Create Employee</a>
@@ -54,18 +54,123 @@
                         </ul>
                     </li>
                 @endcanany
+                @canany(['About Us', 'Banner', 'Contact Us', 'Testimonial'])
+                    <li>
+                        <ul>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-settings"></i><span>Settings</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    @can('About Us')
+                                        <li>
+                                            <a href="{{ route('admin.about.us.edit') }}">About Us</a>
+                                        </li>
+                                    @endcan
+                                    @can('Banner')
+                                        <li>
+                                            <a href="{{ route('admin.banner.list') }}">Banner</a>
+                                        </li>
+                                    @endcan
+                                    @can('Contact Us')
+                                        <li>
+                                            <a href="{{ route('admin.contact.settings') }}">Contact Us</a>
+                                        </li>
+                                    @endcan
+                                    @can('Testimonial')
+                                        <li>
+                                            <a href="{{ route('admin.testimonials.list') }}">Testimonial</a>
+                                        </li>
+                                    @endcan
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                @endcanany
+                @canany(['All Blogs', 'Blogs Categories', 'Create Blogs'])
+                    <li>
+                        <ul>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-brand-blogger"></i><span>Blogs</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    @can('All Blogs')
+                                        <li><a href="{{route('admin.blog.list')}}">All Blogs</a></li>
+                                    @endcan
+                                    @can('Create Blogs')
+                                        <li><a href="{{route('admin.create.blog')}}">Create Blogs</a></li>
+                                    @endcan
+                                    @can('Blogs Categories')
+                                        <li><a href="{{route('admin.blog.categories.list')}}">Blog Categories</a></li>
+                                    @endcan
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                @endcanany
+                @canany(['Create Services Categories', 'Services Categories List', 'Create Service', 'Service List'])
+                    <li>
+                        <ul>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-user-star"></i><span>Services</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    @can('Create Services Categories')
+                                        <li><a href="{{ route('admin.create.services.categories') }}">Create Services
+                                                Categories</a></li>
+                                    @endcanany
+                                    @can('Services Categories List')
+                                        <li><a href="{{ route('admin.services.categories.list') }}">Services Categories
+                                                List</a></li>
+                                    @endcanany
+                                    @can('Create Service')
+                                        <li><a href="{{ route('admin.create.services') }}">Create Service</a></li>
+                                    @endcanany
+                                    @can('Service List')
+                                        <li><a href="{{ route('admin.services.list') }}">Service List</a></li>
+                                    @endcanany
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                @endcanany
+                @canany(['Create Team', 'Team List'])                
+                <li>
+                    <ul>
+                        <li class="submenu">
+                            <a href="javascript:void(0);">
+                                <i class="ti ti-users-group"></i><span>Teams</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                @can('Create Team')
+                                    <li><a href="{{ route('admin.create.team') }}">Create Team</a></li>
+                                @endcan
+                                @can('Team List')
+                                    <li><a href="{{ route('admin.team.list') }}">Team List</a></li>
+                                @endcan
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                @endcanany
                 @canany(['View Roles', 'View Permissions', 'Create Permissions'])
                     <li class="menu-title"><span>Roles & Permissions</span></li>
 
                     <li>
                         <ul>
                             <li class="submenu">
-                                <a href="javascript:void(0);" class="subdrop">
+                                <a href="javascript:void(0);">
                                     <i class="ti ti-shield"></i><span>Roles & Permissions</span>
                                     <span class="menu-arrow"></span>
                                 </a>
 
-                                <ul style="display: block;">                                   
+                                <ul>
                                     @can('View Roles')
                                         <li><a href="{{ route('admin.roles.list') }}">Role List</a></li>
                                     @endcan
@@ -82,22 +187,6 @@
                         </ul>
                     </li>
                 @endcanany
-
-                <li>
-                    <ul>
-                        <li class="submenu">
-                            <a href="javascript:void(0);">
-                                <i class="ti ti-box"></i><span>Projects</span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <ul>
-                                <li><a href="javascript:void(0);">Projects</a></li>
-                                <li><a href="javascript:void(0);">Tasks</a></li>
-                                <li><a href="javascript:void(0);">Task Board</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
             </ul>
         </div>
     </div>
