@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="Laralink">
     <link rel="icon" href="{{ asset('front/img/favicon.png') }}">
-    <title>@yield('title')</title>    
+    <title>@yield('title')</title>
     <link rel="stylesheet" href="{{ asset('front/css/plugins/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('front/css/plugins/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('front/css/plugins/slick.css') }}">
@@ -16,6 +16,10 @@
     <link rel="stylesheet" href="{{ asset('front/css/plugins/odometer.css') }}">
     <link rel="stylesheet" href="{{ asset('front/css/default.css') }}">
     <link rel="stylesheet" href="{{ asset('front/css/style.css') }}">
+
+    <script src="{{ asset('front/js/plugins/jquery-3.7.1.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 
 <body>
@@ -30,12 +34,12 @@
     @yield('content')
     @include('front.layout.footer')
     <!-- Script -->
-    <script src="{{ asset('front/js/plugins/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('front/js/plugins/isotope.pkg.min.js') }}"></script>
     <script src="{{ asset('front/js/plugins/jquery.slick.min.js') }}"></script>
     <script src="{{ asset('front/js/plugins/odometer.js') }}"></script>
     <script src="{{ asset('front/js/plugins/wow.min.js') }}"></script>
     <script src="{{ asset('front/js/plugins/swiper.min.js') }}"></script>
-    <script src="{{ asset('front/js/main.js') }}"></script>   
+    <script src="{{ asset('front/js/main.js') }}"></script>
 </body>
+
 </html>

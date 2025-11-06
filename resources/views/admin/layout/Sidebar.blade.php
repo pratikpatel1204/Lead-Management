@@ -82,12 +82,28 @@
                                         <li>
                                             <a href="{{ route('admin.testimonials.list') }}">Testimonial</a>
                                         </li>
-                                    @endcan
+                                    @endcan                                
+                                    @can('Why Choose Us')
+                                        <li>
+                                            <a href="{{ route('admin.why.choose.us') }}">Why Choose Us</a>
+                                        </li>
+                                    @endcan                                
                                 </ul>
                             </li>
                         </ul>
                     </li>
                 @endcanany
+                @can('Inquiry')
+                    <li>
+                        <ul>
+                            <li class="submenu">
+                                <a href="{{ route('admin.inquery.list') }}">
+                                    <i class="ti ti-mail"></i><span>Inquery</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
                 @canany(['All Blogs', 'Blogs Categories', 'Create Blogs'])
                     <li>
                         <ul>
@@ -98,13 +114,13 @@
                                 </a>
                                 <ul>
                                     @can('All Blogs')
-                                        <li><a href="{{route('admin.blog.list')}}">All Blogs</a></li>
+                                        <li><a href="{{ route('admin.blog.list') }}">All Blogs</a></li>
                                     @endcan
                                     @can('Create Blogs')
-                                        <li><a href="{{route('admin.create.blog')}}">Create Blogs</a></li>
+                                        <li><a href="{{ route('admin.create.blog') }}">Create Blogs</a></li>
                                     @endcan
                                     @can('Blogs Categories')
-                                        <li><a href="{{route('admin.blog.categories.list')}}">Blog Categories</a></li>
+                                        <li><a href="{{ route('admin.blog.categories.list') }}">Blog Categories</a></li>
                                     @endcan
                                 </ul>
                             </li>
@@ -139,25 +155,25 @@
                         </ul>
                     </li>
                 @endcanany
-                @canany(['Create Team', 'Team List'])                
-                <li>
-                    <ul>
-                        <li class="submenu">
-                            <a href="javascript:void(0);">
-                                <i class="ti ti-users-group"></i><span>Teams</span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <ul>
-                                @can('Create Team')
-                                    <li><a href="{{ route('admin.create.team') }}">Create Team</a></li>
-                                @endcan
-                                @can('Team List')
-                                    <li><a href="{{ route('admin.team.list') }}">Team List</a></li>
-                                @endcan
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
+                @canany(['Create Team', 'Team List'])
+                    <li>
+                        <ul>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-users-group"></i><span>Teams</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    @can('Create Team')
+                                        <li><a href="{{ route('admin.create.team') }}">Create Team</a></li>
+                                    @endcan
+                                    @can('Team List')
+                                        <li><a href="{{ route('admin.team.list') }}">Team List</a></li>
+                                    @endcan
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
                 @endcanany
                 @canany(['View Roles', 'View Permissions', 'Create Permissions'])
                     <li class="menu-title"><span>Roles & Permissions</span></li>

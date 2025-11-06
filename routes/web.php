@@ -158,7 +158,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/blog-categories-update', [BlogController::class, 'update_blog_categories'])->name('blog.categories.update');
 
             Route::delete('/blog-categories-delete/{id}', [BlogController::class, 'destroy_blog_categories'])->name('blog.categories.delete');
-        });
+        });       
 
         Route::middleware(['permission:Create Blogs'])->group(function () {
             Route::get('/create-blog', [BlogController::class, 'create_blog'])->name('create.blog');
@@ -175,9 +175,31 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/blog-delete/{id}', [BlogController::class, 'blog_destroy'])->name('blog.delete');
         });
 
+        Route::middleware(['permission:Inquiry'])->group(function () {
+            Route::get('/inquery_list', [DashboardController::class, 'inquery_list'])->name('inquery.list');
+            Route::delete('/inquiry-delete/{id}', [DashboardController::class, 'inquiry_delete'])->name('inquiry.delete');
+        });
+
+        Route::middleware(['permission:Why Choose Us'])->group(function () {
+            Route::get('/why-choose-us', [DashboardController::class, 'why_choose_us'])->name('why.choose.us');
+            Route::post('/why-choose-us-update', [DashboardController::class, 'update_why_choose_us'])->name('why.choose.us.update');
+        });
     });
 });
 
 
 
 Route::get('/', [HomeController::class, 'index'])->name('front.index');
+Route::get('/about-us', [HomeController::class, 'about_us'])->name('front.about');
+Route::get('/our-service', [HomeController::class, 'services'])->name('front.services');
+Route::get('/service-details/{title}', [HomeController::class, 'serviceDetails'])->name('front.service.details');
+Route::get('/services-category/{slug}', [HomeController::class, 'serviceByCategory'])->name('front.service.category');
+Route::get('/contact-us', [HomeController::class, 'contact_us'])->name('front.contact');
+Route::get('/our-team', [HomeController::class, 'our_team'])->name('front.our.team');
+Route::get('/blog', [HomeController::class, 'blog'])->name('front.blog');
+Route::get('/blog/category/{name}', [HomeController::class, 'blogByCategory'])->name('front.blog.category');
+Route::get('/blog-details/{slug}', [HomeController::class, 'blogDetails'])->name('front.blog.details');
+
+Route::post('/contact-submit', [HomeController::class, 'contactSubmit'])->name('front.contact.submit');
+Route::post('/contact-inquery', [HomeController::class, 'contact_inquery'])->name('front.contact.inquery');
+Route::post('/newsletter-submit', [HomeController::class, 'newsletter_submit'])->name('front.newsletter.submit');

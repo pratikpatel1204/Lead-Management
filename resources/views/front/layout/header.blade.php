@@ -1,12 +1,20 @@
+@php
+    use App\Models\ContactSetting;
+    use App\Models\ServiceCategory;
+
+    $contact = ContactSetting::first();
+    $serviceCategories = ServiceCategory::where('status', 'Active')->get();
+@endphp
+
 <header class="cs_site_header cs_style_1 cs_sticky_header cs_site_header_full_width">
     <div class="cs_top_header">
         <div class="container">
             <div class="cs_top_header_in">
                 <div class="cs_top_header_left">
                     <ul class="cs_top_nav d-flex flex-wrap align-items-center cs_fs_12 text-white m-0 p-0">
-                        <li><b class="fw-medium text-white">Address:</b> 3517 W. Gray St. Utica, Pennsylvania 57867</li>
+                        <li><b class="fw-medium text-white">Address:</b> {{ $contact->address }}</li>
                         <li>
-                            <a href="javascript:void(0);"><span class="__cf_email__" data-cfemail="4f262129200f2c20223f2e2136612c2022">[email&#160;protected]</span></a>
+                            <b class="fw-medium text-white">{{ $contact->email }}</b>
                         </li>
                     </ul>
                 </div>
@@ -14,7 +22,7 @@
                     <ul class="cs_top_nav d-flex flex-wrap align-items-center cs_fs_12 text-white m-0 p-0">
                         <li><a href="#">Help</a></li>
                         <li><a href="#">Support</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><a href="{{ route('front.contact') }}">Contact</a></li>
                     </ul>
                 </div>
             </div>
@@ -24,47 +32,29 @@
         <div class="container">
             <div class="cs_main_header_in">
                 <div class="cs_main_header_left">
-                    <a class="cs_site_branding" href="index-2.html">
+                    <a class="cs_site_branding" href="{{ route('front.index') }}">
                         <img src="{{ asset('front/img/logo.png') }}" alt="Logo">
                     </a>
                     <div class="cs_nav cs_primary_font fw-medium">
                         <ul class="cs_nav_list fw-medium text-uppercase">
+                            <li><a href="{{ route('front.index') }}">Home</a></li>
+                            <li><a href="{{ route('front.about') }}">About</a></li>
                             <li class="menu-item-has-children">
-                                <a href="index-2.html">Home</a>
+                                <a href="{{ route('front.services') }}">Services</a>
                                 <ul>
-                                    <li><a href="index-2.html">Business</a></li>
-                                    <li><a href="corporate.html">Corporate</a></li>
-                                    <li><a href="finance.html">Financial institute</a></li>
-                                    <li><a href="insurance.html">Insurance Company</a></li>
-                                    <li><a href="consulting.html">Consulting Agency</a></li>
-                                    <li><a href="software-agency.html">Software Agency</a></li>
-                                    <li><a href="startup-agency.html">Startup Agency</a></li>
-                                    <li><a href="business-with-ecommerce.html">Business With E-Commerce</a></li>
+                                    @foreach ($serviceCategories as $category)
+                                        <li>
+                                            <a
+                                                href="{{ route('front.service.category', $category->slug) }}">
+                                                {{ $category->title }}
+                                            </a>
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </li>
-                            <li><a href="about.html">About</a></li>
-                            <li class="menu-item-has-children">
-                                <a href="#">Pages</a>
-                                <ul>
-                                    <li><a href="project-details.html">Project Details</a></li>
-                                    <li><a href="services-details.html">Service Details</a></li>
-                                    <li><a href="team.html">Team </a></li>
-                                    <li><a href="team-details.html">Team Member</a></li>
-                                    <li><a href="shop.html">Our Store</a></li>
-                                    <li><a href="shop-product-details.html">Product Details</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="service.html">Services</a></li>
-                            <li><a href="portfolio.html">Portfolio</a></li>
-                            <li class="menu-item-has-children">
-                                <a href="blog.html">Blog</a>
-                                <ul>
-                                    <li><a href="blog-grid.html">Blog Grid</a></li>
-                                    <li><a href="blog-list-with-sidebar.html">Blog List With Sidebar</a></li>
-                                    <li><a href="blog-details.html">Blog Details</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="contact.html">Contact</a></li>
+                            <li><a href="{{ route('front.our.team') }}">Team</a></li>
+                            <li><a href="{{ route('front.blog') }}">Blog</a></li>
+                            <li><a href="{{ route('front.contact') }}">Contact</a></li>
                         </ul>
                     </div>
                 </div>
@@ -114,7 +104,7 @@
                             </div>
                             <div class="cs_header_contact_right">
                                 <h3 class="text-white fw-normal cs_mb_6 cs_fs_13">Need help? Call us:</h3>
-                                <h3 class="text-white m-0 cs_fs_13">(+800) 1234 5678 90</h3>
+                                <h3 class="text-white m-0 cs_fs_13">{{ $contact->phone }}</h3>
                             </div>
                         </div>
                     </div>

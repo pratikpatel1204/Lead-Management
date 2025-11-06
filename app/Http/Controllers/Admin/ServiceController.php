@@ -58,7 +58,7 @@ class ServiceController extends Controller
         $request->validate([
             'title' => 'required|string|max:255|unique:service_categories,title,' . $category->id,
             'short_description' => 'required|string|max:500',
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'status' => 'required|in:Active,Inactive',
         ]);
         if ($request->hasFile('image')) {

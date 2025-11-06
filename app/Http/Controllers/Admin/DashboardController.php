@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AboutUs;
 use App\Models\ContactSetting;
+use App\Models\Inquery;
+use App\Models\WhyChooseUs;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -23,7 +25,7 @@ class DashboardController extends Controller
         $request->validate([
             'title'       => 'required|string|max:255',
             'main_image'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1024',
-            'second_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1024', 
+            'second_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1024',
         ]);
         $about = AboutUs::first() ?? new AboutUs;
         if ($request->hasFile('main_image')) {
@@ -45,7 +47,7 @@ class DashboardController extends Controller
                 unlink(public_path($about->second_image));
             }
             $data['second_image'] = $path . $filename;
-        }    
+        }
 
         $data['title'] = $request->title;
         $data['description'] = $request->description;
@@ -84,5 +86,66 @@ class DashboardController extends Controller
         );
 
         return response()->json(['status' => true, 'message' => 'Contact settings saved successfully']);
+    }
+    public function inquery_list()
+    {
+        $inquiries = Inquery::latest()->get();
+        return view('admin.inquiries', compact('inquiries'));
+    }
+    public function inquiry_delete($id)
+    {
+        $inquiry = Inquery::find($id);
+
+        if (!$inquiry) {
+            return response()->json(['success' => false, 'message' => 'Inquiry not found']);
+        }
+
+        $inquiry->delete();
+
+        return response()->json(['success' => true, 'message' => 'Inquiry deleted successfully']);
+    }
+    public function why_choose_us()
+    {
+        $choose_us = WhyChooseUs::first();
+        return view('admin.why_choose_us', compact('choose_us'));
+    }
+    public function update_why_choose_us(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'short_description' => 'nullable|string',
+            'list_one' => 'nullable|string',
+            'list_two' => 'nullable|string',
+            'list_three' => 'nullable|string',
+            'list_four' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        // Collect form fields except image
+        $data = $request->only([
+            'title',
+            'short_description',
+            'list_one',
+            'list_two',
+            'list_three',
+            'list_four'
+        ]);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $path = 'uploads/why_choose_us/';
+            $file->move(public_path($path), $filename);
+            $data['image'] = $path . $filename;
+        }
+
+        // Update or create record (always ID = 1)
+        WhyChooseUs::updateOrCreate(['id' => 1], $data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Why Choose Us updated successfully.'
+        ]);
     }
 }

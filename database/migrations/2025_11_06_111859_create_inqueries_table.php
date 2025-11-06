@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('service_categories', function (Blueprint $table) {
+        Schema::create('inqueries', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('slug')->unique()->after('name');
-            $table->text('short_description')->nullable();
-            $table->string('image')->nullable();
-            $table->enum('status', ['Active', 'Inactive'])->default('Active');
+            $table->string('name')->nullable();
+            $table->string('email');
+            $table->string('subject')->nullable();
+            $table->text('message')->nullable();
+            $table->string('phone')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('service_categories');
+        Schema::dropIfExists('inqueries');
     }
 };

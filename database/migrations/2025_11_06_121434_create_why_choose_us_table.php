@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('service_categories', function (Blueprint $table) {
+        Schema::create('why_choose_us', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('slug')->unique()->after('name');
             $table->text('short_description')->nullable();
             $table->string('image')->nullable();
-            $table->enum('status', ['Active', 'Inactive'])->default('Active');
+            $table->string('list_one')->nullable();
+            $table->string('list_two')->nullable();
+            $table->string('list_three')->nullable();
+            $table->string('list_four')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('service_categories');
+        Schema::dropIfExists('why_choose_us');
     }
 };

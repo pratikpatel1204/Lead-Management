@@ -2158,7 +2158,7 @@ label {
     color: currentColor;
   }
   .cs_nav .cs_nav_list ul {
-    width: 230px;
+    width: 280px;
     background-color: #18191d;
     position: absolute;
     padding: 10px 0;
@@ -2869,6 +2869,7 @@ label {
 .swiper-slide.swiper-slide-active .cs_hero.cs_style_1 .cs_hero_text > * {
   clip-path: inset(0 0% 0 0);
   transition-delay: 0.8s;
+  width:50%;
 }
 
 .cs_hero.cs_style_1 {
@@ -4738,3 +4739,32 @@ html .ui-button.ui-state-disabled:active {
     display: none !important;
   }
 }/*# sourceMappingURL=style.css.map */
+/* Fix Toastr background colors */
+.toast-success {
+  background-color: #51A351 !important;
+  /* green */
+  color: #fff !important;
+}
+
+.toast-error {
+  background-color: #BD362F !important;
+  /* red */
+  color: #fff !important;
+}
+
+.toast-warning {
+  background-color: #F89406 !important;
+  /* orange */
+  color: #fff !important;
+}
+
+.toast-info {
+  background-color: #2F96B4 !important;
+  /* blue */
+  color: #fff !important;
+}
+
+/* Optional: make toast text readable */
+.toast-message {
+  font-size: 15px;
+}

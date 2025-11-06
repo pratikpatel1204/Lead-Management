@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('blog_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug')->unique()->after('name');
             $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->timestamps();
         });

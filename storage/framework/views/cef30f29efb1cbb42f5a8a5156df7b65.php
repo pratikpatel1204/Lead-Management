@@ -82,8 +82,24 @@
                                         <li>
                                             <a href="<?php echo e(route('admin.testimonials.list')); ?>">Testimonial</a>
                                         </li>
-                                    <?php endif; ?>
+                                    <?php endif; ?>                                
+                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Why Choose Us')): ?>
+                                        <li>
+                                            <a href="<?php echo e(route('admin.why.choose.us')); ?>">Why Choose Us</a>
+                                        </li>
+                                    <?php endif; ?>                                
                                 </ul>
+                            </li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Inquiry')): ?>
+                    <li>
+                        <ul>
+                            <li class="submenu">
+                                <a href="<?php echo e(route('admin.inquery.list')); ?>">
+                                    <i class="ti ti-mail"></i><span>Inquery</span>
+                                </a>
                             </li>
                         </ul>
                     </li>
@@ -139,25 +155,25 @@
                         </ul>
                     </li>
                 <?php endif; ?>
-                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['Create Team', 'Team List'])): ?>                
-                <li>
-                    <ul>
-                        <li class="submenu">
-                            <a href="javascript:void(0);">
-                                <i class="ti ti-users-group"></i><span>Teams</span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <ul>
-                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Create Team')): ?>
-                                    <li><a href="<?php echo e(route('admin.create.team')); ?>">Create Team</a></li>
-                                <?php endif; ?>
-                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Team List')): ?>
-                                    <li><a href="<?php echo e(route('admin.team.list')); ?>">Team List</a></li>
-                                <?php endif; ?>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['Create Team', 'Team List'])): ?>
+                    <li>
+                        <ul>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-users-group"></i><span>Teams</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Create Team')): ?>
+                                        <li><a href="<?php echo e(route('admin.create.team')); ?>">Create Team</a></li>
+                                    <?php endif; ?>
+                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Team List')): ?>
+                                        <li><a href="<?php echo e(route('admin.team.list')); ?>">Team List</a></li>
+                                    <?php endif; ?>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
                 <?php endif; ?>
                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['View Roles', 'View Permissions', 'Create Permissions'])): ?>
                     <li class="menu-title"><span>Roles & Permissions</span></li>
