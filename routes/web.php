@@ -4,12 +4,15 @@ use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DropdownController;
 use App\Http\Controllers\Admin\EmployeeController;
+use App\Http\Controllers\Admin\FieldController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\ValidationController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
@@ -176,13 +179,43 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         Route::middleware(['permission:Inquiry'])->group(function () {
-            Route::get('/inquery_list', [DashboardController::class, 'inquery_list'])->name('inquery.list');
+            Route::get('/inquery-list', [DashboardController::class, 'inquery_list'])->name('inquery.list');
             Route::delete('/inquiry-delete/{id}', [DashboardController::class, 'inquiry_delete'])->name('inquiry.delete');
         });
 
         Route::middleware(['permission:Why Choose Us'])->group(function () {
             Route::get('/why-choose-us', [DashboardController::class, 'why_choose_us'])->name('why.choose.us');
             Route::post('/why-choose-us-update', [DashboardController::class, 'update_why_choose_us'])->name('why.choose.us.update');
+        });
+
+        Route::middleware(['permission:Field Master'])->group(function () {
+            Route::get('/field-list', [FieldController::class, 'field_list'])->name('field.list');
+            Route::get('/create-field', [FieldController::class, 'create_field'])->name('create.field');
+            Route::post('/field-store', [FieldController::class, 'field_store'])->name('field.store');
+            Route::get('/field-edit/{id}', [FieldController::class, 'field_edit'])->name('field.edit');
+            Route::post('/field-update', [FieldController::class, 'field_update'])->name('field.update');
+            Route::delete('/field-delete/{id}', [FieldController::class, 'field_delete'])->name('field.delete');
+            
+            Route::get('/field-type-list', [FieldController::class, 'field_type_list'])->name('field.type.list');
+            Route::get('/create-field-type', [FieldController::class, 'create_field_type'])->name('create.field.type');
+            Route::post('/field-type-store', [FieldController::class, 'field_type_store'])->name('field.type.store');
+            Route::get('/field-type-edit/{id}', [FieldController::class, 'field_type_edit'])->name('field.type.edit');
+            Route::post('/field-type-update', [FieldController::class, 'field_type_update'])->name('field.type.update');
+            Route::delete('/field-type-delete/{id}', [FieldController::class, 'field_type_delete'])->name('field.type.delete');
+           
+            Route::get('/validation-list', [ValidationController::class, 'validation_list'])->name('validation.list');
+            Route::get('/create-validation', [ValidationController::class, 'create_validation'])->name('create.validation');
+            Route::post('/validation-store', [ValidationController::class, 'validation_store'])->name('validation.store');
+            Route::get('/validation-edit/{id}', [ValidationController::class, 'validation_edit'])->name('validation.edit');
+            Route::post('/validation-update', [ValidationController::class, 'validation_update'])->name('validation.update');
+            Route::delete('/validation-delete/{id}', [ValidationController::class, 'validation_delete'])->name('validation.delete');
+            
+            Route::get('/dropdown-list', [DropdownController::class, 'dropdown_list'])->name('dropdown.list');
+            Route::get('/create-dropdown', [DropdownController::class, 'create_dropdown'])->name('create.dropdown');
+            Route::post('/dropdown-store', [DropdownController::class, 'dropdown_store'])->name('dropdown.store');
+            Route::get('/dropdown-edit/{id}', [DropdownController::class, 'dropdown_edit'])->name('dropdown.edit');
+            Route::post('/dropdown-update', [DropdownController::class, 'dropdown_update'])->name('dropdown.update');
+            Route::delete('/dropdown-delete/{id}', [DropdownController::class, 'dropdown_delete'])->name('dropdown.delete');
         });
     });
 });

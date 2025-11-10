@@ -20,7 +20,7 @@
                 @can('View dashboard')
                     <li>
                         <ul>
-                            <li class="submenu">
+                            <li>
                                 <a href="{{ route('admin.dashboard') }}">
                                     <i class="ti ti-smart-home"></i><span>Dashboard</span>
                                 </a>
@@ -82,12 +82,12 @@
                                         <li>
                                             <a href="{{ route('admin.testimonials.list') }}">Testimonial</a>
                                         </li>
-                                    @endcan                                
+                                    @endcan
                                     @can('Why Choose Us')
                                         <li>
                                             <a href="{{ route('admin.why.choose.us') }}">Why Choose Us</a>
                                         </li>
-                                    @endcan                                
+                                    @endcan
                                 </ul>
                             </li>
                         </ul>
@@ -96,9 +96,9 @@
                 @can('Inquiry')
                     <li>
                         <ul>
-                            <li class="submenu">
+                            <li>
                                 <a href="{{ route('admin.inquery.list') }}">
-                                    <i class="ti ti-mail"></i><span>Inquery</span>
+                                    <i class="ti ti-mail"></i><span>Inquiry</span>
                                 </a>
                             </li>
                         </ul>
@@ -198,6 +198,54 @@
                                         <li><a href="{{ route('admin.permissions.list') }}">Permission List</a></li>
                                     @endcan
 
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                @endcanany
+                @canany(['Field Master'])
+                    <li class="menu-title"><span>Field Master</span></li>
+
+                    <li>
+                        <ul>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-layout-grid"></i><span>Field Type</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="{{ route('admin.field.type.list') }}">Field Type List</a></li>
+                                    <li><a href="{{ route('admin.create.field.type') }}">Create Field Type</a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-file-description"></i><span>Field Masters</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="{{ route('admin.field.list') }}">Field List</a></li>
+                                    <li><a href="{{ route('admin.create.field') }}">Create Field</a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-checkup-list"></i><span>Validation Masters</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="{{ route('admin.validation.list') }}">Validation List</a></li>
+                                    <li><a href="{{ route('admin.create.validation') }}">Create Validation</a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-arrows-sort"></i><span>Dropdown Masters</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="{{ route('admin.dropdown.list') }}">Dropdown List</a></li>
+                                    <li><a href="{{ route('admin.create.dropdown') }}">Create Dropdown</a></li>
                                 </ul>
                             </li>
                         </ul>

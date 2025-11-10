@@ -27,7 +27,7 @@
                     <div class="row">
 
                         <!-- MAIN IMAGE -->
-                        <div class="col-md-12 mb-3">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Main Image</label>
                             <div class="d-flex align-items-center bg-light p-3 rounded">
                                 <div id="previewMain"
@@ -47,7 +47,7 @@
                         </div>
 
                         <!-- SECOND IMAGE -->
-                        <div class="col-md-12 mb-3">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Second Image</label>
                             <div class="d-flex align-items-center bg-light p-3 rounded">
                                 <div id="previewSecond"

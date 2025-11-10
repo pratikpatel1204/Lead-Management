@@ -20,7 +20,7 @@
                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('View dashboard')): ?>
                     <li>
                         <ul>
-                            <li class="submenu">
+                            <li>
                                 <a href="<?php echo e(route('admin.dashboard')); ?>">
                                     <i class="ti ti-smart-home"></i><span>Dashboard</span>
                                 </a>
@@ -82,12 +82,12 @@
                                         <li>
                                             <a href="<?php echo e(route('admin.testimonials.list')); ?>">Testimonial</a>
                                         </li>
-                                    <?php endif; ?>                                
+                                    <?php endif; ?>
                                     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Why Choose Us')): ?>
                                         <li>
                                             <a href="<?php echo e(route('admin.why.choose.us')); ?>">Why Choose Us</a>
                                         </li>
-                                    <?php endif; ?>                                
+                                    <?php endif; ?>
                                 </ul>
                             </li>
                         </ul>
@@ -96,9 +96,9 @@
                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Inquiry')): ?>
                     <li>
                         <ul>
-                            <li class="submenu">
+                            <li>
                                 <a href="<?php echo e(route('admin.inquery.list')); ?>">
-                                    <i class="ti ti-mail"></i><span>Inquery</span>
+                                    <i class="ti ti-mail"></i><span>Inquiry</span>
                                 </a>
                             </li>
                         </ul>
@@ -198,6 +198,54 @@
                                         <li><a href="<?php echo e(route('admin.permissions.list')); ?>">Permission List</a></li>
                                     <?php endif; ?>
 
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['Field Master'])): ?>
+                    <li class="menu-title"><span>Field Master</span></li>
+
+                    <li>
+                        <ul>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-layout-grid"></i><span>Field Type</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="<?php echo e(route('admin.field.type.list')); ?>">Field Type List</a></li>
+                                    <li><a href="<?php echo e(route('admin.create.field.type')); ?>">Create Field Type</a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-file-description"></i><span>Field Masters</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="<?php echo e(route('admin.field.list')); ?>">Field List</a></li>
+                                    <li><a href="<?php echo e(route('admin.create.field')); ?>">Create Field</a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-checkup-list"></i><span>Validation Masters</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="<?php echo e(route('admin.validation.list')); ?>">Validation List</a></li>
+                                    <li><a href="<?php echo e(route('admin.create.validation')); ?>">Create Validation</a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-arrows-sort"></i><span>Dropdown Masters</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="<?php echo e(route('admin.dropdown.list')); ?>">Dropdown List</a></li>
+                                    <li><a href="<?php echo e(route('admin.create.dropdown')); ?>">Create Dropdown</a></li>
                                 </ul>
                             </li>
                         </ul>

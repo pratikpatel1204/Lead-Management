@@ -30,46 +30,61 @@
                             @csrf
                             <input type="hidden" name="id" value="{{ $employee->id }}">
 
-                            <div class="mb-3">
-                                <label class="form-label">Employee Name <span class="text-danger">*</span></label>
-                                <input type="text" name="name" value="{{ $employee->name }}" class="form-control"
-                                    required>
-                                <span class="text-danger error-name"></span>
+                            <div class="row">
+                                <!-- Employee Name -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Employee Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="name" value="{{ $employee->name }}" class="form-control"
+                                        required placeholder="Enter employee name">
+                                    <span class="text-danger error-name"></span>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" name="email" value="{{ $employee->email }}" class="form-control"
+                                        required placeholder="Enter email">
+                                    <span class="text-danger error-email"></span>
+                                </div>
+
+                                <!-- Role -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Select Role <span class="text-danger">*</span></label>
+                                    <select name="role" class="form-select" required>
+                                        <option value="">Select Role</option>
+                                        @foreach ($roles as $role)
+                                            <option value="{{ $role->name }}"
+                                                @if ($employee->roles->first()->name == $role->name) selected @endif>
+                                                {{ $role->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <span class="text-danger error-role"></span>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label">Email <span class="text-danger">*</span></label>
-                                <input type="email" name="email" value="{{ $employee->email }}" class="form-control"
-                                    required>
-                                <span class="text-danger error-email"></span>
-                            </div>
+                            <div class="row">
+                                <!-- Password -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Password <span class="text-danger">*</span></label>
+                                    <input type="password" name="password" class="form-control"
+                                        placeholder="Enter new password (leave blank to keep current)">
+                                    <span class="text-danger error-password"></span>
+                                </div>
 
-                            <div class="mb-3">
-                                <label class="form-label">Select Role <span class="text-danger">*</span></label>
-                                <select name="role" class="form-control" required>
-                                    <option value="">Select Role</option>
-                                    @foreach ($roles as $role)
-                                        <option value="{{ $role->name }}"
-                                            @if ($employee->roles->first()->name == $role->name) selected @endif>
-                                            {{ $role->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <span class="text-danger error-role"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Password <span class="text-danger">*</span></label>
-                                <input type="password" name="password" class="form-control" placeholder="Enter password">
-                                <span class="text-danger error-password"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Profile Image</label>
-                                <input type="file" name="profile_image" class="form-control">
-                                <span class="text-danger error-profile_image"></span>
+                                <!-- Profile Image -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Profile Image</label>
+                                    <input type="file" name="profile_image" class="form-control">
+                                    <span class="text-danger error-profile_image"></span>
 
-                                @if ($employee->profile_image)
-                                    <img src="{{ asset($employee->profile_image) }}" width="80" class="mt-2 rounded">
-                                @endif
+                                    @if ($employee->profile_image)
+                                        <div class="mt-2">
+                                            <img src="{{ asset($employee->profile_image) }}" width="80"
+                                                class="rounded border">
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
 
                             <div class="text-end">
