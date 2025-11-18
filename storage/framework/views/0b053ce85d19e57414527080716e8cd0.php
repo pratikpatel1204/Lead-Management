@@ -54,6 +54,7 @@
                                 <option value="required" <?php echo e($field->validation == 'required' ? 'selected' : ''); ?>>Required</option>
                                 <option value="nullable" <?php echo e($field->validation == 'nullable' ? 'selected' : ''); ?>>Nullable</option>
                                 <option value="readonly" <?php echo e($field->validation == 'readonly' ? 'selected' : ''); ?>>Readonly</option>
+                                <option value="checked" <?php echo e($field->validation == 'checked' ? 'selected' : ''); ?>>Checked</option>
                             </select>
                         </div>
 

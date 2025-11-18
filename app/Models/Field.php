@@ -16,4 +16,12 @@ class Field extends Model
         'validation_type',
         'default_value',
     ];
+    public function templateData()
+    {
+        return $this->hasMany(TemplateData::class, 'field_id');
+    }
+    public function dropdowns()
+    {
+        return $this->hasMany(Dropdown::class);
+    }
 }

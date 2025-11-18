@@ -205,7 +205,6 @@
                 @endcanany
                 @canany(['Field Master'])
                     <li class="menu-title"><span>Field Master</span></li>
-
                     <li>
                         <ul>
                             <li class="submenu">
@@ -251,6 +250,45 @@
                         </ul>
                     </li>
                 @endcanany
+                @canany(['Template Master','Template Data Master'])
+                    <li class="menu-title"><span>Template Master</span></li>
+                    <li>
+                        <ul>
+                            @can('Template Master')
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-layout-grid"></i><span>Template Master</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ route('admin.template.list') }}">Template List</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('admin.create.template') }}">Create Template</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            @endcan
+                            @can('Template Data Master')                  
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-layout-grid"></i><span>Template Data Master</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ route('admin.template.data.list') }}">Template Data List</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('admin.create.template.data') }}">Create Template Data</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endcanany                
             </ul>
         </div>
     </div>

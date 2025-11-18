@@ -48,6 +48,7 @@
                                 <option value="required">Required</option>
                                 <option value="nullable">Nullable</option>
                                 <option value="readonly">Readonly</option>
+                                <option value="checked">Checked</option>
                             </select>
                         </div>
 

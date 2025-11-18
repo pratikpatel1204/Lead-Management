@@ -8,6 +8,10 @@ use App\Models\FieldType;
 use App\Models\ValidationType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Spatie\SimpleExcel\SimpleExcelWriter;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Spatie\SimpleExcel\SimpleExcelReader;
 
 class FieldController extends Controller
 {
@@ -228,6 +232,63 @@ class FieldController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong. Please try again.',
+            ], 500);
+        }
+    }
+    public function downloadSample()
+    {
+        $fileName = 'field_sample.xlsx';
+
+        $writer = SimpleExcelWriter::streamDownload($fileName);
+
+        $writer->addHeader(['#', 'Field Name', 'Type', 'Validation', 'Validation Type', 'Default Value'])
+            ->addRows([
+                ['1', 'Name', 'text', 'required', 'string', 'John Doe'],
+                ['2', 'Email', 'email', 'required', 'email', 'johndoe@email.com'],
+                ['3', 'Age', 'number', 'nullable', 'integer', '25'],
+                ['4', 'Is Active', 'checkbox', 'checked', 'boolean', 'true'],
+            ])
+            ->toBrowser();
+    }
+    public function fields_bulk_upload(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,csv,xls',
+        ]);
+
+        try {
+            $file = $request->file('excel_file');
+            $filePath = $file->storeAs('temp', $file->getClientOriginalName());
+
+            $fullPath = storage_path('app/' . $filePath);
+
+            $rows = \Spatie\SimpleExcel\SimpleExcelReader::create($fullPath)->getRows();
+
+            DB::beginTransaction();
+
+            $rows->each(function (array $row) {
+                Field::create([
+                    'name' => $row['Field Name'] ?? null,
+                    'type' => $row['Type'] ?? null,
+                    'validation' => $row['Validation'] ?? null,
+                    'validation_type' => $row['Validation Type'] ?? null,
+                    'default_value' => $row['Default Value'] ?? null,
+                ]);
+            });
+
+            DB::commit();
+
+            Storage::delete($filePath);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Fields imported successfully!',
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Error importing Excel: ' . $th->getMessage(),
             ], 500);
         }
     }

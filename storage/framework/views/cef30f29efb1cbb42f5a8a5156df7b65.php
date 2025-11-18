@@ -205,7 +205,6 @@
                 <?php endif; ?>
                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['Field Master'])): ?>
                     <li class="menu-title"><span>Field Master</span></li>
-
                     <li>
                         <ul>
                             <li class="submenu">
@@ -251,6 +250,45 @@
                         </ul>
                     </li>
                 <?php endif; ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['Template Master','Template Data Master'])): ?>
+                    <li class="menu-title"><span>Template Master</span></li>
+                    <li>
+                        <ul>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Template Master')): ?>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-layout-grid"></i><span>Template Master</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="<?php echo e(route('admin.template.list')); ?>">Template List</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo e(route('admin.create.template')); ?>">Create Template</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <?php endif; ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Template Data Master')): ?>                  
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="ti ti-layout-grid"></i><span>Template Data Master</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="<?php echo e(route('admin.template.data.list')); ?>">Template Data List</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo e(route('admin.create.template.data')); ?>">Create Template Data</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </li>
+                <?php endif; ?>                
             </ul>
         </div>
     </div>

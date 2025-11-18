@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\TeamController;
+use App\Http\Controllers\Admin\TemplateMasterController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\ValidationController;
 use App\Http\Controllers\HomeController;
@@ -161,7 +162,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/blog-categories-update', [BlogController::class, 'update_blog_categories'])->name('blog.categories.update');
 
             Route::delete('/blog-categories-delete/{id}', [BlogController::class, 'destroy_blog_categories'])->name('blog.categories.delete');
-        });       
+        });
 
         Route::middleware(['permission:Create Blogs'])->group(function () {
             Route::get('/create-blog', [BlogController::class, 'create_blog'])->name('create.blog');
@@ -195,27 +196,47 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/field-edit/{id}', [FieldController::class, 'field_edit'])->name('field.edit');
             Route::post('/field-update', [FieldController::class, 'field_update'])->name('field.update');
             Route::delete('/field-delete/{id}', [FieldController::class, 'field_delete'])->name('field.delete');
-            
+
             Route::get('/field-type-list', [FieldController::class, 'field_type_list'])->name('field.type.list');
             Route::get('/create-field-type', [FieldController::class, 'create_field_type'])->name('create.field.type');
             Route::post('/field-type-store', [FieldController::class, 'field_type_store'])->name('field.type.store');
             Route::get('/field-type-edit/{id}', [FieldController::class, 'field_type_edit'])->name('field.type.edit');
             Route::post('/field-type-update', [FieldController::class, 'field_type_update'])->name('field.type.update');
             Route::delete('/field-type-delete/{id}', [FieldController::class, 'field_type_delete'])->name('field.type.delete');
-           
+
             Route::get('/validation-list', [ValidationController::class, 'validation_list'])->name('validation.list');
             Route::get('/create-validation', [ValidationController::class, 'create_validation'])->name('create.validation');
             Route::post('/validation-store', [ValidationController::class, 'validation_store'])->name('validation.store');
             Route::get('/validation-edit/{id}', [ValidationController::class, 'validation_edit'])->name('validation.edit');
             Route::post('/validation-update', [ValidationController::class, 'validation_update'])->name('validation.update');
             Route::delete('/validation-delete/{id}', [ValidationController::class, 'validation_delete'])->name('validation.delete');
-            
+
             Route::get('/dropdown-list', [DropdownController::class, 'dropdown_list'])->name('dropdown.list');
             Route::get('/create-dropdown', [DropdownController::class, 'create_dropdown'])->name('create.dropdown');
             Route::post('/dropdown-store', [DropdownController::class, 'dropdown_store'])->name('dropdown.store');
             Route::get('/dropdown-edit/{id}', [DropdownController::class, 'dropdown_edit'])->name('dropdown.edit');
             Route::post('/dropdown-update', [DropdownController::class, 'dropdown_update'])->name('dropdown.update');
             Route::delete('/dropdown-delete/{id}', [DropdownController::class, 'dropdown_delete'])->name('dropdown.delete');
+
+            Route::get('fields-sample-download', [FieldController::class, 'downloadSample'])->name('fields.sample.download');
+            Route::post('fields-bulk-upload', [FieldController::class, 'fields_bulk_upload'])->name('fields.bulk.upload');
+        });
+        Route::middleware(['permission:Template Master'])->group(function () {
+            Route::get('/template-list', [TemplateMasterController::class, 'template_list'])->name('template.list');
+            Route::get('/create-template', [TemplateMasterController::class, 'create_template'])->name('create.template');
+            Route::post('/template-store', [TemplateMasterController::class, 'template_store'])->name('template.store');
+            Route::get('/template-edit/{name}', [TemplateMasterController::class, 'template_edit'])->name('template.edit');
+            Route::post('/template-update', [TemplateMasterController::class, 'template_update'])->name('template.update');
+            Route::delete('/template-delete/{name}', [TemplateMasterController::class, 'template_delete'])->name('template.delete');
+        });
+        Route::middleware(['permission:Template Data Master'])->group(function () {
+            Route::get('/template-data-list', [TemplateMasterController::class, 'template_data_list'])->name('template.data.list');
+            Route::get('/create-template-data', [TemplateMasterController::class, 'create_template_data'])->name('create.template.data');
+            Route::post('/template-data-store', [TemplateMasterController::class, 'template_data_store'])->name('template.data.store');
+            Route::get('/template-data-edit/{name}', [TemplateMasterController::class, 'template_data_edit'])->name('template.data.edit');
+            Route::post('/template-data-update', [TemplateMasterController::class, 'template_data_update'])->name('template.data.update');
+            Route::delete('/template-data-delete/{name}', [TemplateMasterController::class, 'template_data_delete'])->name('template.data.delete');
+            Route::post('/template-data-get-fields', [TemplateMasterController::class, 'get_template_data_fields'])->name('template.data.get.fields');
         });
     });
 });

@@ -53,6 +53,7 @@
                                 <option value="required" {{ $field->validation == 'required' ? 'selected' : '' }}>Required</option>
                                 <option value="nullable" {{ $field->validation == 'nullable' ? 'selected' : '' }}>Nullable</option>
                                 <option value="readonly" {{ $field->validation == 'readonly' ? 'selected' : '' }}>Readonly</option>
+                                <option value="checked" {{ $field->validation == 'checked' ? 'selected' : '' }}>Checked</option>
                             </select>
                         </div>
 
