@@ -18,15 +18,33 @@
             <ul>
                 <li class="menu-title m-0"><span>MAIN MENU</span></li>
                 @can('View dashboard')
-                    <li class="m-0">
-                        <a href="{{ route('admin.dashboard') }}" class="px-2">
-                            <i class="ti ti-smart-home me-2"></i><span> Dashboard</span>
-                        </a>
+                    <li>
+                        <ul class="m-0">
+                            <li>
+                                <a href="{{ route('admin.dashboard') }}" class="px-2">
+                                    <i class="ti ti-smart-home me-2"></i><span> Dashboard</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
-                @endcan                
-                @canany(['About Us', 'Banner', 'Contact Us', 'Testimonial', 'Inquiry', 'All Blogs', 'Create Blogs',
-                    'Blogs Categories', 'Why Choose Us', 'Create Services Categories', 'Services Categories List', 'Create
-                    Service', 'Service List', 'Create Team', 'Team List'])
+                @endcan
+                @canany([
+                    'About Us',
+                    'Banner',
+                    'Contact Us',
+                    'Testimonial',
+                    'Inquiry',
+                    'All Blogs',
+                    'Create Blogs',
+                    'Blogs Categories',
+                    'Why Choose Us',
+                    'Create Services Categories',
+                    'Services Categories List',
+                    'Create Service',
+                    'Service List',
+                    'Create Team',
+                    'Team List',
+                    ])
                     <li class="menu-title m-0"><span>Front Settings</span></li>
                     <li>
                         <ul class="m-0">

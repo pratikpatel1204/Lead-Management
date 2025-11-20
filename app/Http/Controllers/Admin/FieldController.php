@@ -245,12 +245,13 @@ class FieldController extends Controller
 
         $writer = SimpleExcelWriter::streamDownload($fileName);
 
-        $writer->addHeader(['#', 'Field Name', 'Type', 'Validation', 'Validation Type', 'Default Value'])
+        $writer->addHeader(['#', 'Field Name', 'Type', 'Validation', 'Validation Type', 'options', 'Default Value'])
             ->addRows([
-                ['1', 'Name', 'text', 'required', 'string', 'John Doe'],
-                ['2', 'Email', 'email', 'required', 'email', 'johndoe@email.com'],
-                ['3', 'Age', 'number', 'nullable', 'integer', '25'],
-                ['4', 'Is Active', 'checkbox', 'checked', 'boolean', 'true'],
+                ['1', 'Name', 'text', 'required', 'string','-', 'John Doe'],
+                ['2', 'Email', 'email', 'required', 'email','-', 'johndoe@email.com'],
+                ['3', 'Age', 'number', 'nullable', 'integer','-', '25'],
+                ['4', 'Is Active', 'checkbox', 'checked', 'boolean','-', 'true'],
+                ['5', 'Gender', 'radio', 'required', 'string', 'Male, Female', 'Male'],
             ])
             ->toBrowser();
     }
@@ -276,6 +277,7 @@ class FieldController extends Controller
                     'type' => $row['Type'] ?? null,
                     'validation' => $row['Validation'] ?? null,
                     'validation_type' => $row['Validation Type'] ?? null,
+                    'options' => $row['options'] ?? null,
                     'default_value' => $row['Default Value'] ?? null,
                 ]);
             });

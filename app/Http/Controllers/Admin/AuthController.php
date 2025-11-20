@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+use App\Mail\SendOtpMail;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -145,6 +146,7 @@ class AuthController extends Controller
                 'otp' => $otp,
                 'otp_verified' => 0,
             ]);
+            // Mail::to($request->email)->send(new SendOtpMail($otp));
             return response()->json([
                 'exists' => true,
                 'user_id' => Crypt::encryptString($user->id),
@@ -203,11 +205,7 @@ class AuthController extends Controller
         $user->otp_verified = 0;
         $user->save();
         try {
-            // Mail::raw("Your OTP code is: $otp", function ($message) use ($user) {
-            //     $message->to($user->email)
-            //         ->subject('Your OTP Code');
-            // });
-
+            // Mail::to($user->email)->send(new SendOtpMail($otp));
             return response()->json([
                 'success' => true,
                 'message' => 'OTP has been resent successfully!'
