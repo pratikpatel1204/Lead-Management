@@ -79,10 +79,22 @@
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </td>
                                             <td>
-                                                <?php if($emp->status == 1): ?>
-                                                    <span class="badge bg-primary">Active</span>
+                                                <?php if(!$emp->hasRole('super admin')): ?>
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input status-toggle" type="checkbox"
+                                                            role="switch" data-id="<?php echo e($emp->id); ?>"
+                                                            <?php echo e($emp->status == 1 ? 'checked' : ''); ?>>
+                                                        <label class="form-check-label status-text">
+                                                            <?php echo e($emp->status == 1 ? 'Active' : 'Inactive'); ?>
+
+                                                        </label>
+                                                    </div>
                                                 <?php else: ?>
-                                                    <span class="badge bg-danger">Inactive</span>
+                                                    <?php if($emp->status == 1): ?>
+                                                        <span class="badge bg-primary">Active</span>
+                                                    <?php else: ?>
+                                                        <span class="badge bg-danger">Inactive</span>
+                                                    <?php endif; ?>
                                                 <?php endif; ?>
                                             </td>
                                             <td>
@@ -93,7 +105,7 @@
                                                     <?php endif; ?>
                                                 <?php endif; ?>
                                                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Delete Employee')): ?>
-                                                    <?php if(!$emp->hasRole('Super Admin')): ?>
+                                                    <?php if(!$emp->hasRole('super admin')): ?>
                                                         <button class="btn btn-sm btn-danger deleteEmployeeBtn"
                                                             data-id="<?php echo e($emp->id); ?>">
                                                             Delete
@@ -113,6 +125,40 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).on('change', '.status-toggle', function() {
+
+            var id = $(this).data('id');
+            var status = $(this).is(':checked') ? 1 : 0;
+            var label = $(this).closest('.form-check').find('.status-text');
+
+            $.ajax({
+                url: "<?php echo e(route('admin.employee.update.status')); ?>",
+                method: "POST",
+                data: {
+                    id: id,
+                    status: status,
+                    _token: "<?php echo e(csrf_token()); ?>"
+                },
+                success: function(response) {
+
+                    if (response.success) {
+                        // Update label text
+                        label.text(status == 1 ? 'Active' : 'Inactive');
+
+                        toastr.success(response.message);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error("Server error occurred!");
+                }
+            });
+
+        });
+    </script>
+
     <script>
         $(document).ready(function() {
             let table = $('#empTable').DataTable();

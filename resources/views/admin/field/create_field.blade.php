@@ -62,10 +62,15 @@
                             </select>
                         </div>
 
-                        <div class="col-md-12 mb-3">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label">Default Value</label>
                             <input type="text" name="default_value" class="form-control"
                                 placeholder="Enter Default Value">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Options</label>
+                            <input type="text" name="options" class="form-control" placeholder="Male,Female">
                         </div>
                     </div>
 

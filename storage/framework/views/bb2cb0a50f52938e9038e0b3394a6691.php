@@ -60,7 +60,7 @@
 
                             <div class="row">
                                 <!-- Password -->
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <label class="form-label">Password <span class="text-danger">*</span></label>
                                     <input type="password" name="password" class="form-control" required
                                         placeholder="Enter password">
@@ -68,11 +68,24 @@
                                 </div>
 
                                 <!-- Profile Image -->
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <label class="form-label">Profile Image</label>
                                     <input type="file" name="profile_image" class="form-control">
                                     <span class="text-danger error-profile_image"></span>
                                 </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label d-block">Status</label>
+                                
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                               name="status" value="1" id="status"
+                                               <?php echo e(old('status', 1) ? 'checked' : ''); ?>>
+                                
+                                        <label class="form-check-label" for="status">Active</label>
+                                    </div>
+                                </div>
+                                
                             </div>
 
                             <div class="text-end">

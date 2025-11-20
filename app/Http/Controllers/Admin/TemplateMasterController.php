@@ -142,57 +142,26 @@ class TemplateMasterController extends Controller
             'message' => 'Template deleted successfully!',
         ]);
     }
-    public function template_data_list()
+
+    public function data_list($name)
     {
-        $templateData = TemplateData::orderBy('created_at', 'desc')
+        $templates = TemplateData::with('field')
+            ->where('template_name', $name)
+            ->orderBy('created_at', 'desc')
             ->get()
-            ->groupBy('template_name')
-            ->map(function ($templateGroup) {
-                $templateFields = $templateGroup
-                    ->pluck('field_name', 'field_id')
-                    ->unique();
-                $formGroups = $templateGroup->groupBy('form_group_id');
+            ->groupBy('form_group_id');
 
-                return [
-                    'fields' => $templateFields,
-                    'groups' => $formGroups
-                ];
-            });
-        return view('admin.template_data.list', compact('templateData'));
+        return view('admin.form_data.list', compact('templates', 'name'));
     }
-
-    public function create_template_data()
+    public function create_data($name)
     {
-        $templateNames = TemplateMaster::select('name')
-            ->groupBy('name')
-            ->orderBy('name', 'asc')
-            ->get();
-
-        $fields = Field::orderBy('id', 'desc')->get()->groupBy('name');
-
-        return view('admin.template_data.create', compact('templateNames', 'fields'));
+        $templates = TemplateMaster::with(['field', 'field.dropdowns'])->where('name', $name)->orderBy('id', 'desc')->get();
+        return view('admin.form_data.create', compact('templates', 'name'));
     }
-    public function get_template_data_fields(Request $request)
+    public function data_store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string'
-        ]);
-        $templates = TemplateMaster::with(['field', 'field.dropdowns'])->where('name', $request->name)->orderBy('id', 'desc')->get();
-        if ($templates->isEmpty()) {
-            return response()->json([
-                'status' => false,
-                'fields' => []
-            ]);
-        }
-        return response()->json([
-            'status' => true,
-            'fields' => $templates
-        ]);
-    }
-    public function template_data_store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
+            'template_name' => 'required|string',
             'label_id' => 'required|array|min:1',
             'label_id.*' => 'exists:fields,id'
         ]);
@@ -214,11 +183,11 @@ class TemplateMasterController extends Controller
                     $path = 'from_data/';
                     $file->move(public_path($path), $filename);
                     $value = $path . $filename;
-                }               
+                }
             }
             TemplateData::create([
                 'form_group_id' => $formGroupId,
-                'template_name' => $request->name,
+                'template_name' => $request->template_name,
                 'field_id'      => $fieldId,
                 'field_name'    => $fieldName,
                 'field_value'   => $value,
@@ -226,70 +195,12 @@ class TemplateMasterController extends Controller
         }
         return response()->json([
             'status' => true,
-            'message' => 'Template data saved successfully!',
+            'message' => $request->template_name . ' data saved successfully!',
         ]);
     }
-    public function template_data_edit($groupId)
+    public function data_delete(Request $request)
     {
-        $records = TemplateData::with(['field', 'field.dropdowns'])->where('form_group_id', $groupId)->get();
-        if ($records->isEmpty()) {
-            return abort(404, "Form group not found");
-        }
-        $templateName = $records->first()->template_name;
-        $templateFields = $records->pluck('field_name', 'field_id');
-        return view('admin.template_data.edit', compact(
-            'groupId',
-            'records',
-            'templateName',
-            'templateFields'
-        ));
-    }
-    public function template_data_update(Request $request)
-    {
-        $request->validate([
-            'template_name' => 'required|string'
-        ]);
-
-        $records = TemplateData::with('field')
-            ->where('form_group_id', $request->group_id)
-            ->get();
-
-        if ($records->isEmpty()) {
-            return response()->json([
-                'status' => false,
-                'message' => "Form group not found."
-            ]);
-        }
-        $formGroupId = $request->group_id;
-        foreach ($records as $record) {
-            $fieldid = $record->field_id;          
-            $fieldType = $record->field->type;
-            $newValue  = $request->input($fieldid);
-
-            if ($fieldType === 'file') {
-                if ($request->hasFile($fieldid)) {
-                    $file = $request->file($fieldid);
-                    if (is_array($file)) {
-                        $file = $file[0];
-                    }
-                    $filename = $formGroupId . "_" . $fieldid . "_" . time() . "." . $file->getClientOriginalExtension();
-                    $path = 'from_data/';
-                    $file->move(public_path($path), $filename);
-                    $newValue = $path . $filename;
-                }
-            }              
-            $record->update([
-                'field_value' => $newValue,
-            ]);
-        }
-        return response()->json([
-            'status' => true,
-            'message' => 'Template data updated successfully (Updated + Removed)!'
-        ]);
-    }
-
-    public function template_data_delete($groupId)
-    {
+        $groupId = $request->group_id;
         $query = TemplateData::where('form_group_id', $groupId);
         if (!$query->exists()) {
             return response()->json([
@@ -301,6 +212,71 @@ class TemplateMasterController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Form group deleted successfully!'
+        ]);
+    }
+    public function edit_data($name, $groupId)
+    {
+        $records = TemplateData::with(['field', 'field.dropdowns'])->where('form_group_id', $groupId)->get();
+        if ($records->isEmpty()) {
+            return abort(404, "Form group not found");
+        }
+        $templateName = $records->first()->template_name;
+        $templateFields = $records->pluck('field_name', 'field_id');
+        return view('admin.form_data.edit', compact(
+            'groupId',
+            'records',
+            'templateName',
+            'templateFields'
+        ));
+    }
+    public function data_update(Request $request)
+    {
+        $request->validate([
+            'template_name' => 'required|string',
+            'group_id' => 'required',
+        ]);
+
+        $formGroupId = $request->input('group_id');
+
+        $records = TemplateData::with('field')
+            ->where('form_group_id', $formGroupId)
+            ->get();
+
+        if ($records->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => "Form group not found."
+            ]);
+        }
+        foreach ($records as $record) {
+            $fieldId = $record->field_id;
+            $fieldType = $record->field->type ?? 'text';
+            $newValue = $request->input($fieldId);
+            if ($fieldType === 'checkbox') {
+                $newValue = $request->has($fieldId) ? '1' : '0';
+            } else if ($fieldType === 'file') {
+                if ($request->hasFile($record->field_id) && $request->file($record->field_id) !== null) {
+                    $file = $request->file($record->field_id);
+                    if (is_array($file)) {
+                        $file = $file[0];
+                    }
+                    $filename = $formGroupId . "_" . $record->field_id . "_" . time() . "." . $file->getClientOriginalExtension();
+                    $path = 'from_data/';
+                    $file->move(public_path($path), $filename);
+                    $newValue = $path . $filename;
+                } else {
+                    $newValue = $record->field_value;
+                }
+            } else {
+                $newValue = $newValue !== null ? $newValue : $record->field_value;
+            }
+            $record->update([
+                'field_value' => $newValue,
+            ]);
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'Template data updated successfully (Updated + Removed)!'
         ]);
     }
 }

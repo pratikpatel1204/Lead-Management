@@ -16,9 +16,14 @@
         </div>
 
         @can('Create Permissions')
+        <div>
             <a href="{{ route('admin.permissions.create') }}" class="btn btn-primary">
                 <i class="ti ti-plus"></i> Add Permission
             </a>
+            <a href="{{ route('admin.permissions.template.create') }}" class="btn btn-success">
+                <i class="ti ti-plus"></i> Add Template Permission
+            </a>
+        </div>
         @endcan
     </div>
 

@@ -50,6 +50,7 @@ class EmployeeController extends Controller
             'email'    => $request->email,
             'password' => bcrypt($request->password),
             'profile_image' => $imagePath,
+            'status'        => $request->has('status') ? 1 : 0,
         ]);
 
         // Assign Role
@@ -101,7 +102,7 @@ class EmployeeController extends Controller
         // Update fields
         $employee->name = $request->name;
         $employee->email = $request->email;
-
+        $employee->status = $request->has('status') ? 1 : 0;
         if ($request->filled('password')) {
             $employee->password = bcrypt($request->password);
         }
@@ -152,5 +153,32 @@ class EmployeeController extends Controller
             'status' => true,
             'message' => 'Employee deleted successfully!'
         ]);
+    }
+    public function employee_update_status(Request $request)
+    {
+        try {
+            $employee = User::find($request->id);
+
+            if (!$employee) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Employee not found.'
+                ], 404);
+            }
+
+            $employee->status = $request->status;
+            $employee->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status updated successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong.',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
     }
 }

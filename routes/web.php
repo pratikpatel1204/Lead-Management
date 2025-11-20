@@ -29,7 +29,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest:admin')->group(function () {
         Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
         Route::post('login', [AdminAuthController::class, 'loginSubmit'])->name('login.submit');
+        Route::get('forgot-password', [AdminAuthController::class, 'show_forgot_password_Form'])->name('forgot.password');
+        Route::post('forgot-password-check', [AdminAuthController::class, 'forgot_password_check'])->name('forgot.password.check');
+        Route::get('otp-verification/{id}', [AdminAuthController::class, 'otp_Verification_Form'])->name('otp.verification');
+        Route::post('verify-otp', [AdminAuthController::class, 'verifyOtp'])->name('verify.otp');
+        Route::post('resend-otp', [AdminAuthController::class, 'resendOtp'])->name('resend.otp');
+        Route::get('reset-password/{id}', [AdminAuthController::class, 'reset_password'])->name('reset.password');
+        Route::post('reset-password-submit', [AdminAuthController::class, 'reset_password_submit'])->name('reset.password.submit');
     });
+
     Route::middleware(['auth:admin'])->group(function () {
 
         Route::get('logout', [AdminAuthController::class, 'logout'])->name('logout');
@@ -45,6 +53,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
         Route::middleware(['permission:View Employee'])->group(function () {
             Route::get('employee-list', [EmployeeController::class, 'employee_list'])->name('employee.list');
+            Route::post('employee-update-status', [EmployeeController::class, 'employee_update_status'])->name('employee.update.status');
         });
         Route::middleware(['permission:Edit Employee'])->group(function () {
             Route::get('employee-edit/{id}', [EmployeeController::class, 'employee_edit'])->name('employee.edit');
@@ -69,6 +78,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::middleware(['permission:Create Permissions'])->group(function () {
             Route::get('/create-permissions', [PermissionController::class, 'permissions_create'])->name('permissions.create');
             Route::post('/permissions-store', [PermissionController::class, 'permissions_store'])->name('permissions.store');
+            Route::get('/create-permissions-template', [PermissionController::class, 'permissions_template_create'])->name('permissions.template.create');
         });
         Route::middleware(['permission:Edit Permissions'])->group(function () {
             Route::get('/permissions-edit/{id}', [PermissionController::class, 'permissions_edit'])->name('permissions.edit');
@@ -228,15 +238,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/template-edit/{name}', [TemplateMasterController::class, 'template_edit'])->name('template.edit');
             Route::post('/template-update', [TemplateMasterController::class, 'template_update'])->name('template.update');
             Route::delete('/template-delete/{name}', [TemplateMasterController::class, 'template_delete'])->name('template.delete');
-        });
-        Route::middleware(['permission:Template Data Master'])->group(function () {
-            Route::get('/template-data-list', [TemplateMasterController::class, 'template_data_list'])->name('template.data.list');
-            Route::get('/create-template-data', [TemplateMasterController::class, 'create_template_data'])->name('create.template.data');
-            Route::post('/template-data-store', [TemplateMasterController::class, 'template_data_store'])->name('template.data.store');
-            Route::get('/template-data-edit/{name}', [TemplateMasterController::class, 'template_data_edit'])->name('template.data.edit');
-            Route::post('/template-data-update', [TemplateMasterController::class, 'template_data_update'])->name('template.data.update');
-            Route::delete('/template-data-delete/{name}', [TemplateMasterController::class, 'template_data_delete'])->name('template.data.delete');
-            Route::post('/template-data-get-fields', [TemplateMasterController::class, 'get_template_data_fields'])->name('template.data.get.fields');
+        });        
+        Route::middleware('dynamic.template.permission')->group(function () {
+            Route::get("/data-list/{name}", [TemplateMasterController::class, 'data_list'])->name("data.list");
+            Route::get("/create-data/{name}", [TemplateMasterController::class, 'create_data'])->name("data.create");
+            Route::post("/store-data", [TemplateMasterController::class, 'data_store'])->name("data.store");
+            Route::get("/edit-data/{name}/{groupid}", [TemplateMasterController::class, 'edit_data'])->name("data.edit");
+            Route::post('/data-update', [TemplateMasterController::class, 'data_update'])->name('data.update');
+            Route::post('/data-delete', [TemplateMasterController::class, 'data_delete'])->name('data.delete');
         });
     });
 });

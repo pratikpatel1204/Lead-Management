@@ -25,6 +25,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        'dynamic.template.permission' => \App\Http\Middleware\DynamicTemplatePermission::class,
     ];
     /**
      * The application's route middleware groups.

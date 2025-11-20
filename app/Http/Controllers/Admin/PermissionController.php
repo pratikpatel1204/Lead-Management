@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\TemplateMaster;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 
@@ -17,7 +18,7 @@ class PermissionController extends Controller
     public function permissions_create()
     {
         return view('admin.permissions.create');
-    }
+    }    
 
     public function permissions_store(Request $request)
     {
@@ -53,5 +54,15 @@ class PermissionController extends Controller
             'status' => true,
             'message' => 'Permission updated successfully'
         ]);
+    }
+    public function permissions_template_create()
+    {
+        $templates = TemplateMaster::orderBy('name')
+            ->orderBy('field_id')
+            ->get()
+            ->unique('name')
+            ->values();
+
+        return view('admin.permissions.create_template_permissions', compact('templates'));
     }
 }

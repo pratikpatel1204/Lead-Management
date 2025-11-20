@@ -25,6 +25,9 @@ class User extends Authenticatable
         'showpassword',
         'password',
         'profile_image',
+        'otp',
+        'otp_verified',
+        'status',
     ];
 
     /**

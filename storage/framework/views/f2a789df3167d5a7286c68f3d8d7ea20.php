@@ -16,9 +16,14 @@
         </div>
 
         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Create Permissions')): ?>
+        <div>
             <a href="<?php echo e(route('admin.permissions.create')); ?>" class="btn btn-primary">
                 <i class="ti ti-plus"></i> Add Permission
             </a>
+            <a href="<?php echo e(route('admin.permissions.template.create')); ?>" class="btn btn-success">
+                <i class="ti ti-plus"></i> Add Template Permission
+            </a>
+        </div>
         <?php endif; ?>
     </div>
 

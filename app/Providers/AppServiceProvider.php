@@ -28,5 +28,8 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrapFive();
         Route::aliasMiddleware('role', MiddlewareRoleMiddleware::class);
         Route::aliasMiddleware('permission', MiddlewarePermissionMiddleware::class);
+        $this->app->singleton('templatemaster-service', function () {
+            return new \App\Services\TemplateMasterService;
+        });
     }
 }

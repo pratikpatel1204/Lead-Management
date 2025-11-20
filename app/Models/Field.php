@@ -15,6 +15,7 @@ class Field extends Model
         'validation',
         'validation_type',
         'default_value',
+        'options',
     ];
     public function templateData()
     {

@@ -25,8 +25,7 @@
             <div class="w-100 overflow-hidden position-relative flex-wrap d-block vh-100">
                 <div class="row">
                     <div class="col-lg-5">
-                        <div
-                            class="d-lg-flex align-items-center justify-content-center d-none flex-wrap vh-100 bg-primary-transparent">
+                        <div class="d-lg-flex align-items-center justify-content-center d-none flex-wrap vh-100 bg-primary-transparent">
                             <div>
                                 <img src="<?php echo e(asset('admin/img/bg/authentication-bg-03.svg')); ?>" alt="Img">
                             </div>
@@ -77,7 +76,7 @@
                                                     <label for="remember_me" class="form-check-label mt-0">Remember
                                                         Me</label>
                                                 </div>
-                                                <a href="#" class="link-danger">Forgot Password?</a>
+                                                <a href="<?php echo e(route('admin.forgot.password')); ?>" class="link-danger">Forgot Password?</a>
                                             </div>
 
                                             <div class="mb-3">

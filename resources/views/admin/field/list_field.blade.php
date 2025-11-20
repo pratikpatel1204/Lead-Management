@@ -54,6 +54,7 @@
                                 <th>Validation</th>
                                 <th>Validation Type</th>
                                 <th>Default Value</th>
+                                <th>Options</th>
                                 <th width="120" class="text-center">Action</th>
                             </tr>
                         </thead>
@@ -67,6 +68,7 @@
                                     <td>{{ $field->validation }}</td>
                                     <td>{{ $field->validation_type ?? '-' }}</td>
                                     <td>{{ $field->default_value ?? '-' }}</td>
+                                    <td>{{ $field->options ?? '-' }}</td>
                                     <td class="text-center">
                                         <a href="{{ route('admin.field.edit', $field->id) }}"
                                             class="btn btn-sm btn-info me-1">

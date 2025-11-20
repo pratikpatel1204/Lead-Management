@@ -35,6 +35,7 @@ class FieldController extends Controller
             'validation'       => 'required|string',
             'validation_type'  => 'nullable|string',
             'default_value'    => 'nullable|string|max:255',
+            'options'          => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -50,6 +51,7 @@ class FieldController extends Controller
         $field->validation = $request->validation;
         $field->validation_type = $request->validation_type;
         $field->default_value = $request->default_value;
+        $field->options = $request->options;
         $field->save();
 
         return response()->json([
@@ -87,6 +89,7 @@ class FieldController extends Controller
             'validation'       => 'required|string',
             'validation_type'  => 'nullable|string',
             'default_value'    => 'nullable|string|max:255',
+            'options'          => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -103,6 +106,7 @@ class FieldController extends Controller
             $field->validation = $request->validation;
             $field->validation_type = $request->validation_type;
             $field->default_value = $request->default_value;
+            $field->options = $request->options;
             $field->save();
 
             return response()->json([

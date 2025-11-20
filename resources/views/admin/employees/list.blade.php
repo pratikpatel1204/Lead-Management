@@ -77,10 +77,21 @@
                                                 @endforeach
                                             </td>
                                             <td>
-                                                @if ($emp->status == 1)
-                                                    <span class="badge bg-primary">Active</span>
+                                                @if (!$emp->hasRole('super admin'))
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input status-toggle" type="checkbox"
+                                                            role="switch" data-id="{{ $emp->id }}"
+                                                            {{ $emp->status == 1 ? 'checked' : '' }}>
+                                                        <label class="form-check-label status-text">
+                                                            {{ $emp->status == 1 ? 'Active' : 'Inactive' }}
+                                                        </label>
+                                                    </div>
                                                 @else
-                                                    <span class="badge bg-danger">Inactive</span>
+                                                    @if ($emp->status == 1)
+                                                        <span class="badge bg-primary">Active</span>
+                                                    @else
+                                                        <span class="badge bg-danger">Inactive</span>
+                                                    @endif
                                                 @endif
                                             </td>
                                             <td>
@@ -91,7 +102,7 @@
                                                     @endif
                                                 @endcan
                                                 @can('Delete Employee')
-                                                    @if (!$emp->hasRole('Super Admin'))
+                                                    @if (!$emp->hasRole('super admin'))
                                                         <button class="btn btn-sm btn-danger deleteEmployeeBtn"
                                                             data-id="{{ $emp->id }}">
                                                             Delete
@@ -111,6 +122,40 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).on('change', '.status-toggle', function() {
+
+            var id = $(this).data('id');
+            var status = $(this).is(':checked') ? 1 : 0;
+            var label = $(this).closest('.form-check').find('.status-text');
+
+            $.ajax({
+                url: "{{ route('admin.employee.update.status') }}",
+                method: "POST",
+                data: {
+                    id: id,
+                    status: status,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+
+                    if (response.success) {
+                        // Update label text
+                        label.text(status == 1 ? 'Active' : 'Inactive');
+
+                        toastr.success(response.message);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error("Server error occurred!");
+                }
+            });
+
+        });
+    </script>
+
     <script>
         $(document).ready(function() {
             let table = $('#empTable').DataTable();
