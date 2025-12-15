@@ -9,10 +9,10 @@ class TemplateMaster extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'field_id'];
-
+    protected $fillable = ['name', 'field_id', 'order_no'];
+   
     public function field()
     {
-        return $this->belongsTo(Field::class);
+        return $this->belongsTo(Field::class, 'field_id', 'id');
     }
 }

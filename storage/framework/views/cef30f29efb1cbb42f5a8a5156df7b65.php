@@ -40,8 +40,7 @@
                     'Why Choose Us',
                     'Create Services Categories',
                     'Services Categories List',
-                    'Create
-                    Service',
+                    'Create Service',
                     'Service List',
                     'Create Team',
                     'Team List',
@@ -165,6 +164,18 @@
                         </ul>
                     </li>
                 <?php endif; ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['Lead Mater'])): ?>
+                <li class="menu-title m-0"><span>Lead Mater</span></li>
+                <li>
+                    <ul class="m-0">
+                        <li>
+                            <a href="<?php echo e(route('admin.lead.mater')); ?>" class="px-2">
+                                <i class="ti ti-user-star me-2"></i><span> Lead Mater</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <?php endif; ?>
                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['Field Master'])): ?>
                     <li class="menu-title m-0"><span>Field Master</span></li>
                     <li>
@@ -198,17 +209,7 @@
                                     <li><a href="<?php echo e(route('admin.validation.list')); ?>">Validation List</a></li>
                                     <li><a href="<?php echo e(route('admin.create.validation')); ?>">Create Validation</a></li>
                                 </ul>
-                            </li>
-                            <li class="submenu">
-                                <a href="javascript:void(0);">
-                                    <i class="ti ti-arrows-sort"></i><span>Dropdown Masters</span>
-                                    <span class="menu-arrow"></span>
-                                </a>
-                                <ul>
-                                    <li><a href="<?php echo e(route('admin.dropdown.list')); ?>">Dropdown List</a></li>
-                                    <li><a href="<?php echo e(route('admin.create.dropdown')); ?>">Create Dropdown</a></li>
-                                </ul>
-                            </li>
+                            </li>                          
                         </ul>
                     </li>
                 <?php endif; ?>
@@ -235,6 +236,40 @@
                         </ul>
                     </li>
                 <?php endif; ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['Field Master'])): ?>
+                <?php
+                    $FieldData = \App\Models\Field::where('type', 'select')->get();
+                ?>                
+                <li class="menu-title m-0"><span>Dropdown Master</span></li>
+                
+                <li>
+                    <ul class="m-0">
+                        <li class="submenu">
+                            <a href="javascript:void(0);">
+                                <i class="ti ti-arrows-sort"></i>
+                                <span>Dropdown Master</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <?php $__empty_1 = true; $__currentLoopData = $FieldData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                    <li>
+                                        <a href="<?php echo e(route('admin.dropdown.list', $item->id)); ?>">
+                                            <?php echo e($item->name); ?>
+
+                                        </a>
+                                    </li>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                    <li>
+                                        <a href="javascript:void(0)" class="text-muted">
+                                            No dropdown fields found
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <?php endif; ?>   
                 <?php
                     $templateData = app('templatemaster-service')->getAllTemplateMaster();
                     $permissions = $templateData->pluck('name')->toArray();

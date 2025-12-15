@@ -16,6 +16,6 @@ class Dropdown extends Model
 
     public function field()
     {
-        return $this->belongsTo(Field::class);
+        return $this->belongsTo(Field::class, 'field_id', 'id');
     }
 }

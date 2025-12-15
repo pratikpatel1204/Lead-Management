@@ -1,1 +1,0 @@
-<?php /**PATH D:\xampp\htdocs\Lead-Management\resources\views/admin/field/list.blade.php ENDPATH**/ ?>

@@ -142,5 +142,5 @@ class HomeController extends Controller
         Inquery::create($validated);
 
         return response()->json(['status' => 'success', 'message' => 'Thank you for subscribing!']);
-    }
+    }    
 }

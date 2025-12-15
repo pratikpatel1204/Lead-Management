@@ -48,7 +48,7 @@
                                     type="checkbox"
                                     name="field_ids[]"
                                     value="{{ $field->id }}"
-                                    id="field_{{ $field->id }}"
+                                    id="field_{{ $field->id }}" data-name="{{ $field->name }}"
                                     {{ in_array($field->id, $selectedIds) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="field_{{ $field->id }}">
                                     {{ $field->name }}
@@ -57,7 +57,26 @@
                         @endforeach
                     </div>
                 </div>
-
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Field Order (Drag to Sort)</label>
+            
+                    <ul id="sortableFields" class="list-group mb-3">
+                        @foreach ($templates->sortBy('order_no') as $row)
+                            @php
+                                $field = $fields->where('id', $row->field_id)->first();
+                            @endphp
+            
+                            <li class="list-group-item d-flex align-items-center" data-id="{{ $field->id }}">
+                                <i class="ti ti-arrows-move me-2"></i> 
+                                {{ $field->name }}
+                            </li>
+                        @endforeach
+                    </ul>
+            
+                    <!-- Hidden input for sorted sequence -->
+                    <input type="hidden" name="field_order" id="fieldOrder"
+                           value="{{ implode(',', $templates->sortBy('order_no')->pluck('field_id')->toArray()) }}">
+                </div>
                 <div class="text-end">
                     <a href="{{ route('admin.template.list') }}" class="btn btn-secondary">Cancel</a>
                     <button type="submit" id="updateBtn" class="btn btn-primary">
@@ -69,6 +88,55 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+<script>
+$(document).ready(function () {
+
+    // Add/remove items from sortable list
+    $(document).on("change", ".field-checkbox", function () {
+        let id = $(this).val();
+        let name = $(this).data("name");
+
+        if ($(this).is(":checked")) {
+            if ($('#sortableFields [data-id="' + id + '"]').length === 0) {
+                $("#sortableFields").append(`
+                    <li class="list-group-item d-flex align-items-center" data-id="${id}">
+                        <i class="ti ti-arrows-move me-2"></i> ${name}
+                    </li>
+                `);
+            }
+        } else {
+            $('#sortableFields [data-id="' + id + '"]').remove();
+        }
+
+        updateOrderInput();
+    });
+
+    // jQuery UI sortable
+    $("#sortableFields").sortable({
+        update: updateOrderInput
+    });
+
+    // Update hidden input
+    function updateOrderInput() {
+        let order = [];
+        $("#sortableFields li").each(function () {
+            order.push($(this).data("id"));
+        });
+        $("#fieldOrder").val(order.join(","));
+    }
+
+    // Search filter
+    $("#fieldSearch").on("keyup", function () {
+        let value = $(this).val().toLowerCase();
+        $("#fieldList .form-check").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+});
+</script>
 
 {{-- JavaScript --}}
 <script>

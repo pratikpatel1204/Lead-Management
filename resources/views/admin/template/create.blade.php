@@ -41,13 +41,20 @@
                                 @foreach ($fields as $field)
                                     <div class="form-check d-flex align-items-center" style="width: 30%;">
                                         <input class="form-check-input field-checkbox me-2" type="checkbox"
-                                            name="field_ids[]" value="{{ $field->id }}" id="field_{{ $field->id }}">
+                                            name="field_ids[]" value="{{ $field->id }}" id="field_{{ $field->id }}" data-name="{{ $field->name }}">
                                         <label class="form-check-label" for="field_{{ $field->id }}">
                                             {{ $field->name }}
                                         </label>
                                     </div>
                                 @endforeach
                             </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Field Order (Drag to Sort)</label>
+                            <ul id="sortableFields" class="list-group mb-3"></ul>
+
+                            <!-- hidden input to submit sorted sequence -->
+                            <input type="hidden" name="field_order" id="fieldOrder">
                         </div>
                     </div>
 
@@ -62,7 +69,52 @@
             </div>
         </div>
     </div>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script>
+        $(document).ready(function() {
 
+            // Add/Remove items in sortable list on checkbox click
+            $(document).on("change", ".field-checkbox", function() {
+                let id = $(this).val();
+                let name = $(this).data("name");
+
+                if ($(this).is(":checked")) {
+                    $("#sortableFields").append(
+                        `<li class="list-group-item" data-id="${id}">
+                <i class="ti ti-arrows-move me-2"></i> ${name}
+             </li>`
+                    );
+                } else {
+                    $(`#sortableFields [data-id='${id}']`).remove();
+                }
+
+                updateOrderInput();
+            });
+
+            // jQuery UI Sortable
+            $("#sortableFields").sortable({
+                update: updateOrderInput
+            });
+
+            // Save updated sequence
+            function updateOrderInput() {
+                let order = [];
+                $("#sortableFields li").each(function() {
+                    order.push($(this).data("id"));
+                });
+                $("#fieldOrder").val(order.join(","));
+            }
+
+            // Search filter
+            $("#fieldSearch").on("keyup", function() {
+                let value = $(this).val().toLowerCase();
+                $("#fieldList .form-check").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
     <script>
         $(document).ready(function() {
             const $fieldList = $('#fieldList');
@@ -111,7 +163,7 @@
                         toastr.clear();
                         if (response.status) {
                             toastr.success(response.message ||
-                            'Template created successfully!');
+                                'Template created successfully!');
                             form[0].reset();
                             setTimeout(() => {
                                 window.location.href =

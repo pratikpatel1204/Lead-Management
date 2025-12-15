@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('title', config('app.name') . ' || Edit ' . $templateName . ' Data'); ?>
 <?php $__env->startSection('content'); ?>
     <div class="content">

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DropdownController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\FieldController;
+use App\Http\Controllers\Admin\LeadMasterController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -198,7 +199,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/why-choose-us', [DashboardController::class, 'why_choose_us'])->name('why.choose.us');
             Route::post('/why-choose-us-update', [DashboardController::class, 'update_why_choose_us'])->name('why.choose.us.update');
         });
-
+        Route::middleware(['permission:Lead Mater'])->group(function () {
+            Route::get('/lead-mater', [LeadMasterController::class, 'lead_mater'])->name('lead.mater');
+            Route::post('/lead-mater-store', [LeadMasterController::class, 'lead_mater_store'])->name('lead.mater.store');
+            Route::get('/lead-mater-edit/{id}', [LeadMasterController::class, 'lead_mater_edit'])->name('lead.mater.edit');
+            Route::post('/lead-mater-update', [LeadMasterController::class, 'lead_mater_update'])->name('lead.mater.update');
+            Route::post('/lead-mater-delete', [LeadMasterController::class, 'lead_mater_delete'])->name('lead.mater.delete');
+        });
         Route::middleware(['permission:Field Master'])->group(function () {
             Route::get('/field-list', [FieldController::class, 'field_list'])->name('field.list');
             Route::get('/create-field', [FieldController::class, 'create_field'])->name('create.field');
@@ -221,12 +228,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/validation-update', [ValidationController::class, 'validation_update'])->name('validation.update');
             Route::delete('/validation-delete/{id}', [ValidationController::class, 'validation_delete'])->name('validation.delete');
 
-            Route::get('/dropdown-list', [DropdownController::class, 'dropdown_list'])->name('dropdown.list');
-            Route::get('/create-dropdown', [DropdownController::class, 'create_dropdown'])->name('create.dropdown');
+            Route::get('/dropdown-list/{id}', [DropdownController::class, 'dropdown_list'])->name('dropdown.list');
+            Route::get('/create-dropdown/{id}', [DropdownController::class, 'create_dropdown'])->name('create.dropdown');
             Route::post('/dropdown-store', [DropdownController::class, 'dropdown_store'])->name('dropdown.store');
             Route::get('/dropdown-edit/{id}', [DropdownController::class, 'dropdown_edit'])->name('dropdown.edit');
             Route::post('/dropdown-update', [DropdownController::class, 'dropdown_update'])->name('dropdown.update');
-            Route::delete('/dropdown-delete/{id}', [DropdownController::class, 'dropdown_delete'])->name('dropdown.delete');
+            Route::post('/dropdown-delete', [DropdownController::class, 'dropdown_delete'])->name('dropdown.delete');
 
             Route::get('fields-sample-download', [FieldController::class, 'downloadSample'])->name('fields.sample.download');
             Route::post('fields-bulk-upload', [FieldController::class, 'fields_bulk_upload'])->name('fields.bulk.upload');

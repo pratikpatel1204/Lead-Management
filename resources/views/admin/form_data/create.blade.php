@@ -39,7 +39,7 @@
                                     @endphp
                                     <input type="hidden" name="label_id[]" value="{{ $item->field_id }}">
                                     @if ($type === 'textarea')
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-3 mb-3">
                                             <label class="form-label">
                                                 {{ $label }} @if ($isRequired)
                                                     <span class="text-danger">*</span>
@@ -53,7 +53,7 @@
                                                 ? $field->options
                                                 : explode(',', $field->options);
                                         @endphp
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-3 mb-3">
                                             <label class="form-label">
                                                 {{ $label }} @if ($isRequired)
                                                     <span class="text-danger">*</span>
@@ -74,7 +74,7 @@
                                             </div>
                                         </div>
                                     @elseif ($type === 'checkbox')
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-3 mb-3">
                                             <label class="form-label">
                                                 <input type="checkbox" name="{{ $item->field_id }}" value="1"
                                                     {{ $defaultValue == 1 ? 'checked' : '' }}
@@ -83,7 +83,7 @@
                                             </label>
                                         </div>
                                     @elseif ($type === 'select')
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-3 mb-3">
                                             <label class="form-label">
                                                 {{ $label }} @if ($isRequired)
                                                     <span class="text-danger">*</span>
@@ -100,7 +100,7 @@
                                             </select>
                                         </div>
                                     @elseif ($type === 'file')
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-3 mb-3">
                                             <label class="form-label">
                                                 {{ $label }} @if ($isRequired)
                                                     <span class="text-danger">*</span>
@@ -110,7 +110,7 @@
                                                 {{ $isRequired ? 'required' : '' }} {!! $validationType !!}>
                                         </div>
                                     @else
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-3 mb-3">
                                             <label class="form-label">
                                                 {{ $label }} @if ($isRequired)
                                                     <span class="text-danger">*</span>

@@ -49,17 +49,17 @@ class TemplateMasterController extends Controller
             'field_ids.*' => 'exists:fields,id',
         ]);
 
+        $orderList = explode(',', $request->field_order);
         $createdTemplates = [];
-
-        foreach ($request->field_ids as $fieldId) {
+        foreach ($orderList as $position => $fieldId) {
             $template = TemplateMaster::create([
-                'name' => $request->name,
-                'field_id' => $fieldId
+                'name'      => $request->name,
+                'field_id'  => $fieldId,
+                'order_no'  => $position + 1
             ]);
-
             $createdTemplates[] = $template;
         }
-
+        $createdTemplates = [];
         return response()->json([
             'status' => true,
             'message' => 'Templates created successfully for all selected fields!',
@@ -81,36 +81,55 @@ class TemplateMasterController extends Controller
     public function template_update(Request $request)
     {
         $request->validate([
+            'name' => 'required|string',          // old name
+            'new_name' => 'required|string',      // updated name
             'field_ids' => 'required|array|min:1',
             'field_ids.*' => 'exists:fields,id',
-            'name' => 'required|string',
-            'new_name' => 'required|string',
+            'field_order' => 'required|string'    // "3,5,9,2"
         ]);
 
-        // Get all existing template field IDs
-        $existingFieldIds = TemplateMaster::where('name', $request->name)
-            ->pluck('field_id')
-            ->toArray();
+        // Convert field order string to array
+        $orderedFieldIds = array_filter(explode(',', $request->field_order));
 
-        if (empty($existingFieldIds)) {
+        // Safety check: must match selected field_ids
+        $fieldIds = $request->field_ids;
+
+        // Get existing template entries by old name
+        $existing = TemplateMaster::where('name', $request->name)->get();
+
+        if ($existing->isEmpty()) {
             return response()->json([
                 'status' => false,
                 'message' => 'Template not found.',
             ], 404);
         }
 
-        $now = now();
+        $existingIds = $existing->pluck('field_id')->toArray();
 
-        // 1️⃣ Update existing fields and create new ones
-        foreach ($request->field_ids as $fieldId) {
+        // -------------------------------
+        // 1️⃣ Add / Update fields
+        // -------------------------------
+
+        $order = 1;
+        foreach ($orderedFieldIds as $fieldId) {
+
             TemplateMaster::updateOrCreate(
-                ['name' => $request->name, 'field_id' => $fieldId],
-                ['name' => $request->new_name, 'updated_at' => $now]
+                [
+                    'name' => $request->name,
+                    'field_id' => $fieldId
+                ],
+                [
+                    'name' => $request->new_name,
+                    'order_no' => $order++,      // Save correct order
+                    'updated_at' => now()
+                ]
             );
         }
 
-        // 2️⃣ Delete fields that are no longer in the request
-        $toDelete = array_diff($existingFieldIds, $request->field_ids);
+        // -------------------------------
+        // 2️⃣ Delete removed fields
+        // -------------------------------
+        $toDelete = array_diff($existingIds, $fieldIds);
 
         if (!empty($toDelete)) {
             TemplateMaster::where('name', $request->name)
@@ -123,6 +142,7 @@ class TemplateMasterController extends Controller
             'message' => 'Template updated successfully!',
         ]);
     }
+
 
     public function template_delete($name)
     {
@@ -155,7 +175,7 @@ class TemplateMasterController extends Controller
     }
     public function create_data($name)
     {
-        $templates = TemplateMaster::with(['field', 'field.dropdowns'])->where('name', $name)->orderBy('id', 'desc')->get();
+        $templates = TemplateMaster::with(['field', 'field.dropdowns'])->where('name', $name)->orderBy('order_no', 'asc')->get();
         return view('admin.form_data.create', compact('templates', 'name'));
     }
     public function data_store(Request $request)

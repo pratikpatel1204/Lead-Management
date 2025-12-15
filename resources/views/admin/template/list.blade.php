@@ -50,7 +50,7 @@
                         <!-- Body -->
                         <div class="card-body">
                             <div class="d-flex flex-wrap gap-2">
-                                @foreach ($group as $template)
+                                @foreach ($group->sortBy('order_no') as $template)
                                     <div
                                         class="border rounded p-2 px-3 bg-light d-flex align-items-center justify-content-between">
                                         <span class="fw-semibold text-dark small mb-0 text-truncate">

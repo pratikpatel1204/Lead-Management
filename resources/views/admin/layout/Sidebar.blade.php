@@ -164,6 +164,18 @@
                         </ul>
                     </li>
                 @endcanany
+                @canany(['Lead Mater'])
+                <li class="menu-title m-0"><span>Lead Mater</span></li>
+                <li>
+                    <ul class="m-0">
+                        <li>
+                            <a href="{{ route('admin.lead.mater') }}" class="px-2">
+                                <i class="ti ti-user-star me-2"></i><span> Lead Mater</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                @endcanany
                 @canany(['Field Master'])
                     <li class="menu-title m-0"><span>Field Master</span></li>
                     <li>
@@ -197,17 +209,7 @@
                                     <li><a href="{{ route('admin.validation.list') }}">Validation List</a></li>
                                     <li><a href="{{ route('admin.create.validation') }}">Create Validation</a></li>
                                 </ul>
-                            </li>
-                            <li class="submenu">
-                                <a href="javascript:void(0);">
-                                    <i class="ti ti-arrows-sort"></i><span>Dropdown Masters</span>
-                                    <span class="menu-arrow"></span>
-                                </a>
-                                <ul>
-                                    <li><a href="{{ route('admin.dropdown.list') }}">Dropdown List</a></li>
-                                    <li><a href="{{ route('admin.create.dropdown') }}">Create Dropdown</a></li>
-                                </ul>
-                            </li>
+                            </li>                          
                         </ul>
                     </li>
                 @endcanany
@@ -234,6 +236,39 @@
                         </ul>
                     </li>
                 @endcanany
+                @canany(['Field Master'])
+                @php
+                    $FieldData = \App\Models\Field::where('type', 'select')->get();
+                @endphp                
+                <li class="menu-title m-0"><span>Dropdown Master</span></li>
+                
+                <li>
+                    <ul class="m-0">
+                        <li class="submenu">
+                            <a href="javascript:void(0);">
+                                <i class="ti ti-arrows-sort"></i>
+                                <span>Dropdown Master</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                @forelse ($FieldData as $item)
+                                    <li>
+                                        <a href="{{ route('admin.dropdown.list', $item->id) }}">
+                                            {{ $item->name }}
+                                        </a>
+                                    </li>
+                                @empty
+                                    <li>
+                                        <a href="javascript:void(0)" class="text-muted">
+                                            No dropdown fields found
+                                        </a>
+                                    </li>
+                                @endforelse
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                @endcanany   
                 @php
                     $templateData = app('templatemaster-service')->getAllTemplateMaster();
                     $permissions = $templateData->pluck('name')->toArray();

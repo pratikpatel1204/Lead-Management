@@ -19,10 +19,10 @@ class Field extends Model
     ];
     public function templateData()
     {
-        return $this->hasMany(TemplateData::class, 'field_id');
+        return $this->hasMany(TemplateData::class, 'field_id', 'id');
     }
     public function dropdowns()
     {
-        return $this->hasMany(Dropdown::class);
+        return $this->hasMany(Dropdown::class, 'field_id', 'id');
     }
 }
