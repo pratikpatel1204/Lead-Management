@@ -164,13 +164,13 @@
                         </ul>
                     </li>
                 @endcanany
-                @canany(['Lead Mater'])
+                @canany(['Lead Master'])
                 <li class="menu-title m-0"><span>Lead Mater</span></li>
                 <li>
                     <ul class="m-0">
                         <li>
-                            <a href="{{ route('admin.lead.mater') }}" class="px-2">
-                                <i class="ti ti-user-star me-2"></i><span> Lead Mater</span>
+                            <a href="{{ route('admin.lead.master') }}" class="px-2">
+                                <i class="ti ti-user-star me-2"></i><span> Lead Master</span>
                             </a>
                         </li>
                     </ul>

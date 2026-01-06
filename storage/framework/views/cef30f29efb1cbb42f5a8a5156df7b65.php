@@ -164,13 +164,13 @@
                         </ul>
                     </li>
                 <?php endif; ?>
-                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['Lead Mater'])): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['Lead Master'])): ?>
                 <li class="menu-title m-0"><span>Lead Mater</span></li>
                 <li>
                     <ul class="m-0">
                         <li>
-                            <a href="<?php echo e(route('admin.lead.mater')); ?>" class="px-2">
-                                <i class="ti ti-user-star me-2"></i><span> Lead Mater</span>
+                            <a href="<?php echo e(route('admin.lead.master')); ?>" class="px-2">
+                                <i class="ti ti-user-star me-2"></i><span> Lead Master</span>
                             </a>
                         </li>
                     </ul>

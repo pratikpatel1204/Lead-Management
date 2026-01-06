@@ -26,18 +26,19 @@ Route::get('/clear', function () {
     Artisan::call('view:clear');
     return "Cache cleared!";
 });
+Route::get('get-cities/{id}', [EmployeeController::class, 'getCities']);
+Route::get('get-reporting-managers/{id}', [EmployeeController::class, 'getReportingManagers']);
+
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::middleware('guest:admin')->group(function () {
-        Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
-        Route::post('login', [AdminAuthController::class, 'loginSubmit'])->name('login.submit');
-        Route::get('forgot-password', [AdminAuthController::class, 'show_forgot_password_Form'])->name('forgot.password');
-        Route::post('forgot-password-check', [AdminAuthController::class, 'forgot_password_check'])->name('forgot.password.check');
-        Route::get('otp-verification/{id}', [AdminAuthController::class, 'otp_Verification_Form'])->name('otp.verification');
-        Route::post('verify-otp', [AdminAuthController::class, 'verifyOtp'])->name('verify.otp');
-        Route::post('resend-otp', [AdminAuthController::class, 'resendOtp'])->name('resend.otp');
-        Route::get('reset-password/{id}', [AdminAuthController::class, 'reset_password'])->name('reset.password');
-        Route::post('reset-password-submit', [AdminAuthController::class, 'reset_password_submit'])->name('reset.password.submit');
-    });
+    Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [AdminAuthController::class, 'loginSubmit'])->name('login.submit');
+    Route::get('forgot-password', [AdminAuthController::class, 'show_forgot_password_Form'])->name('forgot.password');
+    Route::post('forgot-password-check', [AdminAuthController::class, 'forgot_password_check'])->name('forgot.password.check');
+    Route::get('otp-verification/{id}', [AdminAuthController::class, 'otp_Verification_Form'])->name('otp.verification');
+    Route::post('verify-otp', [AdminAuthController::class, 'verifyOtp'])->name('verify.otp');
+    Route::post('resend-otp', [AdminAuthController::class, 'resendOtp'])->name('resend.otp');
+    Route::get('reset-password/{id}', [AdminAuthController::class, 'reset_password'])->name('reset.password');
+    Route::post('reset-password-submit', [AdminAuthController::class, 'reset_password_submit'])->name('reset.password.submit');
 
     Route::middleware(['auth:admin'])->group(function () {
 
@@ -46,6 +47,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('profile-update', [AdminAuthController::class, 'profile_update'])->name('profile.update');
         Route::middleware(['permission:View dashboard'])->group(function () {
             Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+            Route::get('dashboard-leads-filter', [DashboardController::class, 'dashboard_leads_filter'])->name('dashboard.leads.filter');
         });
 
         Route::middleware(['permission:Create Employee'])->group(function () {
@@ -199,13 +201,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/why-choose-us', [DashboardController::class, 'why_choose_us'])->name('why.choose.us');
             Route::post('/why-choose-us-update', [DashboardController::class, 'update_why_choose_us'])->name('why.choose.us.update');
         });
-        Route::middleware(['permission:Lead Mater'])->group(function () {
-            Route::get('/lead-mater', [LeadMasterController::class, 'lead_mater'])->name('lead.mater');
-            Route::post('/lead-mater-store', [LeadMasterController::class, 'lead_mater_store'])->name('lead.mater.store');
-            Route::get('/lead-mater-edit/{id}', [LeadMasterController::class, 'lead_mater_edit'])->name('lead.mater.edit');
-            Route::post('/lead-mater-update', [LeadMasterController::class, 'lead_mater_update'])->name('lead.mater.update');
-            Route::post('/lead-mater-delete', [LeadMasterController::class, 'lead_mater_delete'])->name('lead.mater.delete');
+        Route::middleware(['permission:Lead Master'])->group(function () {
+            Route::get('/lead-master', [LeadMasterController::class, 'lead_master'])->name('lead.master');
+            Route::post('/lead-master-store', [LeadMasterController::class, 'lead_master_store'])->name('lead.master.store');
+            Route::get('/lead-master-edit/{id}', [LeadMasterController::class, 'lead_master_edit'])->name('lead.master.edit');
+            Route::post('/lead-master-update', [LeadMasterController::class, 'lead_master_update'])->name('lead.master.update');
+            Route::post('/lead-master-delete', [LeadMasterController::class, 'lead_master_delete'])->name('lead.master.delete');
+            Route::get('/lead-master-get-data/{groupId}',[LeadMasterController::class, 'lead_master_get_data'])->name('admin.lead.master.get.data');
+            Route::post('/meetings-store',[LeadMasterController::class, 'meetings_store'])->name('meetings.store');
+            Route::post('/meetings-delete/{id}', [LeadMasterController::class, 'meetings_delete']);
+            Route::post('/lead-field-order-save', [LeadMasterController::class, 'lead_field_order_save'])->name('lead.field.order.save');
+            Route::post('/lead-bulk-delete', [LeadMasterController::class, 'lead_bulkDelete'])->name('lead.master.bulkDelete');
+            Route::post('/leads-excel-upload', [LeadMasterController::class, 'leads_excel_upload'])->name('leads.excel.upload');
+            Route::post('/lead-meeting-excel-upload',[LeadMasterController::class, 'lead_Meeting_Excel_Upload'])->name('lead.meeting.excel.upload');
         });
+
         Route::middleware(['permission:Field Master'])->group(function () {
             Route::get('/field-list', [FieldController::class, 'field_list'])->name('field.list');
             Route::get('/create-field', [FieldController::class, 'create_field'])->name('create.field');

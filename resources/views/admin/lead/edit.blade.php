@@ -27,15 +27,39 @@
                             @csrf
                             <input type="hidden" name="form_group_id" value="{{ $formGroupId }}">
                             <div class="row">
-                                @foreach ($leadData as $t)
+                                @if(auth()->user()->role === 'super admin')
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-group">
+                                            <label class="form-label">Select User <span class="text-danger">*</span></label>
+                                            <select name="lead_emp_id" class="form-control" id="lead_emp_error" required>
+                                                <option value="">Select User</option>
+                                                <option value="0">All User</option>
+                                                @foreach($users as $user)
+                                                    <option value="{{ $user->id }}"
+                                                        {{ isset($empId) && $empId == $user->id ? 'selected' : '' }}>
+                                                        {{ $user->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                @else
+                                    <input type="hidden" name="lead_emp_id" id="lead_emp_error" value="{{ auth()->id() }}">
+                                @endif
+                                @foreach ($templates as $t)
                                     @php
                                         $field = $t->field;
+
+                                        // Get saved value if exists
+                                        $saved = $leadData[$field->id] ?? null;
+
                                         $label = $field->name;
                                         $name = $field->id;
                                         $slug = Str::slug($field->name, '_');
                                         $type = $field->type;
-                                        $isRequired = $field->validation == 'required';
-                                        $value = old($name, $t->field_value);
+                                        $isRequired = $field->validation === 'required';
+
+                                        $value = old($name, $saved->field_value ?? '');
                                     @endphp
                                     <div class="col-4 mb-3">
                                         <label class="form-label">{{ $label }}@if ($isRequired)<span class="text-danger">*</span>@endif</label>
@@ -118,7 +142,7 @@
                 let formData = new FormData(this);
         
                 $.ajax({
-                    url: "{{ route('admin.lead.mater.update') }}",
+                    url: "{{ route('admin.lead.master.update') }}",
                     type: "POST",
                     data: formData,
                     processData: false,
@@ -138,7 +162,7 @@
                         });
         
                         setTimeout(() => {
-                            window.location.href = "{{ route('admin.lead.mater') }}";
+                            window.location.href = "{{ route('admin.lead.master') }}";
                         }, 1500);
                     },
                     error: function(err) {

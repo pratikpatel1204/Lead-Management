@@ -13,12 +13,32 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->enum('role', ['super admin', 'admin', 'office employee', 'sales employee'])->default('admin');
+            $table->string('employee_id')->unique();
             $table->string('name');
+            $table->string('role');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+
+            $table->string('personal_email')->nullable();
+            $table->string('mobile');
+            $table->string('whatsapp_number')->nullable();
+
+            $table->text('address');
+            $table->foreignId('state_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('city_id')->constrained()->cascadeOnDelete();
+            $table->string('pincode');
+
+            $table->foreignId('reporting_manager')->nullable()->references('id')->on('users');
+
+            $table->string('pan_number')->nullable();
+            $table->string('pan_image')->nullable();
+
+            $table->string('aadhar_number')->nullable();
+            $table->string('aadhar_image')->nullable();
+
             $table->string('profile_image')->nullable();
+            $table->boolean('status')->default(1);
+
             $table->rememberToken();
             $table->timestamps();
         });

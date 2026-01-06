@@ -47,9 +47,11 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Image</th>
+                                        <th>Employee id</th>
                                         <th>Name</th>
                                         <th>Email</th>
+                                        <th>Password</th>
+                                        <th>Mobile Number</th>
                                         <th>Role</th>
                                         <th>Status</th>
                                         <th width="120">Action</th>
@@ -57,24 +59,16 @@
                                 </thead>
 
                                 <tbody>
-                                    @foreach ($employees as $key => $emp)
+                                    @foreach ($employees as $emp)
                                         <tr>
-                                            <td>{{ $key + 1 }}</td>
-                                            <td>
-                                                @if ($emp->profile_image)
-                                                    <img src="{{ asset($emp->profile_image) }}" width="40"
-                                                        height="40" style="border-radius:50%;">
-                                                @else
-                                                    <img src="{{ asset('default/no-img.jpg') }}" width="40"
-                                                        height="40" style="border-radius:50%;">
-                                                @endif
-                                            </td>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $emp->employee_id ?? '' }}</td>
                                             <td>{{ $emp->name }}</td>
                                             <td>{{ $emp->email }}</td>
-                                            <td>
-                                                @foreach ($emp->roles as $role)
-                                                    <span class="badge bg-success">{{ $role->name }}</span>
-                                                @endforeach
+                                            <td>{{ $emp->mobile }}</td>
+                                            <td>{{ $emp->show_password }}</td>
+                                            <td>                                               
+                                                <span class="badge bg-success">{{ $emp->role ?? '' }}</span>                                                
                                             </td>
                                             <td>
                                                 @if (!$emp->hasRole('super admin'))

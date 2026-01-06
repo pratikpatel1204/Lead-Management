@@ -18,15 +18,36 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'role',
+        'employee_id',
         'name',
+        'role',
         'email',
-        'mobile',
-        'showpassword',
         'password',
+        'show_password',
+
+        'personal_email',
+        'mobile',
+        'whatsapp_number',
+        'address',
+
+        'state_id',
+        'city_id',
+        'pincode',
+
+        'reporting_manager',
+
+        'pan_number',
+        'pan_image',
+
+        'aadhar_number',
+        'aadhar_image',
+
         'profile_image',
+
         'otp',
         'otp_verified',
+        'fcm_token',
+
         'status',
     ];
 
@@ -49,4 +70,26 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'reporting_manager');
+    }
+
+    // Employees under this manager
+    public function teamMembers()
+    {
+        return $this->hasMany(User::class, 'reporting_manager');
+    }
+
+    // State relation
+    public function state()
+    {
+        return $this->belongsTo(State::class);
+    }
+
+    // City relation
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }    
 }

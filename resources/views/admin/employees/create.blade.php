@@ -29,65 +29,122 @@
                         <form id="employeeForm" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
-                                <!-- Employee Name -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Employee ID <span class="text-danger">*</span></label>
+                                    <input type="text" name="employee_id" class="form-control" placeholder="Enter Employee ID">
+                                    <span class="text-danger error-employee_id"></span>
+                                </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Employee Name <span class="text-danger">*</span></label>
-                                    <input type="text" name="name" class="form-control" required
-                                        placeholder="Enter employee name">
+                                    <input type="text" name="name" class="form-control" placeholder="Enter employee name">
                                     <span class="text-danger error-name"></span>
                                 </div>
-
-                                <!-- Email -->
                                 <div class="col-md-4 mb-3">
-                                    <label class="form-label">Email <span class="text-danger">*</span></label>
-                                    <input type="email" name="email" class="form-control" required
-                                        placeholder="Enter email">
-                                    <span class="text-danger error-email"></span>
-                                </div>
-
-                                <!-- Role -->
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">Select Role <span class="text-danger">*</span></label>
-                                    <select name="role" class="form-select" required>
-                                        <option value="">Select Role</option>
+                                    <label class="form-label">Designation <span class="text-danger">*</span></label>
+                                    <select name="role" class="form-select" id="designation" >
+                                        <option value="">Select Designation</option>
                                         @foreach ($roles as $role)
-                                            <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                            <option value="{{ $role->name }}" data-id="{{ $role->id }}">
+                                                {{ $role->name }}</option>
                                         @endforeach
                                     </select>
                                     <span class="text-danger error-role"></span>
                                 </div>
-                            </div>
-
-                            <div class="row">
-                                <!-- Password -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" name="email" class="form-control" placeholder="Enter email">
+                                    <span class="text-danger error-email"></span>
+                                </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Password <span class="text-danger">*</span></label>
-                                    <input type="password" name="password" class="form-control" required
-                                        placeholder="Enter password">
+                                    <input type="password" name="password" class="form-control" placeholder="Enter password">
                                     <span class="text-danger error-password"></span>
                                 </div>
-
-                                <!-- Profile Image -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Personal Email</label>
+                                    <input type="email" name="personal_email" class="form-control" placeholder="Enter personal email">
+                                    <span class="text-danger error-personal_email"></span>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                                    <input type="text" name="mobile" class="form-control" placeholder="Enter mobile number">
+                                    <span class="text-danger error-mobile"></span>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">WhatsApp Number <span class="text-danger">*</span></label>
+                                    <input type="text" name="whatsapp_number" class="form-control" placeholder="Enter WhatsApp number">
+                                    <span class="text-danger error-whatsapp_number"></span>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Address <span class="text-danger">*</span></label>                                
+                                    <textarea name="address" class="form-control" rows="3" placeholder="Enter address"></textarea>                                
+                                    <span class="text-danger error-address"></span>
+                                </div>                                
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">State <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="state_id" name="state_id">
+                                        <option value="">Select State</option>
+                                        @foreach ($states as $state)
+                                        <option value="{{ $state->id }}">{{ $state->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <span class="text-danger error-state_id"></span>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">City <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="city_id" name="city_id">
+                                        <option value="">Select City</option>
+                                    </select>
+                                    <span class="text-danger error-city_id"></span>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Pincode <span class="text-danger">*</span></label>
+                                    <input type="text" name="pincode" class="form-control" placeholder="Enter pincode">
+                                    <span class="text-danger error-pincode"></span>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Reporting Manager <span class="text-danger">*</span></label>
+                                    <select name="reporting_manager" class="form-select" id="reporting_manager" >
+                                        <option value="">Select Manager</option>
+                                    </select>
+                                    <span class="text-danger error-reporting_manager"></span>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">PAN Card Number</label>
+                                    <input type="text" name="pan_number" class="form-control" placeholder="Enter PAN number">                                    
+                                    <span class="text-danger error-pan_number"></span>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">PAN Card Image</label>
+                                    <input type="file" name="pan_image" class="form-control">
+                                    <span class="text-danger error-pan_image"></span>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Aadhar Card Number</label>
+                                    <input type="text" name="aadhar_number" class="form-control" placeholder="Enter Aadhar number">
+                                    <span class="text-danger error-aadhar_number"></span>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Aadhar Card Image</label>
+                                    <input type="file" name="aadhar_image" class="form-control">
+                                    <span class="text-danger error-aadhar_image"></span>
+                                </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Profile Image</label>
                                     <input type="file" name="profile_image" class="form-control">
                                     <span class="text-danger error-profile_image"></span>
                                 </div>
-
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label d-block">Status</label>
-                                
+
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox"
-                                               name="status" value="1" id="status"
-                                               {{ old('status', 1) ? 'checked' : '' }}>
-                                
+                                        <input class="form-check-input" type="checkbox" name="status" value="1"
+                                            id="status" {{ old('status', 1) ? 'checked' : '' }}>
+
                                         <label class="form-check-label" for="status">Active</label>
                                     </div>
                                 </div>
-                                
                             </div>
-
                             <div class="text-end">
                                 <a href="{{ route('admin.employee.list') }}" class="btn btn-secondary">Cancel</a>
 
@@ -106,6 +163,9 @@
             $("#employeeForm").on('submit', function(e) {
                 e.preventDefault();
 
+                $('.text-danger').text('');
+                $('.form-control, .form-select').removeClass('is-invalid');
+
                 $("#saveBtn").attr("disabled", true);
                 $("#saveBtn .btn-text").addClass('d-none');
                 $("#saveBtn .spinner-border").removeClass('d-none');
@@ -123,6 +183,9 @@
                         toastr.success("Employee created successfully");
                         $("#employeeForm")[0].reset();
 
+                        $('.text-danger').text('');
+                        $('.form-control, .form-select').removeClass('is-invalid');
+
                         $("#saveBtn").attr("disabled", false);
                         $("#saveBtn .btn-text").removeClass('d-none');
                         $("#saveBtn .spinner-border").addClass('d-none');
@@ -135,11 +198,9 @@
 
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;
-                            $('.error-name').text(errors.name ?? '');
-                            $('.error-email').text(errors.email ?? '');
-                            $('.error-role').text(errors.role ?? '');
-                            $('.error-password').text(errors.password ?? '');
-                            $('.error-profile_image').text(errors.profile_image ?? '');
+                            $.each(errors, function (key, value) {
+                                $('.error-' + key).text(value[0]);
+                            });
                         } else {
                             toastr.error("Something went wrong!");
                         }
@@ -147,5 +208,83 @@
                 });
             });
         </script>
+        <script>
+            $(document).ready(function() {
+                function loadCities(stateId, selectedCityId = null) {
+                    const $city = $('#city_id');
+                    $city.html('<option value="">Select City</option>');
 
+                    if (!stateId) return;
+
+                    $.ajax({
+                        url: `/get-cities/${stateId}`,
+                        type: 'GET',
+                        success: function(data) {
+                            data.forEach(city => {
+                                $city.append(
+                                    `<option value="${city.id}" ${selectedCityId == city.id ? 'selected' : ''}>${city.name}</option>`
+                                );
+                            });
+                        },
+                        error: function() {
+                            console.error("Failed to load cities");
+                        }
+                    });
+                }
+
+                // On state change
+                $('#state_id').on('change', function() {
+                    loadCities($(this).val());
+                });
+
+                // On page load (edit case)
+                const selectedState = $('#state_id').val();
+                const selectedCity = $('#city_id').data('selected');
+
+                if (selectedState) {
+                    loadCities(selectedState, selectedCity);
+                }
+
+                function loadReportingManagers(roleId, selectedManagerId = null) {
+                    const $manager = $('#reporting_manager');
+                    $manager.html('<option value="">Select Manager</option>');
+
+                    if (!roleId) return;
+
+                    $.ajax({
+                        url: `/get-reporting-managers/${roleId}`,
+                        type: 'GET',
+                        success: function(data) {
+                            if (data.length === 0) {
+                                $manager.append('<option value="">No Manager Found</option>');
+                            }
+
+                            data.forEach(manager => {
+                                $manager.append(`
+                        <option value="${manager.id}" ${selectedManagerId == manager.id ? 'selected' : ''}>
+                            ${manager.name}
+                        </option>
+                    `);
+                            });
+                        },
+                        error: function() {
+                            console.error('Failed to load reporting managers');
+                        }
+                    });
+                }
+
+                // On designation change                
+                $('#designation').on('change', function() {
+                    loadReportingManagers($(this).val());
+                });
+                // Edit page load support            
+                const selectedRoleId = $('#designation').val();
+                const selectedCselectedManagerity = $('#reporting_manager').data('selected');
+
+                if (selectedRoleId) {
+                    loadReportingManagers(selectedRoleId, selectedManager);
+                }
+
+            });
+        </script>
     @endsection

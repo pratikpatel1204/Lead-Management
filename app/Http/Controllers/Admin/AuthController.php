@@ -16,6 +16,9 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
+        if (Auth::check()) {
+            return redirect()->route('admin.dashboard');
+        }
         return view('admin.auth.login');
     }
     public function loginSubmit(Request $request)
@@ -113,6 +116,7 @@ class AuthController extends Controller
         if ($request->filled('current_password')) {
             if (Hash::check($request->current_password, $user->password)) {
                 $user->password = bcrypt($request->new_password);
+                $user->show_password = $request->new_password;
             } else {
                 return response()->json([
                     'status' => false,
@@ -232,6 +236,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
         $user->password = bcrypt($request->password);
+        $user->show_password = $request->password;
         $user->save();
 
         return response()->json([

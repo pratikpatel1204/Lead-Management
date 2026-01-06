@@ -82,8 +82,8 @@
                 if ($(this).is(":checked")) {
                     $("#sortableFields").append(
                         `<li class="list-group-item" data-id="${id}">
-                <i class="ti ti-arrows-move me-2"></i> ${name}
-             </li>`
+                            <i class="ti ti-arrows-move me-2"></i> ${name}
+                        </li>`
                     );
                 } else {
                     $(`#sortableFields [data-id='${id}']`).remove();

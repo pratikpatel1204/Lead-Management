@@ -4,30 +4,254 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Field;
+use App\Models\LeadFieldOrder;
+use App\Models\Meeting;
 use App\Models\TemplateData;
 use App\Models\TemplateMaster;
+use App\Models\LoginHistory;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class LeadMasterController extends Controller
 {
-    public function lead_mater()
+    public function lead_master()
     {
-        $templates = TemplateMaster::with(['field', 'field.templateData'])->where('name', 'Lead Mater')->orderBy('order_no', 'asc')->get();
-        $leadData = TemplateData::where('template_name', 'Lead Mater')->get()->groupBy('form_group_id');
-        return view('admin.lead.list', compact('templates', 'leadData'));
+        //Create Lead
+        $templates = TemplateMaster::with(['field', 'field.templateData'])
+            ->where('name', 'Lead Master')
+            ->orderBy('order_no', 'asc')
+            ->get();
+            
+        //Create Lead Meetings Meeting
+        $leadmeetings = TemplateMaster::with(['field', 'field.templateData'])
+            ->where('name', 'Lead Meetings')
+            ->orderBy('order_no', 'asc')
+            ->get();
+        
+        //Table Order
+        $fieldsorder = LeadFieldOrder::where('emp_id', auth()->id())
+            ->where('template_name', 'lead_master')
+            ->orderBy('order_number')
+            ->pluck('field_name')
+            ->toArray();
+            
+        //Table Field All
+        $tablefield = TemplateMaster::with(['field', 'field.templateData'])
+            ->whereIn('name', ['Lead Master', 'Lead Meetings'])
+            ->orderBy('order_no', 'asc')
+            ->get();
+
+        $dateExpression = "
+            CASE
+                WHEN value LIKE '%/%/%' THEN STR_TO_DATE(value, '%m/%d/%Y')
+                WHEN value LIKE '%/%/%' THEN STR_TO_DATE(value, '%d/%m/%Y')
+                WHEN value LIKE '%-%-%' THEN STR_TO_DATE(value, '%Y/%m/%d')
+                WHEN value LIKE '%/%/%' THEN STR_TO_DATE(value, '%m-%d-%Y')
+                WHEN value LIKE '%/%/%' THEN STR_TO_DATE(value, '%d-%m-%Y')
+                WHEN value LIKE '%-%-%' THEN STR_TO_DATE(value, '%Y-%m-%d')
+                ELSE NULL
+            END
+        ";
+
+        $baseMeetingQuery = Meeting::query()
+            ->where('label', 'Next Meeting Date')
+            ->whereNotNull('value')
+            ->where('value', '!=', '0000-00-00')
+            ->empScope();
+
+        $today = now()->toDateString();
+
+        // 1️⃣ Get paginated meetings
+        $meetingsid = $baseMeetingQuery
+            ->empScope()
+            ->select('*')
+            ->selectRaw("$dateExpression as meeting_date")
+            ->whereRaw("$dateExpression IS NOT NULL")
+            ->whereRaw("$dateExpression <= ?", [$today])
+            ->orderByRaw("
+                CASE 
+                    WHEN $dateExpression IS NULL THEN 2
+                    WHEN $dateExpression >= ? THEN 0
+                    ELSE 1
+                END,
+                $dateExpression DESC
+            ", [$today])
+            ->distinct('form_group_id')
+            ->paginate(25)
+            ->withQueryString();  // keeps ?page=x in links
+
+        $meetingsidPluck = $meetingsid->pluck('meeting_group', 'form_group_id');
+        $formGroupIds = $meetingsidPluck->keys();
+        $meeting_Ids  = $meetingsidPluck->values();
+
+        // 2️⃣ Load lead data
+        $leaddata = TemplateData::with('field')
+            ->where('template_name', 'Lead Master')
+            ->empScope()
+            ->whereIn('form_group_id', $formGroupIds)
+            ->get()
+            ->groupBy('form_group_id');
+
+        // 3️⃣ Load latest meetings
+        $latestMeetings = Meeting::query()
+            ->empScope()
+            ->whereIn('meeting_group', $meeting_Ids)
+            ->get()
+            ->groupBy('form_group_id');
+
+        // 4️⃣ Count meetings
+        $meetingCounts = Meeting::query()
+            ->empScope()
+            ->whereIn('form_group_id', $formGroupIds)
+            ->select('form_group_id')
+            ->selectRaw('COUNT(DISTINCT meeting_group) as total_meetings')
+            ->groupBy('form_group_id')
+            ->pluck('total_meetings', 'form_group_id');
+
+        // 5️⃣ Merge data WITH pagination
+        $finalData = $meetingsid->through(function ($meeting) use ($leaddata, $latestMeetings, $meetingCounts) {
+            $groupId = $meeting->form_group_id;
+            return [
+                'form_group_id' => $groupId,
+                'lead'          => $leaddata[$groupId] ?? collect(),
+                'meeting'       => $latestMeetings[$groupId] ?? collect(),
+                'meeting_count' => $meetingCounts[$groupId] ?? 0,
+            ];
+        });
+
+        $users = User::where('role', '!=', 'super admin')->get();
+
+        $empId = auth()->user()->id;
+        $isPrivileged = in_array(auth()->user()->role, ['admin', 'super admin']);
+        $applyEmpFilter = !$isPrivileged;
+
+        $all_leads = TemplateData::where('template_name', 'Lead Master')
+            ->empScope()
+            ->distinct('form_group_id')
+            ->count('form_group_id');
+
+        $globle_leads = TemplateData::where('template_name', 'Lead Master')
+            ->where('field_value', 'global')
+            ->empScope()
+            ->distinct('form_group_id')
+            ->count('form_group_id');
+
+        $private_leads = TemplateData::where('template_name', 'Lead Master')
+            ->where('field_value', 'private')
+            ->empScope()
+            ->distinct('form_group_id')
+            ->count('form_group_id');
+
+        $total_Closed = Meeting::where('label', 'Meeting Status')
+            ->whereIn('id', function ($q) {
+                $q->selectRaw('MAX(id)')
+                    ->from('meetings')
+                    ->where('label', 'Meeting Status')
+                    ->groupBy('meeting_group');
+            })
+            ->where('value', 'Closed')
+            ->empScope()
+            ->distinct('form_group_id')
+            ->count('form_group_id');
+
+        $total_active = Meeting::where('label', 'Meeting Status')
+            ->whereIn('id', function ($q) {
+                $q->selectRaw('MAX(id)')
+                    ->from('meetings')
+                    ->where('label', 'Meeting Status')
+                    ->groupBy('meeting_group');
+            })
+            ->where('value', '!=', 'Closed')
+            ->empScope()
+            ->distinct('form_group_id')
+            ->count('form_group_id');
+
+        return view('admin.lead.list', compact(
+            'templates',
+            'leadmeetings',
+            'fieldsorder',
+            'tablefield',
+            'leaddata',
+            'finalData',
+            'all_leads',
+            'globle_leads',
+            'private_leads',
+            'total_Closed',
+            'total_active',
+            'users'
+        ));
     }
-    public function lead_mater_store(Request $request)
+
+    public function lead_field_order_save(Request $request){
+        $request->validate([
+            'field_order' => 'required|string'
+        ]);
+
+        // Convert CSV to array
+        $fields = array_values(array_filter(
+            explode(',', $request->field_order)
+        ));
+
+        if (empty($fields)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No fields found'
+            ], 422);
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            // Delete old order for this employee & template
+            LeadFieldOrder::where('emp_id', auth()->id())
+                ->where('template_name', 'lead_master')
+                ->delete();
+
+            // Insert new order
+            foreach ($fields as $index => $fieldName) {
+                LeadFieldOrder::create([
+                    'emp_id' => auth()->id(),
+                    'template_name' => 'lead_master',
+                    'field_name' => $fieldName,
+                    'order_number' => $index + 1,
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Field order saved successfully'
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong while saving'
+            ], 500);
+        }
+    }
+    public function lead_master_store(Request $request)
     {
         $templates = TemplateMaster::with('field')
-            ->where('name', 'Lead Mater')
+            ->where('name', 'Lead Master')
             ->orderBy('order_no')
             ->get();
 
         $rules = [];
         $input = $request->all();
         $fieldMap = [];
+        $siteNameValue = null;
 
         foreach ($templates as $t) {
             $field = $t->field;
@@ -38,10 +262,37 @@ class LeadMasterController extends Controller
             if ($request->has($field->id)) {
                 $input[$slug] = $request->input($field->id);
             }
+            if ($field->name === 'Site Name') {
+                $siteNameValue = $request->input($field->id);
+            }
         }
+        $validator = Validator::make($input, $rules);
+   
+        $validator->after(function ($validator) use ($siteNameValue) {
 
-        $validated = Validator::make($input, $rules)->validate();
+            if (!$siteNameValue) {
+                return;
+            }
 
+            $exists = TemplateData::where('template_name', 'Lead Master')
+                ->where('field_name', 'Site Name')
+                ->where('field_value', $siteNameValue)
+                ->exists();
+
+            if ($exists) {
+                $validator->errors()->add(
+                    'site_name',
+                    'Site Name already exists'
+                );
+            }
+        });
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        $validated = $validator->validated();
         do {
             $formGroupId = 'RF' . rand(10000, 99999);
             $exists = TemplateData::where('form_group_id', $formGroupId)->exists();
@@ -64,7 +315,8 @@ class LeadMasterController extends Controller
             }
             TemplateData::create([
                 'form_group_id' => $formGroupId,
-                'template_name' => 'Lead Mater',
+                'template_name' => 'Lead Master',
+                'emp_id'      => $request->lead_emp_id ?? Auth::user()->id,
                 'field_id'      => $fieldId,
                 'field_name'    => $field->name,
                 'field_value'   => $value,
@@ -75,19 +327,35 @@ class LeadMasterController extends Controller
             'message' => 'Lead saved successfully!'
         ]);
     }
-    public function lead_mater_edit($formGroupId)
+    public function lead_master_edit($formGroupId)
     {
-        $leadData = TemplateData::with('field')->where('form_group_id', $formGroupId)->get();
+        $templates = TemplateMaster::with('field')
+            ->where('name', 'Lead Master')
+            ->orderBy('order_no', 'asc')
+            ->get();
+
+        $leadData = TemplateData::with('field')
+            ->where('form_group_id', $formGroupId)
+            ->get()
+            ->keyBy('field_id'); // 🔥 IMPORTANT
+
         $templateName = $leadData->first()->template_name ?? 'Template';
-        return view('admin.lead.edit', compact('leadData', 'templateName', 'formGroupId'));
+        $empId = $leadData->first()->emp_id ?? '';
+        $users = User::where('role', '!=', 'super admin')->get();
+
+        return view(
+            'admin.lead.edit',
+            compact('templates', 'leadData', 'templateName', 'formGroupId', 'users', 'empId')
+        );
     }
-    public function lead_mater_update(Request $request)
+
+    public function lead_master_update(Request $request)
     {
         $formGroupId = $request->form_group_id;
 
         // Get template fields
         $templates = TemplateMaster::with('field')
-            ->where('name', 'Lead Mater')
+            ->where('name', 'Lead Master')
             ->orderBy('order_no')
             ->get();
 
@@ -95,9 +363,171 @@ class LeadMasterController extends Controller
         $input = [];
         $fieldMap = [];
 
-        // -----------------------------
-        // Build validation rules
-        // -----------------------------
+        /** -----------------------------
+         * BUILD VALIDATION RULES
+         * ----------------------------- */
+        foreach ($templates as $t) {
+
+            if (!$t->field) continue;
+
+            $field = $t->field;
+            $fieldId = $field->id;
+            $slug = Str::slug($field->name, '_');
+
+            $fieldMap[$fieldId] = $slug;
+
+            $rules[$slug] = $field->validation_type ?? 'nullable';
+
+            if ($request->has($fieldId)) {
+                $input[$slug] = $request->input($fieldId);
+            }
+        }
+
+        // VALIDATE
+        $validated = Validator::make($input, $rules)->validate();
+
+        /** -----------------------------
+         * SAVE / UPDATE DATA
+         * ----------------------------- */
+        foreach ($fieldMap as $fieldId => $slug) {
+
+            $field = Field::find($fieldId);
+            if (!$field) continue;
+
+            $value = $validated[$slug] ?? null;
+
+            /** -----------------------------
+             * FILE HANDLING
+             * ----------------------------- */
+            if ($field->type === 'file') {
+
+                if ($request->hasFile($fieldId)) {
+
+                    $file = $request->file($fieldId);
+                    $filename = $formGroupId . "_" . $slug . "_" . time() . "." . $file->getClientOriginalExtension();
+                    $path = 'form_data/';
+                    $file->move(public_path($path), $filename);
+
+                    // Remove old file if exists
+                    $old = TemplateData::where('form_group_id', $formGroupId)
+                        ->where('field_id', $fieldId)
+                        ->first();
+
+                    if ($old && $old->field_value && file_exists(public_path($old->field_value))) {
+                        @unlink(public_path($old->field_value));
+                    }
+
+                    $value = $path . $filename;
+                } else {
+                    continue; // no file uploaded
+                }
+            }
+
+            /** -----------------------------
+             * CREATE OR UPDATE FIELD
+             * ----------------------------- */
+            TemplateData::updateOrCreate(
+                [
+                    'form_group_id' => $formGroupId,
+                    'field_id'      => $fieldId
+                ],
+                [
+                    'template_name' => 'Lead Master',
+                    'field_name'    => $field->name,
+                    'field_value'   => $value,
+                    'emp_id'        => $request->lead_emp_id,
+                ]
+            );
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Lead saved successfully!'
+        ]);
+    }
+
+    public function lead_bulkDelete(Request $request)
+    {
+        $groupIds = $request->group_ids;
+
+        if (empty($groupIds)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No records selected'
+            ], 400);
+        }
+
+        // Delete template data
+        TemplateData::whereIn('form_group_id', $groupIds)->delete();
+
+        // Delete meetings related to those group IDs
+        Meeting::whereIn('form_group_id', $groupIds)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Form groups deleted successfully!'
+        ]);
+    }
+
+    public function lead_master_get_data($groupId)
+    {
+        $records = TemplateData::with('field')
+            ->where('form_group_id', $groupId)
+            ->empScope()
+            ->get();
+
+        $meetings = Meeting::where('form_group_id', $groupId)
+            ->empScope()
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy('meeting_group');
+
+        $isClosed = Meeting::where('form_group_id', $groupId)
+            ->where('label', 'Meeting Status')
+            ->where('value', 'Closed')
+            ->exists();
+
+        $isPrivileged = auth()->check() &&
+            in_array(auth()->user()->role, ['admin', 'super admin']);
+
+        $showForm = $isPrivileged || !$isClosed;
+
+        return response()->json([
+            'status'   => true,
+            'data' => $records,
+            'meetings' => $meetings,
+            'showForm' => $showForm
+        ]);
+    }
+
+    public function meetings_store(Request $request)
+    {
+        // Detect platform
+        $isMobile = preg_match(
+            '/Mobile|Android|iPhone|iPad|iPod/i',
+            $request->header('User-Agent')
+        );
+
+        $platform = $isMobile ? 'mobile' : 'web';
+
+        // Auto device identifier
+        if ($platform === 'web') {
+            // 🌐 Web → IP address
+            $deviceIdentifier = $request->ip();
+        } else {
+            // 📱 Mobile → device id header OR fallback IP
+            $deviceIdentifier =
+                $request->header('X-Device-ID') ??
+                $request->ip();
+        }
+       
+        $formGroupId = $request->form_group_id;
+        $templates = TemplateMaster::with('field')->where('name', 'Lead Meetings')->orderBy('order_no')->get();
+
+        $rules = [];
+        $input = [];
+        $fieldMap = [];
+
         foreach ($templates as $t) {
             if (!$t->field) continue;
 
@@ -112,92 +542,386 @@ class LeadMasterController extends Controller
                 $input[$slug] = $request->input($fieldId);
             }
         }
-
-        // ✅ VALIDATE
         $validated = Validator::make($input, $rules)->validate();
+        $contactValidator = Validator::make($request->all(), [
+            'contacts' => 'nullable|array',
+            'contacts.*.name' => 'required|string|max:255',
+            'contacts.*.mobile' => 'required|string|max:20',
+            'contacts.*.designation' => 'nullable|string|max:255',
+        ]);
 
+        if ($contactValidator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $contactValidator->errors()
+            ], 422);
+        }
+
+        do {
+            $metGroupId = 'MET' . rand(10000, 99999);
+            $exists = Meeting::where('meeting_group', $metGroupId)->exists();
+        } while ($exists);
         foreach ($fieldMap as $fieldId => $slug) {
 
             $field = Field::find($fieldId);
             if (!$field) continue;
 
-            // 🔥 FIND EXISTING RECORD
-            $data = TemplateData::where('form_group_id', $formGroupId)
-                ->where('field_id', $fieldId)
-                ->first();
-
-            if (!$data) continue;
-
-            $value = $validated[$slug] ?? $data->field_value;
-
-            // -----------------------------
-            // FILE HANDLING
-            // -----------------------------
+            $value = $validated[$slug] ?? null;
             if ($field->type === 'file') {
-
                 if ($request->hasFile($fieldId)) {
                     $file = $request->file($fieldId);
                     $filename = $formGroupId . "_" . $slug . "_" . time() . "." . $file->getClientOriginalExtension();
                     $path = 'form_data/';
                     $file->move(public_path($path), $filename);
-
-                    // Delete old file
-                    if ($data->field_value && file_exists(public_path($data->field_value))) {
-                        unlink(public_path($data->field_value));
-                    }
-
                     $value = $path . $filename;
-                } else {
-                    $value = $data->field_value; // keep old
                 }
             }
-
-            // ✅ UPDATE RECORD
-            $data->update([
-                'field_value' => $value
+            Meeting::create([
+                'form_group_id' => $formGroupId,
+                'meeting_group' => $metGroupId,
+                'emp_id'      => $request->emp_id ?? Auth::user()->id,             
+                'field_id'      => $fieldId,
+                'label'    => $field->name,
+                'value'   => $value,
             ]);
         }
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Lead updated successfully!'
-        ]);
-    }
-    public function lead_mater_delete(Request $request)
-    {
-        $request->validate([
-            'group_id' => 'required|string'
-        ]);
-
-        $groupId = $request->group_id;
-
-        // Get all records of this form group
-        $records = TemplateData::where('form_group_id', $groupId)->get();
-
-        if ($records->isEmpty()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Record not found.'
-            ]);
+        $lastLogin = LoginHistory::where('user_id', Auth::id())->orderBy('created_at', 'desc')->first();
+        $platform = $lastLogin->device ?? 'Unknown';
+        if (!empty($request->emp_id)) {
+            $user = User::findOrFail($request->emp_id);
+            $employeeName = $user->name;
+        } else {
+            $employeeName = Auth::user()->name;
         }
 
-        // -----------------------------
-        // DELETE FILES (if any)
-        // -----------------------------
-        foreach ($records as $row) {
-            if ($row->field_value && file_exists(public_path($row->field_value))) {
-                @unlink(public_path($row->field_value));
+        $extraFields = [
+            'Employee Name'     => $employeeName,
+            'Platform'          => $platform,
+        ];
+
+        foreach ($extraFields as $label => $value) {
+            if (!empty($value)) {
+                Meeting::create([
+                    'form_group_id' => $formGroupId,
+                    'meeting_group' => $metGroupId,
+                    'emp_id'        => $request->emp_id ?? Auth::user()->id,
+                    'label'         => $label,
+                    'value'         => $value,
+                ]);
             }
         }
 
-        // -----------------------------
-        // DELETE DATABASE RECORDS
-        // -----------------------------
-        TemplateData::where('form_group_id', $groupId)->delete();
+        if ($request->has('contacts')) {
+
+            foreach ($request->contacts as $index => $contact) {
+
+                // Person Name
+                Meeting::create([
+                    'form_group_id' => $formGroupId,
+                    'meeting_group' => $metGroupId,
+                    'emp_id'        => $request->emp_id ?? Auth::user()->id,
+                    'label'         => 'Person Name',
+                    'value'         => $contact['name'],
+                ]);
+
+                // Mobile Number
+                Meeting::create([
+                    'form_group_id' => $formGroupId,
+                    'meeting_group' => $metGroupId,
+                    'emp_id'        => $request->emp_id ?? Auth::user()->id,
+                    'label'         => 'Mobile Number',
+                    'value'         => $contact['mobile'],
+                ]);
+
+                // Designation (optional)
+                if (!empty($contact['designation'])) {
+                    Meeting::create([
+                        'form_group_id' => $formGroupId,
+                        'meeting_group' => $metGroupId,
+                        'emp_id'        => $request->emp_id ?? Auth::user()->id,
+                        'label'         => 'Designation',
+                        'value'         => $contact['designation'],
+                    ]);
+                }
+            }
+        }
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Lead saved successfully!',
+            'group_id' => $formGroupId
+        ]);
+    }
+    public function meetings_delete($id)
+    {
+        Meeting::where('meeting_group', $id)->delete();
 
         return response()->json([
             'status' => true,
-            'message' => 'Form group deleted successfully!'
+            'message' => 'Meeting deleted successfully'
+        ]);
+    }
+
+    public function leads_excel_upload(Request $request)
+    {
+        set_time_limit(0);
+        ini_set('max_execution_time', 0);
+
+        $request->validate([
+            'excel' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+
+        // Convert Excel file to array
+        $rows = Excel::toArray([], $request->file('excel'))[0];
+
+        if (empty($rows)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Excel file is empty',
+                'created' => 0,
+                'skipped' => 0
+            ]);
+        }
+
+        // Remove header row
+        $header = array_shift($rows);
+
+        // Trim header values
+        $header = array_map('trim', $header);
+
+        // Get Lead Master fields
+        $templates = TemplateMaster::with('field')
+            ->where('name', 'Lead Master')
+            ->orderBy('order_no')
+            ->get();
+
+        // Map Excel columns to DB fields
+        $fieldMap = [];
+        foreach ($templates as $t) {
+            $fieldName = trim($t->field->name); // remove extra spaces
+            $fieldMap[$fieldName] = [
+                'field_id' => $t->field->id,
+                'name'     => $fieldName,
+            ];
+        }
+
+        $created = 0;
+        $skipped = 0;
+
+        foreach ($rows as $row) {
+
+            // Combine header and row
+            $rowData = array_combine($header, $row);
+
+            // Trim column names
+            $rowData = array_combine(
+                array_map('trim', array_keys($rowData)),
+                array_values($rowData)
+            );
+
+            /** -------------------------
+             * SITE NAME CHECK
+             * ------------------------- */
+            $siteNameValue = trim($rowData['Site Name'] ?? '');
+            if (!$siteNameValue) {
+                $skipped++;
+                continue;
+            }
+            // Check if this Site Name already exists
+            $exists = TemplateData::where('template_name', 'Lead Master')
+                ->where('field_name', 'Site Name')
+                ->where('field_value', $siteNameValue)
+                ->exists();
+
+            if ($exists) {
+                $skipped++;
+                continue;
+            }
+            $employeeName = trim($rowData['Employee Name'] ?? '');
+
+            if (strcasecmp($employeeName, 'All User') === 0) {
+                $empId = 0;
+            } elseif (!empty($employeeName)) {
+                $empId = User::where('name', $employeeName)->value('id') ?? Auth::id();
+            } else {
+                $empId = Auth::id();
+            }
+
+            /** -------------------------
+             * CREATE FORM GROUP ID
+             * ------------------------- */
+            do {
+                $formGroupId = 'RF' . rand(10000, 99999);
+            } while (TemplateData::where('form_group_id', $formGroupId)->exists());            
+
+            /** -------------------------
+             * LOOP FIELDS
+             * ------------------------- */
+            foreach ($rowData as $columnName => $value) {
+                $columnName = trim($columnName);
+                
+                if (!isset($fieldMap[$columnName])) {
+                    continue; // skip if no matching field
+                }
+
+                $createdAt = now();
+                $updatedAt = now();
+
+                // Excel date conversion
+                if (!empty($rowData['Created Date'])) {
+                    $createdAt = is_numeric($rowData['Created Date'])
+                        ? Date::excelToDateTimeObject($rowData['Created Date'])->format('Y-m-d H:i:s')
+                        : date('Y-m-d H:i:s', strtotime($rowData['Created Date']));
+                }
+
+                if (!empty($rowData['Updated Date'])) {
+                    $updatedAt = is_numeric($rowData['Updated Date'])
+                        ? Date::excelToDateTimeObject($rowData['Updated Date'])->format('Y-m-d H:i:s')
+                        : date('Y-m-d H:i:s', strtotime($rowData['Updated Date']));
+                }
+                
+                TemplateData::create([
+                    'form_group_id' => $formGroupId,
+                    'template_name' => 'Lead Master',
+                    'emp_id'        => $empId,
+                    'field_id'      => $fieldMap[$columnName]['field_id'],
+                    'field_name'    => $fieldMap[$columnName]['name'],
+                    'field_value'   => $value,
+                    'created_at'    => $createdAt ?? now(),
+                    'updated_at'    => $updatedAt ?? now(),
+                ]);
+            }
+
+            $created++;
+        }
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Excel import completed',
+            'created' => $created,
+            'skipped' => $skipped
+        ]);
+    }
+    public function lead_Meeting_Excel_Upload(Request $request)
+    {
+        set_time_limit(0);
+        ini_set('max_execution_time', 0);
+        
+        $request->validate([
+            'excel' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+        $rows = Excel::toArray([], $request->file('excel'))[0];
+
+        if (empty($rows)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Excel file is empty',
+                'created' => 0,
+                'skipped' => 0
+            ]);
+        }
+
+        $header = array_shift($rows);
+
+        $header = array_map('trim', $header);
+
+        $templates = TemplateMaster::with('field')->where('name', 'Lead Meetings')->orderBy('order_no')->get();
+        
+        $fieldMap = [];
+        foreach ($templates as $t) {
+            $fieldName = trim($t->field->name);
+            $fieldMap[$fieldName] = [
+                'field_id' => $t->field->id,
+                'name'     => $fieldName,
+            ];
+        }
+        $fieldMap['Employee Name'] = [
+            'field_id' => null,
+            'name'     => 'Employee Name',
+        ];
+
+        $fieldMap['Platform'] = [
+            'field_id' => null,
+            'name'     => 'Platform',
+        ];
+        $created = 0;
+        $skipped = 0;
+        foreach ($rows as $row) {
+
+            // Combine header and row
+            $rowData = array_combine($header, $row);
+
+            // Trim column names
+            $rowData = array_combine(
+                array_map('trim', array_keys($rowData)),
+                array_values($rowData)
+            );
+
+            /** -------------------------
+             * SITE NAME CHECK
+             * ------------------------- */
+            $siteNameValue = trim($rowData['Site Name'] ?? '');
+            if (!$siteNameValue) {
+                $skipped++;
+                continue;
+            }
+            $sitenamedata = TemplateData::where('template_name', 'Lead Master')->where('field_name', 'Site Name')->where('field_value', $siteNameValue)->first();
+            if (!$sitenamedata) {
+                $skipped++;
+                continue;
+            }
+            $employeeName = trim($rowData['Employee Name'] ?? '');
+
+            if (strcasecmp($employeeName, 'All User') === 0) {
+                $empId = 0;
+            } elseif (!empty($employeeName)) {
+                $empId = User::where('name', $employeeName)->value('id') ?? Auth::id();
+            } else {
+                $empId = Auth::id();
+            }
+
+            $formGroupId = $sitenamedata->form_group_id;
+            do {
+                $metGroupId = 'MET' . rand(10000, 99999);
+                $exists = Meeting::where('meeting_group', $metGroupId)->exists();
+            } while ($exists);
+            foreach ($rowData as $column => $value) {
+                
+                if (is_numeric($rowData['Created Date'])) {
+                    $created_date = Date::excelToDateTimeObject($rowData['Created Date'])
+                        ->format('Y-m-d');
+                } else {
+                    $created_date = $rowData['Created Date']; // already text date
+                }
+                if (is_numeric($rowData['Updated Date'])) {
+                    $updated_date = Date::excelToDateTimeObject($rowData['Created Date'])
+                        ->format('Y-m-d');
+                } else {
+                    $updated_date = $rowData['Updated Date']; // already text date
+                }
+                // Ignore system columns
+                if (in_array($column, ['Site Name'])) {
+                    continue;
+                }
+
+                if (!isset($fieldMap[$column])) {
+                    continue; // unmatched header
+                }
+                Meeting::create([
+                    'form_group_id' => $formGroupId,
+                    'meeting_group' => $metGroupId,
+                    'field_id'      => $fieldMap[$column]['field_id'],
+                    'emp_id'        => $empId,
+                    'label'         => $column,
+                    'value'         => $value,
+                    'created_at'    => $created_date ?? now(),
+                    'updated_at'    => $updated_date ?? now(),
+                ]);
+            }
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'Lead meeting Excel uploaded successfully'
         ]);
     }
 }

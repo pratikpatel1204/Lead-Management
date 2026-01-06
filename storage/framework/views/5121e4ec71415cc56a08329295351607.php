@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="<?php echo e(asset('admin/plugins/select2/css/select2.min.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('admin/plugins/fontawesome/css/fontawesome.min.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('admin/plugins/fontawesome/css/all.min.css')); ?>">
-    <link rel="stylesheet" href="<?php echo e(asset('admin/css/bootstrap-datetimepicker.min.css')); ?>">
+    
     <link rel="stylesheet" href="<?php echo e(asset('admin/plugins/summernote/summernote-lite.min.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('admin/plugins/daterangepicker/daterangepicker.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('admin/plugins/flatpickr/flatpickr.min.css')); ?>">
