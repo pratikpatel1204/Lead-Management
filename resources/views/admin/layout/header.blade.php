@@ -282,7 +282,7 @@
                                     <img src="{{ asset(auth()->user()->profile_image) }}"
                                         class="img-fluid rounded-circle">
                                 @else
-                                    <i class="ti ti-user fs-16"></i>
+                                    <i class="ti ti-user fs-16 text-black"></i>
                                 @endif
                             </span>
                         </a>
@@ -294,7 +294,7 @@
                                             @if (auth()->user()->profile_image)
                                                 <img src="{{ asset(auth()->user()->profile_image) }}" alt="img">                                                
                                             @else
-                                                <i class="ti ti-user fs-16"></i>
+                                                <i class="ti ti-user fs-16 text-black"></i>
                                             @endif
                                         </span>
                                         <div>

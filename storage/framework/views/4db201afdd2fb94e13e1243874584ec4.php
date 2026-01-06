@@ -40,6 +40,15 @@
     .offcanvas.offcanvas-end {
         width: 70% !important;
     }
+    div.dataTables_wrapper div.dataTables_filter{
+        padding: 10px;
+    }
+    .dataTables_length{
+        padding:10px;
+    }
+    div.dataTables_wrapper div.dataTables_info{
+        padding:10px;
+    }
 </style>
     <?php
     $chartColors = [
