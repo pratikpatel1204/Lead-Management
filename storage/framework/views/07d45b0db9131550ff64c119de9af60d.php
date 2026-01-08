@@ -282,7 +282,7 @@
                                     <img src="<?php echo e(asset(auth()->user()->profile_image)); ?>"
                                         class="img-fluid rounded-circle">
                                 <?php else: ?>
-                                    <i class="ti ti-user fs-16"></i>
+                                    <i class="ti ti-user fs-16 text-black"></i>
                                 <?php endif; ?>
                             </span>
                         </a>
@@ -294,7 +294,7 @@
                                             <?php if(auth()->user()->profile_image): ?>
                                                 <img src="<?php echo e(asset(auth()->user()->profile_image)); ?>" alt="img">                                                
                                             <?php else: ?>
-                                                <i class="ti ti-user fs-16"></i>
+                                                <i class="ti ti-user fs-16 text-black"></i>
                                             <?php endif; ?>
                                         </span>
                                         <div>

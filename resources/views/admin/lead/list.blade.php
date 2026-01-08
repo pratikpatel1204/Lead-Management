@@ -5,11 +5,17 @@
         .offcanvas.offcanvas-end {
             width: 70% !important;
         }
+        table.table.dataTable > tbody > tr td{
+            padding:4px !important;
+        }
+        table.table-bordered.dataTable thead tr:first-child th, table.table-bordered.dataTable thead tr:first-child td{
+            padding:4px !important;
+        }       
     </style>
     <div class="content">
-        <div class="d-md-flex d-block align-items-center justify-content-between page-breadcrumb mb-3">
+        <div class="d-md-flex d-block align-items-center justify-content-between page-breadcrumb mb-2">
             <div class="my-auto mb-2">
-                <h2 class="mb-1">Lead Master</h2>
+                <h2 class="mb-1">Lead List</h2>
                 <nav>
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item">
@@ -44,140 +50,274 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div class="d-flex gap-2">                           
-                            <div class="border rounded p-2 text-center">
-                                <h6 class="text-dark mb-1">All Leads</h6>
-                                <h4 class="fw-bold text-primary">{{$all_leads}}</h4>
+                <div class="accordion mb-2" id="accordionPanelsStayOpenExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                                🔍 Lead Summary & Filters
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">                
+                            <div class="accordion-body p-2">    
+                                <div class="card mb-1">
+                                    <div class="card-header">                
+                                        <div class="row g-2">
+                                            <div class="d-flex flex-wrap gap-1 align-items-center">
+                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
+                                                    <span class="fw-bold small">All Leads:</span>
+                                                    <span class="fw-bold text-primary">{{$all_leads}}</span>
+                                                </div>
+                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
+                                                    <span class="fw-bold small">Active:</span>
+                                                    <span class="fw-bold text-success">{{$total_active}}</span>
+                                                </div>
+                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
+                                                    <span class="fw-bold small">Closed:</span>
+                                                    <span class="fw-bold text-danger">{{$total_Closed}}</span>
+                                                </div>
+                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
+                                                    <span class="fw-bold small">Private:</span>
+                                                    <span class="fw-bold text-warning">{{$private_leads}}</span>
+                                                </div>
+                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
+                                                    <span class="fw-bold small">Global:</span>
+                                                    <span class="fw-bold text-info">{{$globle_leads}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                
+                                        <!-- Filters -->
+                                        <div class="row g-2 mt-2">
+                
+                                            <div class="col-md-3">
+                                                <input type="date" id="filterNextMeetingDate" class="form-control">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <select id="filterLabels" class="form-select select2" multiple data-placeholder="Select Labels">
+                                                    @foreach($labels as $label)
+                                                        <option value="{{ $label }}">{{ $label }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterEmployee" class="form-select select2" multiple data-placeholder="Select Employee">
+                                                    @foreach($users as $user)
+                                                        <option value="{{ $user->id }}">
+                                                            {{ $user->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterArea" class="form-select select2" multiple data-placeholder="Select Area">
+                                                    @foreach($areas as $val)
+                                                        <option value="{{ $val }}">{{ $val }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterLeadType" class="form-select select2" multiple data-placeholder="Select Lead Type">
+                                                    @foreach($leadTypes as $val)
+                                                        <option value="{{ $val }}">{{ $val }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterSiteStage" class="form-select select2" multiple data-placeholder="Select Site Stage">
+                                                    @foreach($siteStages as $val)
+                                                        <option value="{{ $val }}">{{ $val }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterProjectType" class="form-select select2" multiple data-placeholder="Select Project Type">
+                                                    @foreach($projectTypes as $val)
+                                                        <option value="{{ $val }}">{{ $val }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterCustomerType" class="form-select select2" multiple data-placeholder="Select Customer Type">
+                                                    @foreach($customerTypes as $val)
+                                                        <option value="{{ $val }}">{{ $val }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterSPProduct" class="form-select select2" multiple data-placeholder="Select SP Focused Product">
+                                                    @foreach($spProducts as $val)
+                                                        <option value="{{ $val }}">{{ $val }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterLeadSource" class="form-select select2" multiple data-placeholder="Select Lead Source">
+                                                    @foreach($leadSources as $val)
+                                                        <option value="{{ $val }}">{{ $val }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                
+                                            <!-- Bathroom -->
+                                            <div class="col-md-3 d-flex gap-1">
+                                                <select id="bathroomOp" class="form-select form-select-sm w-25">
+                                                    <option value="=">=</option>
+                                                    <option value="<"><</option>
+                                                    <option value=">">></option>
+                                                </select>
+                                                <input type="number" id="filterBathroom" class="form-control form-control-sm" placeholder="Bathroom">
+                                            </div>
+                
+                                            <!-- Floor -->
+                                            <div class="col-md-3 d-flex gap-1">
+                                                <select id="floorOp" class="form-select form-select-sm w-25">
+                                                    <option value="=">=</option>
+                                                    <option value="<"><</option>
+                                                    <option value=">">></option>
+                                                </select>
+                                                <input type="number" id="filterFloor" class="form-control form-control-sm" placeholder="Floor">
+                                            </div>
+                
+                                            <!-- Tower -->
+                                            <div class="col-md-3 d-flex gap-1">
+                                                <select id="towerOp" class="form-select form-select-sm w-25">
+                                                    <option value="=">=</option>
+                                                    <option value="<"><</option>
+                                                    <option value=">">></option>
+                                                </select>
+                                                <input type="number" id="filterTower" class="form-control form-control-sm" placeholder="Tower">
+                                            </div>
+                
+                                            <!-- Buttons -->
+                                            <div class="col-md-3 d-flex gap-2">
+                                                <button id="applyFilters" class="btn btn-sm btn-primary w-50">Apply</button>
+                                                <button id="clearFilters" class="btn btn-sm btn-outline-secondary w-50">Clear</button>
+                                            </div>                
+                                        </div>            
+                                    </div>
+                                </div>                
                             </div>
-                            <div class="border rounded p-2 text-center">
-                                <h6 class="text-dark mb-1">Active Leads</h6>
-                                <h4 class="fw-bold text-success">{{$total_active}}</h4>
-                            </div>   
-                            <div class="border rounded p-2 text-center">
-                                <h6 class="text-dark mb-1">Closed Leads</h6>
-                                <h4 class="fw-bold text-danger">{{$total_Closed}}</h4>
-                            </div>
-                            <div class="border rounded p-2 text-center">
-                                <h6 class="text-dark mb-1">Private Leads</h6>
-                                <h4 class="fw-bold text-warning">{{$private_leads}}</h4>
-                            </div>
-                            <div class="border rounded p-2 text-center">
-                                <h6 class="text-dark mb-1">Global Leads</h6>
-                                <h4 class="fw-bold text-info">{{$globle_leads}}</h4>
-                            </div>         
-                        </div>                      
-                    </div>                   
-                    <div class="card-body">
-                        <table class="table table-bordered table-striped" id="datalistTable">
-                            <thead>
-                                <tr class="bg-light">
-                                    <th>#</th>
-                    
-                                    {{-- Table headers --}}
-                                    @php
-                                        $columns = !empty($fieldsorder) ? array_unique($fieldsorder) : $tablefield->pluck('field.name')->toArray();
-                                    @endphp
-                    
-                                    @foreach($columns as $col)
-                                        <th>{{ $col }}</th>
-                                    @endforeach
-                    
-                                    <th width="150">Actions</th>
-                                </tr>
-                            </thead>
-                    
-                            <tbody>
-                                @foreach($finalData as $rowSet)
-                                    @php
-                                        $groupId = $rowSet['form_group_id'];
-                                        $leadRows    = collect($rowSet['lead'])->keyBy('field_name');
-                                        $meetingRows = collect($rowSet['meeting'])->keyBy('label');
-                                        $platform    = strtolower(optional($meetingRows->firstWhere('label', 'Platform'))->value ?? '');
-                                    @endphp
-                    
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox" class="rowCheckbox" value="{{ $groupId }}">
-                                        </td>
-                    
-                                        {{-- Table cells --}}
-                                        @foreach($columns as $col)
-                                            @php
-                                                $leadRec    = $leadRows[$col] ?? null;
-                                                $meetingRec = $meetingRows[$col] ?? null;
-                                            @endphp
-                    
-                                            <td>
-                                                {{-- Lead Data --}}
-                                                @if($leadRec)
-                                                    @if($leadRec->field_name === 'Site Name')
-                                                        <a href="javascript:void(0)" class="text-primary viewLeadBtn" data-group="{{ $groupId }}">
-                                                            {{ $leadRec->field_value }}
-                                                        </a>
-                                                    @elseif($leadRec->field_name === 'Lead Type')
-                                                        @php
-                                                            $type = strtolower($leadRec->field_value);
-                                                            $badgeClass = $type === 'private' ? 'bg-warning text-dark' : ($type === 'global' ? 'bg-success' : 'bg-secondary');
-                                                        @endphp
-                                                        <span class="badge {{ $badgeClass }}">{{ ucfirst($leadRec->field_value) }}</span>
-                                                    @elseif(Str::endsWith($leadRec->field_value, ['jpg','jpeg','png','gif','webp']))
-                                                        <img src="{{ asset($leadRec->field_value) }}" width="50">
-                                                    @elseif(Str::endsWith($leadRec->field_value, 'pdf'))
-                                                        <a href="{{ asset($leadRec->field_value) }}" target="_blank" class="btn btn-sm btn-danger">View PDF</a>
-                                                    @else
-                                                        {{ $leadRec->field_value ?? '-' }}
-                                                    @endif
-                    
-                                                {{-- Meeting Data --}}
-                                                @elseif($meetingRec)
-                                                    @if($meetingRec->label === 'Meeting Status')
-                                                        <span class="badge bg-warning">{{ ucfirst($meetingRec->value) }}</span>
-                                                    @elseif(in_array($meetingRec->label, ['Next Meeting Date','Platform']))
-                                                        @php
-                                                            $date = $meetingRec->value ?? null;
-                                                        @endphp
-                                                        
-                                                        @if(!empty($date) && $date != 'NULL')
-                                                            {{ \Carbon\Carbon::parse($date)->format('d-M-y (D)') }}
-                                                        @else
-                                                            -
-                                                        @endif                                                
-                                                        <br>
-                                                        <span class="badge bg-info">{{ $rowSet['meeting_count'] }}</span>
-                                                        @if($platform === 'desktop')
-                                                            <i class="fa fa-desktop text-success" title="Desktop"></i>
-                                                        @elseif($platform === 'mobile')
-                                                            <i class="fa fa-mobile-alt text-success" title="Mobile"></i>
-                                                        @endif
-                                                    @else
-                                                        {{ $meetingRec->value ?? '-' }}
-                                                    @endif
-                    
-                                                {{-- Default --}}
-                                                @else
-                                                    -
-                                                @endif
-                                            </td>
-                                        @endforeach
-                    
-                                        {{-- Actions --}}
-                                        <td class="text-center">
-                                            <a href="{{ route('admin.lead.master.edit', $groupId) }}" class="btn btn-info btn-sm text-white me-1">
-                                                <i class="ti ti-edit"></i>
-                                            </a>
-                                            <button class="btn btn-danger btn-sm deleteDataBtn" data-group="{{ $groupId }}">
-                                                <i class="ti ti-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
+                        </div>
+                    </div>                
+                </div>
+                      
+                <div class="table-responsive-wrapper">
+                    <table class="table table-bordered table-striped table-responsive-custom" id="datalistTable">
+                        <thead class="table-light">
+                            <tr class="bg-light">
+                                <th>#</th>
+                
+                                {{-- Table headers --}}
+                                @php
+                                    $columns = !empty($fieldsorder) ? array_unique($fieldsorder) : $tablefield->pluck('field.name')->toArray();
+                                @endphp
+                
+                                @foreach($columns as $col)
+                                    <th>{{ $col }}</th>
                                 @endforeach
-                            </tbody>
-                        </table>
-                        {{ $finalData->links() }}
-                    </div>
-                    
+                
+                                <th width="150">Actions</th>
+                            </tr>
+                        </thead>
+                
+                        <tbody id="leadTableBody">
+                            @foreach($finalData as $rowSet)
+                                @php
+                                    $groupId = $rowSet['form_group_id'];
+                                    $leadRows    = collect($rowSet['lead'])->keyBy('field_name');
+                                    $meetingRows = collect($rowSet['meeting'])->keyBy('label');
+                                    $platform    = strtolower(optional($meetingRows->firstWhere('label', 'Platform'))->value ?? '');
+                                @endphp
+                
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="rowCheckbox" value="{{ $groupId }}">
+                                    </td>
+                
+                                    {{-- Table cells --}}
+                                    @foreach($columns as $col)
+                                        @php
+                                            $leadRec    = $leadRows[$col] ?? null;
+                                            $meetingRec = $meetingRows[$col] ?? null;
+                                        @endphp
+                
+                                        <td>
+                                            {{-- Lead Data --}}
+                                            @if($leadRec)
+                                                @if($leadRec->field_name === 'Site Name')
+                                                    <a href="javascript:void(0)" class="text-primary viewLeadBtn" data-group="{{ $groupId }}">
+                                                        {{ $leadRec->field_value }}
+                                                    </a>
+                                                @elseif($leadRec->field_name === 'Lead Type')
+                                                    @php
+                                                        $type = strtolower($leadRec->field_value);
+                                                        $badgeClass = $type === 'private' ? 'bg-warning text-dark' : ($type === 'global' ? 'bg-success' : 'bg-secondary');
+                                                    @endphp
+                                                    <span class="badge {{ $badgeClass }}">{{ ucfirst($leadRec->field_value) }}</span>
+                                                @elseif(Str::endsWith($leadRec->field_value, ['jpg','jpeg','png','gif','webp']))
+                                                    <img src="{{ asset($leadRec->field_value) }}" width="50">
+                                                @elseif(Str::endsWith($leadRec->field_value, 'pdf'))
+                                                    <a href="{{ asset($leadRec->field_value) }}" target="_blank" class="btn btn-sm btn-danger">View PDF</a>
+                                                @else
+                                                    {{ $leadRec->field_value ?? '-' }}
+                                                @endif
+                
+                                            {{-- Meeting Data --}}
+                                            @elseif($meetingRec)
+                                                @if($meetingRec->label === 'Meeting Status')
+                                                    <span class="badge bg-warning">{{ ucfirst($meetingRec->value) }}</span>
+                                                @elseif(in_array($meetingRec->label, ['Next Meeting Date','Platform']))
+                                                    @php
+                                                        $date = $meetingRec->value ?? null;
+                                                    @endphp
+                                                    
+                                                    @if(!empty($date) && $date != 'NULL')
+                                                        {{ \Carbon\Carbon::parse($date)->format('d-M-y (D)') }}
+                                                    @else
+                                                        -
+                                                    @endif                                                
+                                                    <br>
+                                                    <span class="badge bg-info">{{ $rowSet['meeting_count'] }}</span>
+                                                    @if($platform === 'desktop')
+                                                        <i class="fa fa-desktop text-success" title="Desktop"></i>
+                                                    @elseif($platform === 'mobile')
+                                                        <i class="fa fa-mobile-alt text-success" title="Mobile"></i>
+                                                    @endif
+                                                @else
+                                                    {{ $meetingRec->value ?? '-' }}
+                                                @endif
+                
+                                            {{-- Default --}}
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                    @endforeach
+                
+                                    {{-- Actions --}}
+                                    <td class="text-center">
+                                        <a href="{{ route('admin.lead.master.edit', $groupId) }}" class="btn btn-info btn-sm text-white me-1">
+                                            <i class="ti ti-edit"></i>
+                                        </a>
+                                        <button class="btn btn-danger btn-sm deleteDataBtn" data-group="{{ $groupId }}">
+                                            <i class="ti ti-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div id="pagediv">
+                    {{ $finalData->links() }}
                 </div>
             </div>
         </div>
@@ -527,7 +667,7 @@
             </div>
         </div>
     </div>    
-    <script>
+    <script>        
     document.getElementById('lead_emp_error').addEventListener('change', function () {
         let empId = this.value;
         let leadType = document.getElementById('dylead_type');
@@ -784,12 +924,20 @@
     </script>
     <script>
         $(document).ready(function() {
-            let table = $('#datalistTable').DataTable({
+            let leadTable = $('#datalistTable').DataTable({
                 pageLength: 25,
                 searching: false,
                 lengthChange: false,
                 info: false,
-                paging: false
+                paging: false,
+                scrollY: '500px',
+                scrollX: true,
+                scrollCollapse: true,
+                fixedHeader: true,
+                autoWidth: false,
+                columnDefs: [
+                    { targets: '_all', className: 'dt-wrap-text' }
+                ]
             });
             $(document).on('click', '.deleteDataBtn', function() {
 
@@ -1304,5 +1452,88 @@
             });
         
         });
-    </script>                  
+    </script>  
+   <script>
+    function getFilters() {
+        return {
+            next_meeting_date: $('#filterNextMeetingDate').val(),
+            label: $('#filterLabels').val(),
+            employee: $('#filterEmployee').val(),
+            area: $('#filterArea').val(),
+            lead_type: $('#filterLeadType').val(),
+            site_stage: $('#filterSiteStage').val(),
+            project_type: $('#filterProjectType').val(),
+            customer_type: $('#filterCustomerType').val(),
+            sp_product: $('#filterSPProduct').val(),
+            lead_source: $('#filterLeadSource').val(),
+
+            bathroom_op: $('#bathroomOp').val(),
+            bathroom: $('#filterBathroom').val(),
+
+            floor_op: $('#floorOp').val(),
+            floor: $('#filterFloor').val(),
+
+            tower_op: $('#towerOp').val(),
+            tower: $('#filterTower').val(),
+
+            _token: '{{ csrf_token() }}'
+        };
+    }
+
+    $('#applyFilters').on('click', function () {
+        $('#pagediv').hide();
+        if ($.fn.DataTable.isDataTable('#datalistTable')) {
+            $('#datalistTable').DataTable().destroy();
+        }
+        $.ajax({
+            url: "{{ route('admin.lead.master.filter') }}",
+            type: "POST",
+            data: getFilters(),
+            beforeSend: function () {
+                $('#leadTableBody').html(
+                    '<tr><td colspan="100%" class="text-center">Loading...</td></tr>'
+                );
+            },
+            success: function (response) {
+                if (!response.success) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No Data Found',
+                        text: 'No leads match the selected filters.',
+                        confirmButtonText: 'OK'
+                    });
+
+                    return;
+                }
+
+                $('#leadTableBody').html(response.html);
+                $('#datalistTable').DataTable({
+                    pageLength: 25,
+                    searching: true,    
+                    lengthChange: true,  
+                    info: true,
+                    paging: true,       
+                    scrollY: '500px',
+                    scrollX: true,
+                    scrollCollapse: true,
+                    fixedHeader: true,
+                    autoWidth: false,
+                    columnDefs: [
+                        { targets: '_all', className: 'dt-wrap-text' }
+                    ]
+                });
+            },
+            error: function () {
+                $('#leadTableBody').html(
+                    '<tr><td colspan="100%" class="text-center">Error while loading leads</td></tr>'
+                );
+            }
+        });
+    });
+
+    $('#clearFilters').on('click', function () {
+        window.location.reload();
+    });   
+</script>
+              
 @endsection

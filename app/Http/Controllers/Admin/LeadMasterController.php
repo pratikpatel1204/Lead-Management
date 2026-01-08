@@ -10,6 +10,7 @@ use App\Models\TemplateData;
 use App\Models\TemplateMaster;
 use App\Models\LoginHistory;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -149,29 +150,60 @@ class LeadMasterController extends Controller
             ->distinct('form_group_id')
             ->count('form_group_id');
 
-        $total_Closed = Meeting::where('label', 'Meeting Status')
-            ->whereIn('id', function ($q) {
-                $q->selectRaw('MAX(id)')
-                    ->from('meetings')
-                    ->where('label', 'Meeting Status')
-                    ->groupBy('meeting_group');
-            })
-            ->where('value', 'Closed')
+        $leadStats = TemplateData::query()
+            ->from('template_data as td')
+            ->where('td.template_name', 'Lead Master')
             ->empScope()
-            ->distinct('form_group_id')
-            ->count('form_group_id');
 
-        $total_active = Meeting::where('label', 'Meeting Status')
-            ->whereIn('id', function ($q) {
-                $q->selectRaw('MAX(id)')
-                    ->from('meetings')
+            // Latest meeting per lead
+            ->leftJoinSub(
+                Meeting::query()
+                    ->select('form_group_id', DB::raw('MAX(id) as max_id'))
                     ->where('label', 'Meeting Status')
-                    ->groupBy('meeting_group');
-            })
-            ->where('value', '!=', 'Closed')
-            ->empScope()
-            ->distinct('form_group_id')
-            ->count('form_group_id');
+                    ->empScope()
+                    ->groupBy('form_group_id'),
+                'lm',
+                fn($join) => $join->on('td.form_group_id', '=', 'lm.form_group_id')
+            )
+
+            // Join latest meeting row
+            ->leftJoin('meetings as m', 'm.id', '=', 'lm.max_id')
+
+            ->selectRaw('
+                COUNT(DISTINCT td.form_group_id) as total_leads,
+
+                COUNT(DISTINCT CASE 
+                    WHEN m.value = "Closed" 
+                    THEN td.form_group_id 
+                END) as closed_leads,
+
+                COUNT(DISTINCT CASE 
+                    WHEN m.value IS NOT NULL
+                    AND m.value != "Closed"
+                    AND m.value != "NULL"
+                    THEN td.form_group_id 
+                END) as active_leads,
+
+                COUNT(DISTINCT CASE 
+                    WHEN m.value IS NULL
+                    OR m.value = "NULL"
+                    THEN td.form_group_id 
+                END) as null_leads
+            ')
+            ->first();
+
+        $total_Closed = (int) optional($leadStats)->closed_leads;
+        $total_active = (int) optional($leadStats)->active_leads + (int) optional($leadStats)->null_leads;
+
+        $labels = Field::with('dropdowns')->where('name', 'Labels')->first()?->dropdowns->pluck('value') ?? collect();
+        $areas = Field::with('dropdowns')->where('name', 'Area')->first()?->dropdowns->pluck('value') ?? collect();
+        $projectTypes = Field::with('dropdowns')->where('name', 'Project Type')->first()?->dropdowns->pluck('value') ?? collect();
+        $leadSources = Field::with('dropdowns')->where('name', 'Lead Source')->first()?->dropdowns->pluck('value') ?? collect();
+        $spProducts = Field::with('dropdowns')->where('name', 'SP Focused Product')->first()?->dropdowns->pluck('value') ?? collect();
+        $siteStages = Field::with('dropdowns')->where('name', 'Site Stage')->first()?->dropdowns->pluck('value') ?? collect();
+        $customerTypes = Field::with('dropdowns')->where('name', 'Customer Type')->first()?->dropdowns->pluck('value') ?? collect();
+        $leadTypes = Field::with('dropdowns')->where('name', 'Lead Type')->first()?->dropdowns->pluck('value') ?? collect();
+
 
         return view('admin.lead.list', compact(
             'templates',
@@ -185,7 +217,15 @@ class LeadMasterController extends Controller
             'private_leads',
             'total_Closed',
             'total_active',
-            'users'
+            'users',
+            'labels',
+            'areas',
+            'projectTypes',
+            'leadSources',
+            'spProducts',
+            'siteStages',
+            'customerTypes',
+            'leadTypes'
         ));
     }
 
@@ -923,5 +963,178 @@ class LeadMasterController extends Controller
             'status' => true,
             'message' => 'Lead meeting Excel uploaded successfully'
         ]);
+    }
+    public function lead_master_filter(Request $request)
+    {
+        //Table Order
+        $fieldsorder = LeadFieldOrder::where('emp_id', auth()->id())
+            ->where('template_name', 'lead_master')
+            ->orderBy('order_number')
+            ->pluck('field_name')
+            ->toArray();
+
+        //Table Field All
+        $tablefield = TemplateMaster::with(['field', 'field.templateData'])
+            ->whereIn('name', ['Lead Master', 'Lead Meetings'])
+            ->orderBy('order_no', 'asc')
+            ->get();
+
+        $dateExpression = "
+            CASE
+                WHEN value LIKE '%/%/%' THEN STR_TO_DATE(value, '%m/%d/%Y')
+                WHEN value LIKE '%-%-%' THEN STR_TO_DATE(value, '%Y-%m-%d')
+                WHEN value LIKE '%/%/%' THEN STR_TO_DATE(value, '%d/%m/%Y')
+                WHEN value LIKE '%-%-%' THEN STR_TO_DATE(value, '%d-%m-%Y')
+                ELSE NULL
+            END
+        ";
+
+        $query = TemplateData::query()
+            ->with(['field', 'latestMeeting'])
+            ->where('template_name', 'Lead Master')
+            ->empScope();
+
+        if ($request->filled('employee')) {
+            $query->whereIn('emp_id', $request->employee);
+        }       
+        if ($request->filled('next_meeting_date')) {
+
+            $latestMeetingsSub = Meeting::empScope()
+                ->select(
+                    'form_group_id',
+                    DB::raw('MAX(created_at) as latest_created_at')
+                )
+                ->where('label', 'Next Meeting Date')
+                ->groupBy('form_group_id');
+
+            $leadIds = DB::table('meetings as m')
+                ->joinSub($latestMeetingsSub, 'lm', function ($join) {
+                    $join->on('m.form_group_id', '=', 'lm.form_group_id')
+                        ->on('m.created_at', '=', 'lm.latest_created_at');
+                })
+                ->where('m.label', 'Next Meeting Date')
+                ->whereNotNull('m.value')
+                ->where('m.value', '!=', '0000-00-00')
+                ->whereDate(DB::raw($dateExpression), $request->next_meeting_date)                
+                ->pluck('m.form_group_id');
+
+            $query->whereIn('form_group_id', $leadIds);
+        }       
+        // Dynamic filters based on map
+        $map = [
+            'label'         => 'Labels',            
+            'area'          => 'Area',
+            'lead_type'     => 'Lead Type',
+            'site_stage'    => 'Site Stage',
+            'project_type'  => 'Project Type',
+            'customer_type' => 'Customer Type',
+            'sp_product'    => 'SP Focused Product',
+            'lead_source'   => 'Lead Source',
+        ];
+
+        foreach ($map as $fieldKey => $fieldLabel) {
+            if ($request->filled($fieldKey)) {
+
+                $values = (array) $request->$fieldKey;
+
+                $matchedGroupIds = TemplateData::query()
+                    ->where('template_name', 'Lead Master')
+                    ->whereHas('field', function ($q) use ($fieldLabel, $values) {
+                        $q->where('field_name', $fieldLabel)
+                            ->whereIn('field_value', $values);
+                    })
+                    ->pluck('form_group_id');
+
+                $query->whereIn('form_group_id', $matchedGroupIds);
+            }
+        }
+
+        $groupId = $query->pluck('form_group_id')->unique()->values();
+
+        // NUMERIC FILTERS
+        $this->applyNumberFilter($query, $request, 'Number of Bathrooms', 'bathroom', 'bathroom_op');
+        $this->applyNumberFilter($query, $request, 'Number of Floors', 'floor', 'floor_op');
+        $this->applyNumberFilter($query, $request, 'Number of Towers', 'tower', 'tower_op');
+
+        // GROUP BY form_group_id
+        $leadRows = $query->get()->groupBy('form_group_id');
+
+        $latestMeetingSub = Meeting::select(
+            'form_group_id',
+                DB::raw('MAX(id) as latest_id')
+            )
+            ->whereIn('form_group_id', $groupId)
+            ->groupBy('form_group_id');
+
+        $latestMeetingGroupSub = Meeting::joinSub($latestMeetingSub, 'lm', function ($join) {
+                $join->on('meetings.id', '=', 'lm.latest_id');
+            })
+            ->select(
+                'meetings.form_group_id',
+                'meetings.meeting_group'
+            );
+            
+        $latestMeetings = Meeting::joinSub($latestMeetingGroupSub, 'lg', function ($join) {
+            $join->on('meetings.form_group_id', '=', 'lg.form_group_id')
+                ->on('meetings.meeting_group', '=', 'lg.meeting_group');
+            })
+            ->orderBy('meetings.created_at')
+            ->get()
+            ->groupBy('form_group_id');
+
+        $meetingCounts = Meeting::query()
+            ->empScope()
+            ->whereIn('form_group_id', $groupId)
+            ->select('form_group_id')
+            ->selectRaw('COUNT(DISTINCT meeting_group) as total_meetings')
+            ->groupBy('form_group_id')
+            ->pluck('total_meetings', 'form_group_id');
+
+        $finalData = $leadRows->map(function ($leadRows, $groupId) use ($latestMeetings, $meetingCounts) {
+            return [
+                'form_group_id' => $groupId,
+                'lead'          => $leadRows,
+                'meeting'       => $latestMeetings[$groupId] ?? null,
+                'meeting_count' => $meetingCounts[$groupId] ?? 0,
+            ];
+        });
+        if ($finalData->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'html' => null
+            ]);
+        }
+        return response()->json([
+            'success' => true,
+            'html' => view('admin.partials.lead_master_filter', compact('finalData', 'fieldsorder', 'tablefield'))->render()
+        ]);
+    }
+
+    private function applyNumberFilter($query, $request, $fieldName, $valueKey, $opKey)
+    {
+        $allowedOps = ['=', '<', '>'];
+
+        if ($request->filled($valueKey) && $request->filled($opKey)) {
+
+            // Validate operator
+            $op = in_array($request->$opKey, $allowedOps) ? $request->$opKey : '=';
+
+            // Get form_group_ids that match numeric condition
+            $matchedGroupIds = TemplateData::query()
+                ->where('template_name', 'Lead Master')
+                ->whereHas('field', function ($q) use ($fieldName, $request, $valueKey, $op) {
+                    $q->where('field_name', $fieldName)
+                        ->whereRaw("CAST(field_value AS UNSIGNED) {$op} ?", [$request->$valueKey]);
+                })
+                ->pluck('form_group_id');
+
+            // Apply to main query
+            if ($matchedGroupIds->isNotEmpty()) {
+                $query->whereIn('form_group_id', $matchedGroupIds);
+            } else {
+                // If no matches, force empty result
+                $query->whereRaw('0 = 1');
+            }
+        }
     }
 }

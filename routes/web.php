@@ -214,6 +214,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/lead-bulk-delete', [LeadMasterController::class, 'lead_bulkDelete'])->name('lead.master.bulkDelete');
             Route::post('/leads-excel-upload', [LeadMasterController::class, 'leads_excel_upload'])->name('leads.excel.upload');
             Route::post('/lead-meeting-excel-upload',[LeadMasterController::class, 'lead_Meeting_Excel_Upload'])->name('lead.meeting.excel.upload');
+            Route::post('/lead-master-filter',[LeadMasterController::class, 'lead_master_filter'])->name('lead.master.filter');
         });
 
         Route::middleware(['permission:Field Master'])->group(function () {

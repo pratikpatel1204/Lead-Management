@@ -5,11 +5,17 @@
         .offcanvas.offcanvas-end {
             width: 70% !important;
         }
+        table.table.dataTable > tbody > tr td{
+            padding:4px !important;
+        }
+        table.table-bordered.dataTable thead tr:first-child th, table.table-bordered.dataTable thead tr:first-child td{
+            padding:4px !important;
+        }       
     </style>
     <div class="content">
-        <div class="d-md-flex d-block align-items-center justify-content-between page-breadcrumb mb-3">
+        <div class="d-md-flex d-block align-items-center justify-content-between page-breadcrumb mb-2">
             <div class="my-auto mb-2">
-                <h2 class="mb-1">Lead Master</h2>
+                <h2 class="mb-1">Lead List</h2>
                 <nav>
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item">
@@ -44,145 +50,280 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div class="d-flex gap-2">                           
-                            <div class="border rounded p-2 text-center">
-                                <h6 class="text-dark mb-1">All Leads</h6>
-                                <h4 class="fw-bold text-primary"><?php echo e($all_leads); ?></h4>
+                <div class="accordion mb-2" id="accordionPanelsStayOpenExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                                🔍 Lead Summary & Filters
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">                
+                            <div class="accordion-body p-2">    
+                                <div class="card mb-1">
+                                    <div class="card-header">                
+                                        <div class="row g-2">
+                                            <div class="d-flex flex-wrap gap-1 align-items-center">
+                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
+                                                    <span class="fw-bold small">All Leads:</span>
+                                                    <span class="fw-bold text-primary"><?php echo e($all_leads); ?></span>
+                                                </div>
+                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
+                                                    <span class="fw-bold small">Active:</span>
+                                                    <span class="fw-bold text-success"><?php echo e($total_active); ?></span>
+                                                </div>
+                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
+                                                    <span class="fw-bold small">Closed:</span>
+                                                    <span class="fw-bold text-danger"><?php echo e($total_Closed); ?></span>
+                                                </div>
+                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
+                                                    <span class="fw-bold small">Private:</span>
+                                                    <span class="fw-bold text-warning"><?php echo e($private_leads); ?></span>
+                                                </div>
+                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
+                                                    <span class="fw-bold small">Global:</span>
+                                                    <span class="fw-bold text-info"><?php echo e($globle_leads); ?></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                
+                                        <!-- Filters -->
+                                        <div class="row g-2 mt-2">
+                
+                                            <div class="col-md-3">
+                                                <input type="date" id="filterNextMeetingDate" class="form-control">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <select id="filterLabels" class="form-select select2" multiple data-placeholder="Select Labels">
+                                                    <?php $__currentLoopData = $labels; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($label); ?>"><?php echo e($label); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterEmployee" class="form-select select2" multiple data-placeholder="Select Employee">
+                                                    <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($user->id); ?>">
+                                                            <?php echo e($user->name); ?>
+
+                                                        </option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterArea" class="form-select select2" multiple data-placeholder="Select Area">
+                                                    <?php $__currentLoopData = $areas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($val); ?>"><?php echo e($val); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterLeadType" class="form-select select2" multiple data-placeholder="Select Lead Type">
+                                                    <?php $__currentLoopData = $leadTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($val); ?>"><?php echo e($val); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterSiteStage" class="form-select select2" multiple data-placeholder="Select Site Stage">
+                                                    <?php $__currentLoopData = $siteStages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($val); ?>"><?php echo e($val); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterProjectType" class="form-select select2" multiple data-placeholder="Select Project Type">
+                                                    <?php $__currentLoopData = $projectTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($val); ?>"><?php echo e($val); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterCustomerType" class="form-select select2" multiple data-placeholder="Select Customer Type">
+                                                    <?php $__currentLoopData = $customerTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($val); ?>"><?php echo e($val); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterSPProduct" class="form-select select2" multiple data-placeholder="Select SP Focused Product">
+                                                    <?php $__currentLoopData = $spProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($val); ?>"><?php echo e($val); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            </div>
+                
+                                            <div class="col-md-3">
+                                                <select id="filterLeadSource" class="form-select select2" multiple data-placeholder="Select Lead Source">
+                                                    <?php $__currentLoopData = $leadSources; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($val); ?>"><?php echo e($val); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            </div>
+                
+                                            <!-- Bathroom -->
+                                            <div class="col-md-3 d-flex gap-1">
+                                                <select id="bathroomOp" class="form-select form-select-sm w-25">
+                                                    <option value="=">=</option>
+                                                    <option value="<"><</option>
+                                                    <option value=">">></option>
+                                                </select>
+                                                <input type="number" id="filterBathroom" class="form-control form-control-sm" placeholder="Bathroom">
+                                            </div>
+                
+                                            <!-- Floor -->
+                                            <div class="col-md-3 d-flex gap-1">
+                                                <select id="floorOp" class="form-select form-select-sm w-25">
+                                                    <option value="=">=</option>
+                                                    <option value="<"><</option>
+                                                    <option value=">">></option>
+                                                </select>
+                                                <input type="number" id="filterFloor" class="form-control form-control-sm" placeholder="Floor">
+                                            </div>
+                
+                                            <!-- Tower -->
+                                            <div class="col-md-3 d-flex gap-1">
+                                                <select id="towerOp" class="form-select form-select-sm w-25">
+                                                    <option value="=">=</option>
+                                                    <option value="<"><</option>
+                                                    <option value=">">></option>
+                                                </select>
+                                                <input type="number" id="filterTower" class="form-control form-control-sm" placeholder="Tower">
+                                            </div>
+                
+                                            <!-- Buttons -->
+                                            <div class="col-md-3 d-flex gap-2">
+                                                <button id="applyFilters" class="btn btn-sm btn-primary w-50">Apply</button>
+                                                <button id="clearFilters" class="btn btn-sm btn-outline-secondary w-50">Clear</button>
+                                            </div>                
+                                        </div>            
+                                    </div>
+                                </div>                
                             </div>
-                            <div class="border rounded p-2 text-center">
-                                <h6 class="text-dark mb-1">Active Leads</h6>
-                                <h4 class="fw-bold text-success"><?php echo e($total_active); ?></h4>
-                            </div>   
-                            <div class="border rounded p-2 text-center">
-                                <h6 class="text-dark mb-1">Closed Leads</h6>
-                                <h4 class="fw-bold text-danger"><?php echo e($total_Closed); ?></h4>
-                            </div>
-                            <div class="border rounded p-2 text-center">
-                                <h6 class="text-dark mb-1">Private Leads</h6>
-                                <h4 class="fw-bold text-warning"><?php echo e($private_leads); ?></h4>
-                            </div>
-                            <div class="border rounded p-2 text-center">
-                                <h6 class="text-dark mb-1">Global Leads</h6>
-                                <h4 class="fw-bold text-info"><?php echo e($globle_leads); ?></h4>
-                            </div>         
-                        </div>                      
-                    </div>                   
-                    <div class="card-body">
-                        <table class="table table-bordered table-striped" id="datalistTable">
-                            <thead>
-                                <tr class="bg-light">
-                                    <th>#</th>
-                    
-                                    
-                                    <?php
-                                        $columns = !empty($fieldsorder) ? array_unique($fieldsorder) : $tablefield->pluck('field.name')->toArray();
-                                    ?>
-                    
-                                    <?php $__currentLoopData = $columns; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $col): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <th><?php echo e($col); ?></th>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    
-                                    <th width="150">Actions</th>
-                                </tr>
-                            </thead>
-                    
-                            <tbody>
-                                <?php $__currentLoopData = $finalData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rowSet): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <?php
-                                        $groupId = $rowSet['form_group_id'];
-                                        $leadRows    = collect($rowSet['lead'])->keyBy('field_name');
-                                        $meetingRows = collect($rowSet['meeting'])->keyBy('label');
-                                        $platform    = strtolower(optional($meetingRows->firstWhere('label', 'Platform'))->value ?? '');
-                                    ?>
-                    
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox" class="rowCheckbox" value="<?php echo e($groupId); ?>">
-                                        </td>
-                    
-                                        
-                                        <?php $__currentLoopData = $columns; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $col): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <?php
-                                                $leadRec    = $leadRows[$col] ?? null;
-                                                $meetingRec = $meetingRows[$col] ?? null;
-                                            ?>
-                    
-                                            <td>
-                                                
-                                                <?php if($leadRec): ?>
-                                                    <?php if($leadRec->field_name === 'Site Name'): ?>
-                                                        <a href="javascript:void(0)" class="text-primary viewLeadBtn" data-group="<?php echo e($groupId); ?>">
-                                                            <?php echo e($leadRec->field_value); ?>
-
-                                                        </a>
-                                                    <?php elseif($leadRec->field_name === 'Lead Type'): ?>
-                                                        <?php
-                                                            $type = strtolower($leadRec->field_value);
-                                                            $badgeClass = $type === 'private' ? 'bg-warning text-dark' : ($type === 'global' ? 'bg-success' : 'bg-secondary');
-                                                        ?>
-                                                        <span class="badge <?php echo e($badgeClass); ?>"><?php echo e(ucfirst($leadRec->field_value)); ?></span>
-                                                    <?php elseif(Str::endsWith($leadRec->field_value, ['jpg','jpeg','png','gif','webp'])): ?>
-                                                        <img src="<?php echo e(asset($leadRec->field_value)); ?>" width="50">
-                                                    <?php elseif(Str::endsWith($leadRec->field_value, 'pdf')): ?>
-                                                        <a href="<?php echo e(asset($leadRec->field_value)); ?>" target="_blank" class="btn btn-sm btn-danger">View PDF</a>
-                                                    <?php else: ?>
-                                                        <?php echo e($leadRec->field_value ?? '-'); ?>
-
-                                                    <?php endif; ?>
-                    
-                                                
-                                                <?php elseif($meetingRec): ?>
-                                                    <?php if($meetingRec->label === 'Meeting Status'): ?>
-                                                        <span class="badge bg-warning"><?php echo e(ucfirst($meetingRec->value)); ?></span>
-                                                    <?php elseif(in_array($meetingRec->label, ['Next Meeting Date','Platform'])): ?>
-                                                        <?php
-                                                            $date = $meetingRec->value ?? null;
-                                                        ?>
-                                                        
-                                                        <?php if(!empty($date) && $date != 'NULL'): ?>
-                                                            <?php echo e(\Carbon\Carbon::parse($date)->format('d-M-y (D)')); ?>
-
-                                                        <?php else: ?>
-                                                            -
-                                                        <?php endif; ?>                                                
-                                                        <br>
-                                                        <span class="badge bg-info"><?php echo e($rowSet['meeting_count']); ?></span>
-                                                        <?php if($platform === 'desktop'): ?>
-                                                            <i class="fa fa-desktop text-success" title="Desktop"></i>
-                                                        <?php elseif($platform === 'mobile'): ?>
-                                                            <i class="fa fa-mobile-alt text-success" title="Mobile"></i>
-                                                        <?php endif; ?>
-                                                    <?php else: ?>
-                                                        <?php echo e($meetingRec->value ?? '-'); ?>
-
-                                                    <?php endif; ?>
-                    
-                                                
-                                                <?php else: ?>
-                                                    -
-                                                <?php endif; ?>
-                                            </td>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    
-                                        
-                                        <td class="text-center">
-                                            <a href="<?php echo e(route('admin.lead.master.edit', $groupId)); ?>" class="btn btn-info btn-sm text-white me-1">
-                                                <i class="ti ti-edit"></i>
-                                            </a>
-                                            <button class="btn btn-danger btn-sm deleteDataBtn" data-group="<?php echo e($groupId); ?>">
-                                                <i class="ti ti-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
+                        </div>
+                    </div>                
+                </div>
+                      
+                <div class="table-responsive-wrapper">
+                    <table class="table table-bordered table-striped table-responsive-custom" id="datalistTable">
+                        <thead class="table-light">
+                            <tr class="bg-light">
+                                <th>#</th>
+                
+                                
+                                <?php
+                                    $columns = !empty($fieldsorder) ? array_unique($fieldsorder) : $tablefield->pluck('field.name')->toArray();
+                                ?>
+                
+                                <?php $__currentLoopData = $columns; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $col): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <th><?php echo e($col); ?></th>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            </tbody>
-                        </table>
-                        <?php echo e($finalData->links()); ?>
+                
+                                <th width="150">Actions</th>
+                            </tr>
+                        </thead>
+                
+                        <tbody id="leadTableBody">
+                            <?php $__currentLoopData = $finalData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rowSet): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
+                                    $groupId = $rowSet['form_group_id'];
+                                    $leadRows    = collect($rowSet['lead'])->keyBy('field_name');
+                                    $meetingRows = collect($rowSet['meeting'])->keyBy('label');
+                                    $platform    = strtolower(optional($meetingRows->firstWhere('label', 'Platform'))->value ?? '');
+                                ?>
+                
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="rowCheckbox" value="<?php echo e($groupId); ?>">
+                                    </td>
+                
+                                    
+                                    <?php $__currentLoopData = $columns; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $col): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php
+                                            $leadRec    = $leadRows[$col] ?? null;
+                                            $meetingRec = $meetingRows[$col] ?? null;
+                                        ?>
+                
+                                        <td>
+                                            
+                                            <?php if($leadRec): ?>
+                                                <?php if($leadRec->field_name === 'Site Name'): ?>
+                                                    <a href="javascript:void(0)" class="text-primary viewLeadBtn" data-group="<?php echo e($groupId); ?>">
+                                                        <?php echo e($leadRec->field_value); ?>
 
-                    </div>
-                    
+                                                    </a>
+                                                <?php elseif($leadRec->field_name === 'Lead Type'): ?>
+                                                    <?php
+                                                        $type = strtolower($leadRec->field_value);
+                                                        $badgeClass = $type === 'private' ? 'bg-warning text-dark' : ($type === 'global' ? 'bg-success' : 'bg-secondary');
+                                                    ?>
+                                                    <span class="badge <?php echo e($badgeClass); ?>"><?php echo e(ucfirst($leadRec->field_value)); ?></span>
+                                                <?php elseif(Str::endsWith($leadRec->field_value, ['jpg','jpeg','png','gif','webp'])): ?>
+                                                    <img src="<?php echo e(asset($leadRec->field_value)); ?>" width="50">
+                                                <?php elseif(Str::endsWith($leadRec->field_value, 'pdf')): ?>
+                                                    <a href="<?php echo e(asset($leadRec->field_value)); ?>" target="_blank" class="btn btn-sm btn-danger">View PDF</a>
+                                                <?php else: ?>
+                                                    <?php echo e($leadRec->field_value ?? '-'); ?>
+
+                                                <?php endif; ?>
+                
+                                            
+                                            <?php elseif($meetingRec): ?>
+                                                <?php if($meetingRec->label === 'Meeting Status'): ?>
+                                                    <span class="badge bg-warning"><?php echo e(ucfirst($meetingRec->value)); ?></span>
+                                                <?php elseif(in_array($meetingRec->label, ['Next Meeting Date','Platform'])): ?>
+                                                    <?php
+                                                        $date = $meetingRec->value ?? null;
+                                                    ?>
+                                                    
+                                                    <?php if(!empty($date) && $date != 'NULL'): ?>
+                                                        <?php echo e(\Carbon\Carbon::parse($date)->format('d-M-y (D)')); ?>
+
+                                                    <?php else: ?>
+                                                        -
+                                                    <?php endif; ?>                                                
+                                                    <br>
+                                                    <span class="badge bg-info"><?php echo e($rowSet['meeting_count']); ?></span>
+                                                    <?php if($platform === 'desktop'): ?>
+                                                        <i class="fa fa-desktop text-success" title="Desktop"></i>
+                                                    <?php elseif($platform === 'mobile'): ?>
+                                                        <i class="fa fa-mobile-alt text-success" title="Mobile"></i>
+                                                    <?php endif; ?>
+                                                <?php else: ?>
+                                                    <?php echo e($meetingRec->value ?? '-'); ?>
+
+                                                <?php endif; ?>
+                
+                                            
+                                            <?php else: ?>
+                                                -
+                                            <?php endif; ?>
+                                        </td>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                
+                                    
+                                    <td class="text-center">
+                                        <a href="<?php echo e(route('admin.lead.master.edit', $groupId)); ?>" class="btn btn-info btn-sm text-white me-1">
+                                            <i class="ti ti-edit"></i>
+                                        </a>
+                                        <button class="btn btn-danger btn-sm deleteDataBtn" data-group="<?php echo e($groupId); ?>">
+                                            <i class="ti ti-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="pagediv">
+                    <?php echo e($finalData->links()); ?>
+
                 </div>
             </div>
         </div>
@@ -537,7 +678,7 @@
             </div>
         </div>
     </div>    
-    <script>
+    <script>        
     document.getElementById('lead_emp_error').addEventListener('change', function () {
         let empId = this.value;
         let leadType = document.getElementById('dylead_type');
@@ -794,12 +935,20 @@
     </script>
     <script>
         $(document).ready(function() {
-            let table = $('#datalistTable').DataTable({
+            let leadTable = $('#datalistTable').DataTable({
                 pageLength: 25,
                 searching: false,
                 lengthChange: false,
                 info: false,
-                paging: false
+                paging: false,
+                scrollY: '500px',
+                scrollX: true,
+                scrollCollapse: true,
+                fixedHeader: true,
+                autoWidth: false,
+                columnDefs: [
+                    { targets: '_all', className: 'dt-wrap-text' }
+                ]
             });
             $(document).on('click', '.deleteDataBtn', function() {
 
@@ -1314,7 +1463,90 @@
             });
         
         });
-    </script>                  
+    </script>  
+   <script>
+    function getFilters() {
+        return {
+            next_meeting_date: $('#filterNextMeetingDate').val(),
+            label: $('#filterLabels').val(),
+            employee: $('#filterEmployee').val(),
+            area: $('#filterArea').val(),
+            lead_type: $('#filterLeadType').val(),
+            site_stage: $('#filterSiteStage').val(),
+            project_type: $('#filterProjectType').val(),
+            customer_type: $('#filterCustomerType').val(),
+            sp_product: $('#filterSPProduct').val(),
+            lead_source: $('#filterLeadSource').val(),
+
+            bathroom_op: $('#bathroomOp').val(),
+            bathroom: $('#filterBathroom').val(),
+
+            floor_op: $('#floorOp').val(),
+            floor: $('#filterFloor').val(),
+
+            tower_op: $('#towerOp').val(),
+            tower: $('#filterTower').val(),
+
+            _token: '<?php echo e(csrf_token()); ?>'
+        };
+    }
+
+    $('#applyFilters').on('click', function () {
+        $('#pagediv').hide();
+        if ($.fn.DataTable.isDataTable('#datalistTable')) {
+            $('#datalistTable').DataTable().destroy();
+        }
+        $.ajax({
+            url: "<?php echo e(route('admin.lead.master.filter')); ?>",
+            type: "POST",
+            data: getFilters(),
+            beforeSend: function () {
+                $('#leadTableBody').html(
+                    '<tr><td colspan="100%" class="text-center">Loading...</td></tr>'
+                );
+            },
+            success: function (response) {
+                if (!response.success) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No Data Found',
+                        text: 'No leads match the selected filters.',
+                        confirmButtonText: 'OK'
+                    });
+
+                    return;
+                }
+
+                $('#leadTableBody').html(response.html);
+                $('#datalistTable').DataTable({
+                    pageLength: 25,
+                    searching: true,    
+                    lengthChange: true,  
+                    info: true,
+                    paging: true,       
+                    scrollY: '500px',
+                    scrollX: true,
+                    scrollCollapse: true,
+                    fixedHeader: true,
+                    autoWidth: false,
+                    columnDefs: [
+                        { targets: '_all', className: 'dt-wrap-text' }
+                    ]
+                });
+            },
+            error: function () {
+                $('#leadTableBody').html(
+                    '<tr><td colspan="100%" class="text-center">Error while loading leads</td></tr>'
+                );
+            }
+        });
+    });
+
+    $('#clearFilters').on('click', function () {
+        window.location.reload();
+    });   
+</script>
+              
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('admin.layout.main-layout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\xampp\htdocs\Lead-Management\resources\views/admin/lead/list.blade.php ENDPATH**/ ?>

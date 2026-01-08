@@ -38,4 +38,8 @@ class TemplateData extends Model
     {
         return $this->belongsTo(User::class, 'emp_id');
     }
+    public function latestMeeting()
+    {
+        return $this->hasMany(Meeting::class, 'form_group_id', 'form_group_id');
+    }
 }

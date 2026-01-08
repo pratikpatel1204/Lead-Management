@@ -147,7 +147,7 @@ class DashboardController extends Controller
                 $query->whereDate(DB::raw($dateExpression), $from);
             }
 
-            return $query->pluck('m.meeting_group');
+            return $query->distinct()->pluck('m.form_group_id')->unique()->values();
         };
 
         // 🔹 TODAY count
