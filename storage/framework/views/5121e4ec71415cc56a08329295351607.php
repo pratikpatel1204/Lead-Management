@@ -35,7 +35,8 @@
 <body>
 
     <div id="global-loader">
-        <div class="page-loader"></div>
+        <div class="page-loader">            
+        </div>
     </div>
 
     <!-- Main Wrapper -->
@@ -45,8 +46,10 @@
         <div class="page-wrapper">
             <?php echo $__env->yieldContent('content'); ?>
             <div class="footer d-sm-flex align-items-center justify-content-between border-top bg-white p-3">
-                <p class="mb-0">2014 - 2025 &copy; SmartHR.</p>
-                <p>Designed &amp; Developed By <a href="javascript:void(0);" class="text-primary">Dreams</a></p>
+                <p class="mb-0">&copy;
+                    <a href="javascript:void(0);" class="text-primary">Shine Plastics</a>
+                    <?php echo e(now()->year); ?>  | All Rights Reserved.
+                </p>
             </div>
         </div>
     </div>    
@@ -58,7 +61,7 @@
     <script src="<?php echo e(asset('admin/plugins/chartjs/chart.min.js')); ?>"></script>
     <script src="<?php echo e(asset('admin/plugins/chartjs/chart-data.js')); ?>"></script>
     <script src="<?php echo e(asset('admin/js/moment.js')); ?>"></script>
-    <script src="<?php echo e(asset('admin/js/bootstrap-datetimepicker.min.js')); ?>"></script>
+    
     <script src="<?php echo e(asset('admin/plugins/daterangepicker/daterangepicker.js')); ?>"></script>
     <script src="<?php echo e(asset('admin/plugins/summernote/summernote-lite.min.js')); ?>"></script>
     <script src="<?php echo e(asset('admin/plugins/select2/js/select2.min.js')); ?>"></script>

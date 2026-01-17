@@ -16,7 +16,6 @@
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
-                <li class="menu-title m-0"><span>MAIN MENU</span></li>
                 @can('View dashboard')
                     <li>
                         <ul class="m-0">
@@ -28,24 +27,9 @@
                         </ul>
                     </li>
                 @endcan
-                @canany([
-                    'About Us',
-                    'Banner',
-                    'Contact Us',
-                    'Testimonial',
-                    'Inquiry',
-                    'All Blogs',
-                    'Create Blogs',
-                    'Blogs Categories',
-                    'Why Choose Us',
-                    'Create Services Categories',
-                    'Services Categories List',
-                    'Create Service',
-                    'Service List',
-                    'Create Team',
-                    'Team List',
-                    ])
-                    <li class="menu-title m-0"><span>Front Settings</span></li>
+                @canany(['About Us', 'Banner', 'Contact Us', 'Testimonial', 'Inquiry', 'All Blogs', 'Create Blogs',
+                    'Blogs Categories', 'Why Choose Us', 'Create Services Categories', 'Services Categories List', 'Create
+                    Service', 'Service List', 'Create Team', 'Team List'])
                     <li>
                         <ul class="m-0">
                             <li class="submenu">
@@ -117,7 +101,6 @@
                     </li>
                 @endcanany
                 @canany(['View Roles', 'View Permissions'])
-                    <li class="menu-title m-0"><span>Roles & Permissions</span></li>
                     <li>
                         <ul class="m-0">
                             <li class="submenu">
@@ -165,138 +148,123 @@
                     </li>
                 @endcanany
                 @canany(['Lead Master'])
-                <li class="menu-title m-0"><span>Lead Mater</span></li>
-                <li>
-                    <ul class="m-0">
-                        <li>
-                            <a href="{{ route('admin.lead.master') }}" class="px-2">
-                                <i class="ti ti-user-star me-2"></i><span> Lead Master</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                @endcanany
-                @canany(['Field Master'])
-                    <li class="menu-title m-0"><span>Field Master</span></li>
                     <li>
                         <ul class="m-0">
-                            <li class="submenu">
-                                <a href="javascript:void(0);">
-                                    <i class="ti ti-layout-grid"></i><span>Field Type</span>
-                                    <span class="menu-arrow"></span>
+                            <li>
+                                <a href="{{ route('admin.lead.master') }}" class="px-2">
+                                    <i class="ti ti-user-star me-2"></i><span> Lead Master</span>
                                 </a>
-                                <ul>
-                                    <li><a href="{{ route('admin.field.type.list') }}">Field Type List</a></li>
-                                    <li><a href="{{ route('admin.create.field.type') }}">Create Field Type</a></li>
-                                </ul>
                             </li>
-                            <li class="submenu">
-                                <a href="javascript:void(0);">
-                                    <i class="ti ti-file-description"></i><span>Field Masters</span>
-                                    <span class="menu-arrow"></span>
-                                </a>
-                                <ul>
-                                    <li><a href="{{ route('admin.field.list') }}">Field List</a></li>
-                                    <li><a href="{{ route('admin.create.field') }}">Create Field</a></li>
-                                </ul>
-                            </li>
-                            <li class="submenu">
-                                <a href="javascript:void(0);">
-                                    <i class="ti ti-checkup-list"></i><span>Validation Masters</span>
-                                    <span class="menu-arrow"></span>
-                                </a>
-                                <ul>
-                                    <li><a href="{{ route('admin.validation.list') }}">Validation List</a></li>
-                                    <li><a href="{{ route('admin.create.validation') }}">Create Validation</a></li>
-                                </ul>
-                            </li>                          
                         </ul>
                     </li>
                 @endcanany
-                @canany(['Template Master', 'Template Data Master'])
-                    <li class="menu-title m-0"><span>Template Master</span></li>
-                    <li>
-                        <ul class="m-0">
-                            @can('Template Master')
-                                <li class="submenu">
-                                    <a href="javascript:void(0);">
-                                        <i class="ti ti-layout-grid"></i><span>Template Master</span>
-                                        <span class="menu-arrow"></span>
-                                    </a>
-                                    <ul>
-                                        <li>
-                                            <a href="{{ route('admin.template.list') }}">Template List</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('admin.create.template') }}">Create Template</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
-                @canany(['Field Master'])
                 @php
                     $FieldData = \App\Models\Field::where('type', 'select')->get();
-                @endphp                
-                <li class="menu-title m-0"><span>Dropdown Master</span></li>
-                
-                <li>
-                    <ul class="m-0">
-                        <li class="submenu">
-                            <a href="javascript:void(0);">
-                                <i class="ti ti-arrows-sort"></i>
-                                <span>Dropdown Master</span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <ul>
-                                @forelse ($FieldData as $item)
-                                    <li>
-                                        <a href="{{ route('admin.dropdown.list', $item->id) }}">
-                                            {{ $item->name }}
-                                        </a>
-                                    </li>
-                                @empty
-                                    <li>
-                                        <a href="javascript:void(0)" class="text-muted">
-                                            No dropdown fields found
-                                        </a>
-                                    </li>
-                                @endforelse
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                @endcanany   
-                @php
+
                     $templateData = app('templatemaster-service')->getAllTemplateMaster();
                     $permissions = $templateData->pluck('name')->toArray();
                 @endphp
-                @canany($permissions)
-                    <li class="menu-title m-0"><span>Data Master</span></li>
+
+                @canany(array_merge(['Field Master', 'Template Master', 'Template Data Master'], $permissions))                    
                     <li>
                         <ul class="m-0">
                             <li class="submenu">
                                 <a href="javascript:void(0);">
-                                    <i class="ti ti-database"></i><span>Data Master</span>
+                                    <i class="ti ti-settings"></i>
+                                    <span>Master Settings</span>
                                     <span class="menu-arrow"></span>
                                 </a>
+
                                 <ul>
-                                    @foreach ($templateData as $item)
-                                        @can($item->name)
-                                            <li>
-                                                <a href="{{ route('admin.data.list', $item->name) }}">
-                                                    {{ $item->name ?? 'No Name' }}
-                                                </a>
-                                            </li>
-                                        @endcan
-                                    @endforeach
+
+                                    {{-- ================= FIELD MASTER ================= --}}
+                                    @can('Field Master')
+                                        <li class="submenu">
+                                            <a href="javascript:void(0);">
+                                                <i class="ti ti-layout-grid"></i>
+                                                <span>Field Master</span>
+                                                <span class="menu-arrow"></span>
+                                            </a>
+                                            <ul>
+                                                <li><a href="{{ route('admin.field.type.list') }}">Field Type List</a></li>
+                                                <li><a href="{{ route('admin.create.field.type') }}">Create Field Type</a></li>
+                                                <li><a href="{{ route('admin.field.list') }}">Field List</a></li>
+                                                <li><a href="{{ route('admin.create.field') }}">Create Field</a></li>
+                                                <li><a href="{{ route('admin.validation.list') }}">Validation List</a></li>
+                                                <li><a href="{{ route('admin.create.validation') }}">Create Validation</a></li>
+                                            </ul>
+                                        </li>
+                                    @endcan
+
+                                    {{-- ================= TEMPLATE MASTER ================= --}}
+                                    @can('Template Master')
+                                        <li class="submenu">
+                                            <a href="javascript:void(0);">
+                                                <i class="ti ti-file-description"></i>
+                                                <span>Template Master</span>
+                                                <span class="menu-arrow"></span>
+                                            </a>
+                                            <ul>
+                                                <li><a href="{{ route('admin.template.list') }}">Template List</a></li>
+                                                <li><a href="{{ route('admin.create.template') }}">Create Template</a></li>
+                                            </ul>
+                                        </li>
+                                    @endcan
+
+                                    {{-- ================= DROPDOWN MASTER ================= --}}
+                                    @can('Field Master')
+                                        <li class="submenu">
+                                            <a href="javascript:void(0);">
+                                                <i class="ti ti-arrows-sort"></i>
+                                                <span>Dropdown Master</span>
+                                                <span class="menu-arrow"></span>
+                                            </a>
+                                            <ul>
+                                                @forelse ($FieldData as $item)
+                                                    <li>
+                                                        <a href="{{ route('admin.dropdown.list', $item->id) }}">
+                                                            {{ $item->name }}
+                                                        </a>
+                                                    </li>
+                                                @empty
+                                                    <li>
+                                                        <a href="javascript:void(0)" class="text-muted">
+                                                            No dropdown fields found
+                                                        </a>
+                                                    </li>
+                                                @endforelse
+                                            </ul>
+                                        </li>
+                                    @endcan
+
+                                    {{-- ================= DATA MASTER ================= --}}
+                                    @canany($permissions)
+                                        <li class="submenu">
+                                            <a href="javascript:void(0);">
+                                                <i class="ti ti-database"></i>
+                                                <span>Data Master</span>
+                                                <span class="menu-arrow"></span>
+                                            </a>
+                                            <ul>
+                                                @foreach ($templateData as $item)
+                                                    @can($item->name)
+                                                        <li>
+                                                            <a href="{{ route('admin.data.list', $item->name) }}">
+                                                                {{ $item->name ?? 'No Name' }}
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                @endforeach
+                                            </ul>
+                                        </li>
+                                    @endcanany
+
                                 </ul>
                             </li>
                         </ul>
                     </li>
                 @endcanany
+
             </ul>
         </div>
     </div>

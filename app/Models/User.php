@@ -91,5 +91,21 @@ class User extends Authenticatable
     public function city()
     {
         return $this->belongsTo(City::class);
-    }    
+    }
+    public function scopeEmpScope($query)
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return $query->whereRaw('0 = 1');
+        }
+
+        if (!in_array($user->role, ['admin', 'super admin'])) {
+            $query->where('id', $user->id);
+        }else{
+            $query->where('role', '!=', 'super admin');
+        }
+
+        return $query;
+    }
 }

@@ -57,6 +57,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::middleware(['permission:View Employee'])->group(function () {
             Route::get('employee-list', [EmployeeController::class, 'employee_list'])->name('employee.list');
             Route::post('employee-update-status', [EmployeeController::class, 'employee_update_status'])->name('employee.update.status');
+            Route::get('/get-lead-serialize', [EmployeeController::class, 'get_lead_serialize'])->name('get.lead.serialize');
+            Route::post('/lead-field-order-save', [EmployeeController::class, 'lead_field_order_save'])->name('lead.field.order.save');
         });
         Route::middleware(['permission:Edit Employee'])->group(function () {
             Route::get('employee-edit/{id}', [EmployeeController::class, 'employee_edit'])->name('employee.edit');
@@ -210,7 +212,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/lead-master-get-data/{groupId}',[LeadMasterController::class, 'lead_master_get_data'])->name('admin.lead.master.get.data');
             Route::post('/meetings-store',[LeadMasterController::class, 'meetings_store'])->name('meetings.store');
             Route::post('/meetings-delete/{id}', [LeadMasterController::class, 'meetings_delete']);
-            Route::post('/lead-field-order-save', [LeadMasterController::class, 'lead_field_order_save'])->name('lead.field.order.save');
             Route::post('/lead-bulk-delete', [LeadMasterController::class, 'lead_bulkDelete'])->name('lead.master.bulkDelete');
             Route::post('/leads-excel-upload', [LeadMasterController::class, 'leads_excel_upload'])->name('leads.excel.upload');
             Route::post('/lead-meeting-excel-upload',[LeadMasterController::class, 'lead_Meeting_Excel_Upload'])->name('lead.meeting.excel.upload');

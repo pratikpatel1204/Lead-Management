@@ -71,23 +71,21 @@ class LeadMasterController extends Controller
 
         // 1️⃣ Get paginated meetings
         $meetingsid = $baseMeetingQuery
-            ->empScope()
             ->select('*')
             ->selectRaw("$dateExpression as meeting_date")
-            ->whereRaw("$dateExpression IS NOT NULL")
-            ->whereRaw("$dateExpression <= ?", [$today])
             ->orderByRaw("
-                CASE 
-                    WHEN $dateExpression IS NULL THEN 2
-                    WHEN $dateExpression >= ? THEN 0
-                    ELSE 1
-                END,
-                $dateExpression DESC
-            ", [$today])
+            CASE
+                WHEN DATE($dateExpression) = ? THEN 0   -- Today
+                WHEN DATE($dateExpression) > ? THEN 1   -- Future
+                WHEN DATE($dateExpression) < ? THEN 2   -- Past
+                ELSE 3
+            END,
+            DATE($dateExpression) ASC
+            ", [$today, $today, $today])
             ->distinct('form_group_id')
             ->paginate(25)
-            ->withQueryString();  // keeps ?page=x in links
-
+            ->withQueryString();
+        
         $meetingsidPluck = $meetingsid->pluck('meeting_group', 'form_group_id');
         $formGroupIds = $meetingsidPluck->keys();
         $meeting_Ids  = $meetingsidPluck->values();
@@ -127,7 +125,7 @@ class LeadMasterController extends Controller
             ];
         });
 
-        $users = User::where('role', '!=', 'super admin')->get();
+        $users = User::empScope()->get();
 
         $empId = auth()->user()->id;
         $isPrivileged = in_array(auth()->user()->role, ['admin', 'super admin']);
@@ -153,14 +151,13 @@ class LeadMasterController extends Controller
         $leadStats = TemplateData::query()
             ->from('template_data as td')
             ->where('td.template_name', 'Lead Master')
-            ->empScope()
+            ->empScope('td')
 
             // Latest meeting per lead
             ->leftJoinSub(
                 Meeting::query()
                     ->select('form_group_id', DB::raw('MAX(id) as max_id'))
                     ->where('label', 'Meeting Status')
-                    ->empScope()
                     ->groupBy('form_group_id'),
                 'lm',
                 fn($join) => $join->on('td.form_group_id', '=', 'lm.form_group_id')
@@ -228,59 +225,7 @@ class LeadMasterController extends Controller
             'leadTypes'
         ));
     }
-
-    public function lead_field_order_save(Request $request){
-        $request->validate([
-            'field_order' => 'required|string'
-        ]);
-
-        // Convert CSV to array
-        $fields = array_values(array_filter(
-            explode(',', $request->field_order)
-        ));
-
-        if (empty($fields)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No fields found'
-            ], 422);
-        }
-
-        DB::beginTransaction();
-
-        try {
-
-            // Delete old order for this employee & template
-            LeadFieldOrder::where('emp_id', auth()->id())
-                ->where('template_name', 'lead_master')
-                ->delete();
-
-            // Insert new order
-            foreach ($fields as $index => $fieldName) {
-                LeadFieldOrder::create([
-                    'emp_id' => auth()->id(),
-                    'template_name' => 'lead_master',
-                    'field_name' => $fieldName,
-                    'order_number' => $index + 1,
-                ]);
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Field order saved successfully'
-            ]);
-        } catch (\Exception $e) {
-
-            DB::rollBack();
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Something went wrong while saving'
-            ], 500);
-        }
-    }
+    
     public function lead_master_store(Request $request)
     {
         $templates = TemplateMaster::with('field')
@@ -994,67 +939,75 @@ class LeadMasterController extends Controller
             ->where('template_name', 'Lead Master')
             ->empScope();
 
-        if ($request->filled('employee')) {
-            $query->whereIn('emp_id', $request->employee);
-        }       
-        if ($request->filled('next_meeting_date')) {
+        if(!$request->boolean('meeting_null')){
+            if ($request->filled('employee')) {
+                $query->whereIn('emp_id', $request->employee);
+            }       
+            if ($request->filled('next_meeting_date')) {
 
-            $latestMeetingsSub = Meeting::empScope()
-                ->select(
-                    'form_group_id',
-                    DB::raw('MAX(created_at) as latest_created_at')
-                )
-                ->where('label', 'Next Meeting Date')
-                ->groupBy('form_group_id');
+                [$startDate, $endDate] = array_map('trim', explode('to', $request->next_meeting_date));
+                $latestMeetingsSub = Meeting::empScope()
+                    ->select(
+                        'form_group_id',
+                        DB::raw('MAX(created_at) as latest_created_at')
+                    )
+                    ->where('label', 'Next Meeting Date')
+                    ->groupBy('form_group_id');
 
-            $leadIds = DB::table('meetings as m')
-                ->joinSub($latestMeetingsSub, 'lm', function ($join) {
-                    $join->on('m.form_group_id', '=', 'lm.form_group_id')
-                        ->on('m.created_at', '=', 'lm.latest_created_at');
-                })
-                ->where('m.label', 'Next Meeting Date')
-                ->whereNotNull('m.value')
-                ->where('m.value', '!=', '0000-00-00')
-                ->whereDate(DB::raw($dateExpression), $request->next_meeting_date)                
-                ->pluck('m.form_group_id');
-
-            $query->whereIn('form_group_id', $leadIds);
-        }       
-        // Dynamic filters based on map
-        $map = [
-            'label'         => 'Labels',            
-            'area'          => 'Area',
-            'lead_type'     => 'Lead Type',
-            'site_stage'    => 'Site Stage',
-            'project_type'  => 'Project Type',
-            'customer_type' => 'Customer Type',
-            'sp_product'    => 'SP Focused Product',
-            'lead_source'   => 'Lead Source',
-        ];
-
-        foreach ($map as $fieldKey => $fieldLabel) {
-            if ($request->filled($fieldKey)) {
-
-                $values = (array) $request->$fieldKey;
-
-                $matchedGroupIds = TemplateData::query()
-                    ->where('template_name', 'Lead Master')
-                    ->whereHas('field', function ($q) use ($fieldLabel, $values) {
-                        $q->where('field_name', $fieldLabel)
-                            ->whereIn('field_value', $values);
+                $leadIds = DB::table('meetings as m')
+                    ->joinSub($latestMeetingsSub, 'lm', function ($join) {
+                        $join->on('m.form_group_id', '=', 'lm.form_group_id')
+                            ->on('m.created_at', '=', 'lm.latest_created_at');
                     })
-                    ->pluck('form_group_id');
+                    ->where('m.label', 'Next Meeting Date')
+                    ->whereNotNull('m.value')
+                    ->where('m.value', '!=', '0000-00-00')
+                    ->whereBetween(
+                        DB::raw("DATE($dateExpression)"),
+                        [$startDate, $endDate]
+                    )     
+                    ->pluck('m.form_group_id');
 
-                $query->whereIn('form_group_id', $matchedGroupIds);
+                $query->whereIn('form_group_id', $leadIds);
+            }       
+            // Dynamic filters based on map
+            $map = [
+                'label'         => 'Labels',            
+                'area'          => 'Area',
+                'lead_type'     => 'Lead Type',
+                'site_stage'    => 'Site Stage',
+                'project_type'  => 'Project Type',
+                'customer_type' => 'Customer Type',
+                'sp_product'    => 'SP Focused Product',
+                'lead_source'   => 'Lead Source',
+            ];
+
+            foreach ($map as $fieldKey => $fieldLabel) {
+                if ($request->filled($fieldKey)) {
+
+                    $values = (array) $request->$fieldKey;
+
+                    $matchedGroupIds = TemplateData::query()
+                        ->where('template_name', 'Lead Master')
+                        ->whereHas('field', function ($q) use ($fieldLabel, $values) {
+                            $q->where('field_name', $fieldLabel)
+                                ->whereIn('field_value', $values);
+                        })
+                        ->pluck('form_group_id');
+
+                    $query->whereIn('form_group_id', $matchedGroupIds);
+                }
             }
+
+            // NUMERIC FILTERS
+            $this->applyNumberFilter($query, $request, 'Number of Bathrooms', 'bathroom', 'bathroom_op');
+            $this->applyNumberFilter($query, $request, 'Number of Floors', 'floor', 'floor_op');
+            $this->applyNumberFilter($query, $request, 'Number of Towers', 'tower', 'tower_op');
+        }else{
+            $query->whereDoesntHave('latestMeeting');
         }
 
         $groupId = $query->pluck('form_group_id')->unique()->values();
-
-        // NUMERIC FILTERS
-        $this->applyNumberFilter($query, $request, 'Number of Bathrooms', 'bathroom', 'bathroom_op');
-        $this->applyNumberFilter($query, $request, 'Number of Floors', 'floor', 'floor_op');
-        $this->applyNumberFilter($query, $request, 'Number of Towers', 'tower', 'tower_op');
 
         // GROUP BY form_group_id
         $leadRows = $query->get()->groupBy('form_group_id');

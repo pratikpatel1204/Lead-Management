@@ -32,7 +32,7 @@ class Meeting extends Model
         if (!in_array(auth()->user()->role, ['admin', 'super admin'])) {
             $query->where('emp_id', auth()->id());
         }
-    }
+    } 
     public function lead()
     {
         return $this->hasOne(TemplateData::class, 'form_group_id', 'form_group_id')

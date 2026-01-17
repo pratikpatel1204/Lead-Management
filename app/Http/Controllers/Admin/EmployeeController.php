@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\City;
+use App\Models\LeadFieldOrder;
 use App\Models\State;
+use App\Models\TemplateMaster;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,7 +21,20 @@ class EmployeeController extends Controller
     public function employee_list()
     {
         $employees = User::with('roles')->latest()->get();
-        return view('admin.employees.list', compact('employees'));
+        //Table Order
+        $fieldsorder = LeadFieldOrder::where('emp_id', auth()->id())
+            ->where('template_name', 'lead_master')
+            ->orderBy('order_number')
+            ->pluck('field_name')
+            ->toArray();
+
+        //Table Field All
+        $tablefield = TemplateMaster::with(['field', 'field.templateData'])
+            ->whereIn('name', ['Lead Master', 'Lead Meetings'])
+            ->orderBy('order_no', 'asc')
+            ->get();
+
+        return view('admin.employees.list', compact('employees', 'fieldsorder', 'tablefield'));
     }
     public function create_employee()
     {
@@ -319,5 +335,81 @@ class EmployeeController extends Controller
             ->select('id', 'name', 'role')
             ->orderBy('name')
             ->get();
+    }
+    public function get_lead_serialize(Request $request)
+    {
+        $emp = User::findOrFail($request->id);
+
+        //Table Order
+        $fieldsorder = LeadFieldOrder::where('emp_id', $emp->id)
+            ->where('template_name', 'lead_master')
+            ->orderBy('order_number')
+            ->pluck('field_name')
+            ->toArray();
+
+        //Table Field All
+        $tablefield = TemplateMaster::with(['field', 'field.templateData'])
+            ->whereIn('name', ['Lead Master', 'Lead Meetings'])
+            ->orderBy('order_no', 'asc')
+            ->get();
+
+        $html = view('admin.partials.serialize_lead', compact('emp', 'fieldsorder', 'tablefield'))->render();
+        return response()->json([
+            'success' => true,
+            'html' => $html,
+        ]);
+    }
+    public function lead_field_order_save(Request $request)
+    {
+        $request->validate([
+            'field_order' => 'required|string'
+        ]);
+
+        // Convert CSV to array
+        $fields = array_values(array_filter(
+            explode(',', $request->field_order)
+        ));
+
+        if (empty($fields)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No fields found'
+            ], 422);
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            // Delete old order for this employee & template
+            LeadFieldOrder::where('emp_id', $request->emp_id)
+                ->where('template_name', 'lead_master')
+                ->delete();
+
+            // Insert new order
+            foreach ($fields as $index => $fieldName) {
+                LeadFieldOrder::create([
+                    'emp_id' => $request->emp_id,
+                    'template_name' => 'lead_master',
+                    'field_name' => $fieldName,
+                    'order_number' => $index + 1,
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Field order saved successfully'
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong while saving'
+            ], 500);
+        }
     }
 }

@@ -25,7 +25,7 @@
             
             <?php if($leadRec): ?>
                 <?php if($leadRec->field_name === 'Site Name'): ?>
-                    <a href="javascript:void(0)" class="text-primary viewLeadBtn" data-group="<?php echo e($groupId); ?>">
+                    <a href="javascript:void(0)" class="text-info viewLeadBtn" data-group="<?php echo e($groupId); ?>">
                         <?php echo e($leadRec->field_value); ?>
 
                     </a>

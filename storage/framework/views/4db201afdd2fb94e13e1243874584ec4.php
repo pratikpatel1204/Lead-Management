@@ -26,22 +26,33 @@
         margin: 0 0.25rem;
         border-radius: 0.5rem;
         transition: all 0.2s ease;
+        border: 1px solid #F26522;
+        color: #F26522;
     }
 
     .dashnav-pills .nav-link:hover {
         background-color: #e9ecef;
+        color: #F26522;
     }
 
     .dashnav-pills .nav-link.active {
         background-color: #0d6efd;
+        border: 1px solid #0d6efd;
         color: white;
         box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
     }
     .offcanvas.offcanvas-end {
         width: 70% !important;
     }
+    table.table.dataTable > tbody > tr td{
+        padding:4px !important;
+    }
+    table.table-bordered.dataTable thead tr:first-child th, table.table-bordered.dataTable thead tr:first-child td{
+        padding:4px !important;
+    }   
     div.dataTables_wrapper div.dataTables_filter{
         padding: 10px;
+        margin-bottom: 0px;
     }
     .dataTables_length{
         padding:10px;
@@ -68,8 +79,7 @@
     ?>
     <div class="content">
         <div class="d-md-flex d-block align-items-center justify-content-between page-breadcrumb mb-3">
-            <div class="my-auto mb-2">
-                <h2 class="mb-1">Dashboard</h2>
+            <div class="my-auto mb-1">
                 <nav>
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item">
@@ -84,15 +94,13 @@
         <!-- /Breadcrumb -->
 
         <!-- Welcome Wrap -->
-        <div class="welcome-wrap mb-4">
+        <div class="welcome-wrap mb-2 p-2">
             <div class=" d-flex align-items-center justify-content-between flex-wrap">
-                <div class="mb-1">
-                    <h2 class="mb-1 text-white">Welcome Back, <?php echo e(auth()->user()->name); ?></h2>
-                </div>               
+                <h2 class="text-white">Welcome Back, <?php echo e(auth()->user()->name); ?></h2>                              
             </div>
             <div class="welcome-bg">
-                <img src="<?php echo e(asset('admin/img/bg/welcome-bg-02.svg')); ?>" alt="img" class="welcome-bg-01">
-                <img src="<?php echo e(asset('admin/img/bg/welcome-bg-03.svg')); ?>" alt="img" class="welcome-bg-02">
+                <img src="<?php echo e(asset('admin/img/bg/welcome-bg-02.svg')); ?>" alt="img" class="welcome-bg-01" style="height: 50px;">
+                <img src="<?php echo e(asset('admin/img/bg/welcome-bg-03.svg')); ?>" alt="img" class="welcome-bg-02" style="top: -25px;">
                 <img src="<?php echo e(asset('admin/img/bg/welcome-bg-01.svg')); ?>" alt="img" class="welcome-bg-03">
             </div>
         </div>
@@ -100,51 +108,45 @@
 
         <div class="row">
             <div class="col-xl-4 col-sm-12 d-flex">
-                <div class="card flex-fill h-auto">
-                    <div class="card-body">
+                <div class="card flex-fill mb-2">
+                    <div class="card-body p-2">
                         <div class="d-flex align-items-center justify-content-between">
-                            <span class="avatar avatar-md bg-dark mb-3">
+                            <span class="avatar avatar-md bg-dark">
                                 <i class="fa-solid fa-comment-dots fs-16 text-white"></i>
-                            </span>
-                            <div>
-                                <h4 class="mb-3">Today’s Comments</h4>                               
-                                <h2 class="bg-primary d-inline-block text-white text-end mb-1 px-3 py-1 rounded"><?php echo e($todayCommentCount); ?></h2>
-                            </div>
+                            </span>                            
+                            <h4>Today’s Comments</h4>                               
+                            <h2 class="bg-primary d-inline-block text-white text-end px-3 py-1 rounded"><?php echo e($todayCommentCount); ?></h2>                            
                         </div>                     
                     </div>
                 </div>
             </div>
             <div class="col-xl-4 col-sm-12 d-flex">
-                <div class="card flex-fill h-auto">
-                    <div class="card-body">
+                <div class="card flex-fill mb-2">
+                    <div class="card-body p-2">
                         <div class="d-flex align-items-center justify-content-between">
-                            <span class="avatar avatar-md bg-dark mb-3">
+                            <span class="avatar avatar-md bg-dark">
                                 <i class="fa-solid fa-calendar-week fs-16 text-white"></i>
-                            </span>
-                            <div>
-                                <h4 class="mb-3">Weekly Comments</h4>                               
-                                <h2 class="bg-info d-inline-block text-white text-end mb-1 px-3 py-1 rounded"><?php echo e($weeklyCommentCount); ?></h2>
-                            </div>
+                            </span>                            
+                            <h4>Weekly Comments</h4>                               
+                            <h2 class="bg-info d-inline-block text-white text-end px-3 py-1 rounded"><?php echo e($weeklyCommentCount); ?></h2>                            
                         </div>                     
                     </div>
                 </div>
-            </div>
+            </div>           
             <div class="col-xl-4 col-sm-12 d-flex">
-                <div class="card flex-fill h-auto">
-                    <div class="card-body">
+                <div class="card flex-fill mb-2">
+                    <div class="card-body p-2">
                         <div class="d-flex align-items-center justify-content-between">
-                            <span class="avatar avatar-md bg-dark mb-3">
+                            <span class="avatar avatar-md bg-dark">
                                 <i class="fa-solid fa-calendar-days fs-16 text-white"></i>
-                            </span>
-                            <div>
-                                <h4 class="mb-3">Monthly Comments</h4>                               
-                                <h2 class="bg-success d-inline-block text-white text-end mb-1 px-3 py-1 rounded"><?php echo e($monthlyCommentCount); ?></h2>
-                            </div>
+                            </span>                            
+                            <h4>Monthly Comments</h4>                               
+                            <h2 class="bg-success d-inline-block text-white text-end px-3 py-1 rounded"><?php echo e($monthlyCommentCount); ?></h2>                            
                         </div>                     
                     </div>
                 </div>
-            </div>
-        </div>   
+            </div>           
+        </div>                 
         <div class="row">
             <?php
                 $colors = [
@@ -156,331 +158,341 @@
                     'Other Areas' => 'secondary',
                     'All' => 'dark',
                 ];
+                $firstKey = array_key_first($areas->toArray());
             ?>
-            <?php $__currentLoopData = $areas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $direction => $directionAreas): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <div class="col-lg-4 col-md-6 mb-4">    
-                    <div class="card shadow-sm border-0 h-100">    
-                        
-                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-<?php echo e($colors[$direction] ?? 'secondary'); ?>">
-                                <?php echo e($direction); ?>
-
-                            </span>
         
-                            <span class="badge bg-<?php echo e($colors[$direction] ?? 'secondary'); ?>">
+            
+            <div class="col-lg-3 col-md-4 mb-3">
+                <div class="list-group shadow-sm" id="areaTabs" role="tablist" style="height: 212px;">
+                    <?php $__currentLoopData = $areas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $direction => $directionAreas): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php $color = $colors[$direction] ?? 'secondary'; ?>
+                        <button
+                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center
+                                <?php echo e($direction === $firstKey ? 'active' : ''); ?>"
+                            data-bs-toggle="tab"
+                            data-bs-target="#tab-<?php echo e(\Str::slug($direction)); ?>"
+                            type="button"
+                            role="tab">
+        
+                            <span><?php echo e($direction); ?></span>
+        
+                            <span class="badge bg-<?php echo e($color); ?>">
                                 <?php echo e($directionAreas->sum('total')); ?>
 
                             </span>
-                        </div>    
-                        
-                        <div class="card-body px-1 pt-0" style="max-height:320px; overflow:auto;">
-                            <table class="table table-sm table-hover mb-0">
-                                <thead class="table-light sticky-top">
-                                    <tr>
-                                        <th>Area</th>
-                                        <th class="text-end">Leads</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php $__currentLoopData = $directionAreas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <tr>
-                                            <td class="small"><?php echo e($row->area); ?></td>
-                                            <td class="text-end fw-semibold">
-                                                <span class="badge bg-<?php echo e($colors[$direction] ?? 'secondary'); ?>">
+                        </button>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+            </div>        
+            <div class="col-lg-9 col-md-8">
+                <div class="tab-content">        
+                    <?php $__currentLoopData = $areas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $direction => $directionAreas): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
+                            $color = $colors[$direction] ?? 'secondary';
+                        ?>            
+                        <div class="tab-pane fade <?php echo e($loop->first ? 'show active' : ''); ?>" id="tab-<?php echo e(\Str::slug($direction)); ?>" role="tabpanel">    
+                            <div class="card shadow-sm border-0">            
+                                <div class="card-header bg-white d-flex justify-content-between align-items-center py-2">
+                                    <span class="fw-semibold text-<?php echo e($color); ?>">
+                                        <?php echo e($direction); ?> Areas
+                                    </span>
+                                    <span class="badge bg-<?php echo e($color); ?>">
+                                        <?php echo e($directionAreas->sum('total')); ?>
+
+                                    </span>
+                                </div>            
+                                <div class="card-body p-2" style="height:175px; overflow:auto;"> 
+                                    <div class="row g-1">
+                                        <?php $__currentLoopData = $directionAreas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <div class="col-4">
+                                            <div class="border rounded px-2 py-1 small d-flex justify-content-between align-items-center">
+                                                <span class="text-truncate text-dark">
+                                                    <?php echo e($row->area); ?>
+
+                                                </span>            
+                                                <span class="badge bg-<?php echo e($color); ?>">
                                                     <?php echo e($row->total); ?>
 
                                                 </span>
-                                            </td>
-                                        </tr>
+                                            </div>
+                                        </div>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>            
+                                    </div>                                           
+                                </div>
+                            </div>            
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>            
+                </div>
+            </div>                
+        </div>                         
+        <div class="nav nav-pills dashnav-pills d-flex justify-content-around mb-3" id="areaViewTab" role="tablist">    
+            <button class="nav-link fw-semibold active" id="table-tab" data-bs-toggle="pill" data-bs-target="#tableView" type="button" role="tab">
+                <i class="fas fa-table me-2"></i>Table View
+            </button>        
+            <button class="nav-link fw-semibold" id="chart-tab" data-bs-toggle="pill" data-bs-target="#chartView" type="button" role="tab">
+                <i class="fas fa-chart-bar me-2"></i>Chart View
+            </button>        
+        </div>         
+        <div class="tab-content" id="areaViewTabContent">    
+            <div class="tab-pane fade show active" id="tableView" role="tabpanel" aria-labelledby="table-tab">                       
+                <div class="row">
+                    <?php
+                        $leadTypes = [
+                            'today' => ["Today's Leads", 'primary'],
+                            'tomorrow' => ["Tomorrow's Leads", 'indigo'],
+                            'missed' => ["Missed Leads", 'danger'],
+                            'next_week' => ["Next Week Leads", 'warning'],
+                            'current_month' => ["Current Month Leads", 'success'],
+                            'most_urgent' => ["Most Urgent Leads", 'danger'],
+                            'urgent' => ["Urgent Leads", 'warning'],
+                            'must' => ["Must Leads", 'dark'],
+                        ];
+                    ?>                         
+                    <?php $__currentLoopData = $leadTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => [$label, $color]): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="col-lg-3 col-md-3 col-sm-12 mb-1">
+                            <a href="javascript:void(0)" class="btn btn-outline-secondary d-flex justify-content-between align-items-center lead-filter <?php echo e($loop->first ? 'active' : ''); ?>"
+                                data-type="<?php echo e($key); ?>">                                            
+                                <span><?php echo e($label); ?></span>                                            
+                                <span class="badge bg-<?php echo e($color); ?>">
+                                    <?php echo e($meetingCounts[$key] ?? 0); ?>
+
+                                </span>
+                            </a>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+                <div class="row">                                    
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card shadow-sm border-0 mt-2">                
+                            <div class="card-header bg-white fw-bold" id="tableTitle">
+                                Today's Leads
+                            </div>            
+                            <div class="card-body p-0">                
+                                <div id="lead_list"></div>
+                            </div>                
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="chartView" role="tabpanel" aria-labelledby="chart-tab">        
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100">                                    
+                            <div class="card-header bg-white fw-bold text-black">
+                                Leads By Employee
+                            </div>                            
+                            <div class="card-body p-3">
+                                <?php $__currentLoopData = $employeeLeads; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lead): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php
+                                        $percent = $employeeTotalLeads > 0 ? ($lead->total / $employeeTotalLeads * 100) : 0;
+                                    ?>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span><strong><?php echo e($lead->employee_name); ?></strong></span>
+                                            <span><strong><?php echo e($lead->total); ?></strong></span>
+                                        </div>
+                                        <div class="progress" style="height: 12px;">
+                                            <div class="progress-bar bg-primary" role="progressbar" style="width: <?php echo e($percent); ?>%"></div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>                            
+                                <?php if($employeeLeads->isEmpty()): ?>
+                                    <div class="text-center text-muted">No leads found</div>
+                                <?php endif; ?>
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100">                                    
+                            <div class="card-header bg-white fw-bold text-black">
+                                Leads By Labels
+                            </div>                            
+                            <div class="card-body p-3">
+                                <?php $__currentLoopData = $labellead; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lead): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php
+                                        $percent = $labelleadTotal > 0 ? ($lead->total / $labelleadTotal * 100) : 0;                                              
+                                    ?>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span><strong><?php echo e($lead->label); ?></strong></span>
+                                            <span><strong><?php echo e($lead->total); ?></strong></span>
+                                        </div>
+                                        <div class="progress" style="height: 12px;">
+                                            <div class="progress-bar bg-primary" role="progressbar" style="width: <?php echo e($percent); ?>%"></div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100">                                    
+                            <div class="card-header bg-white fw-bold text-black">
+                                Leads By SP Focused Product
+                            </div>                                                                  
+                            <div class="card-body p-3" >                                        
+                                <div id="donut-chart-2" class="mb-3"></div>
+                                <div>
+                                    <h6 class="mb-3">Status</h6>                                        
+                                    <?php $__currentLoopData = $focusProductLeads; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lead): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php
+                                            $color = $chartColors[$loop->index % count($chartColors)];
+                                        ?>
+                                
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <p class="f-13 mb-0">
+                                                <i class="ti ti-circle-filled me-1" style="color: <?php echo e($color); ?>"></i>
+                                                <?php echo e($lead->focus_product); ?>
+
+                                            </p>
+                                            <p class="f-13 fw-medium text-gray-9">
+                                                <?php echo e($lead->total); ?>
+
+                                            </p>
+                                        </div>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </tbody>
-                            </table>
-                        </div>    
-                    </div>
-                </div>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </div>        
-        <div class="card bg-transparent shadow-sm border-0">
-            <div class="card-header bg-white">
-                <div class="nav nav-pills dashnav-pills d-flex justify-content-around" id="areaViewTab" role="tablist">    
-                    <button class="nav-link fw-semibold active" id="table-tab" data-bs-toggle="pill" data-bs-target="#tableView" type="button" role="tab">
-                        <i class="fas fa-table me-2"></i>Table View
-                    </button>        
-                    <button class="nav-link fw-semibold" id="chart-tab" data-bs-toggle="pill" data-bs-target="#chartView" type="button" role="tab">
-                        <i class="fas fa-chart-bar me-2"></i>Chart View
-                    </button>
-        
-                </div>
-            </div>
-            <div class="card-body bg-transparent px-0 py-3">        
-                <div class="tab-content" id="areaViewTabContent">    
-                    <div class="tab-pane fade show active" id="tableView" role="tabpanel" aria-labelledby="table-tab">
-                        <div class="row">
-                            <div class="col-lg-3 col-md-4 mb-3">
-                                <div class="card shadow-sm border-0">                        
-                                    <div class="list-group list-group-flush">                        
-                                        <?php
-                                            $leadTypes = [
-                                                'today' => ["Today's Leads", 'primary'],
-                                                'tomorrow' => ["Tomorrow's Leads", 'info'],
-                                                'missed' => ["Missed Leads", 'danger'],
-                                                'next_week' => ["Next Week Leads", 'warning'],
-                                                'current_month' => ["Current Month Leads", 'success'],
-                                                'most_urgent' => ["Most Urgent Leads", 'danger'],
-                                                'urgent' => ["Urgent Leads", 'warning'],
-                                                'must' => ["Must Leads", 'dark'],
-                                            ];
-                                        ?>                         
-                                        <?php $__currentLoopData = $leadTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => [$label, $color]): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <a href="javascript:void(0)"
-                                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center lead-filter <?php echo e($loop->first ? 'active' : ''); ?>"
-                                            data-type="<?php echo e($key); ?>">
-                            
-                                                <span><?php echo e($label); ?></span>
-                            
-                                                <span class="badge bg-<?php echo e($color); ?>">
-                                                    <?php echo e($meetingCounts[$key] ?? 0); ?>
-
-                                                </span>
-                                            </a>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-9 col-md-8">
-                                <div class="card shadow-sm border-0">                
-                                    <div class="card-header bg-white fw-bold" id="tableTitle">
-                                        Today's Leads
-                                    </div>            
-                                    <div class="card-body p-0">                
-                                        <div id="lead_list"></div>
-                                    </div>                
-                                </div>
+                                </div>                                                                    
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="chartView" role="tabpanel" aria-labelledby="chart-tab">        
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6 mb-3">
-                                <div class="card shadow-sm border-0 h-100">                                    
-                                    <div class="card-header bg-white fw-bold text-black">
-                                        Leads By Employee
-                                    </div>                            
-                                    <div class="card-body p-3" style="max-height: 400px; overflow-y: auto;">
-                                        <?php $__currentLoopData = $employeeLeads; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lead): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <?php
-                                                $percent = $employeeTotalLeads > 0 ? ($lead->total / $employeeTotalLeads * 100) : 0;
-                                            ?>
-                                            <div class="mb-3">
-                                                <div class="d-flex justify-content-between mb-1">
-                                                    <span><strong><?php echo e($lead->employee_name); ?></strong></span>
-                                                    <span><strong><?php echo e($lead->total); ?></strong></span>
-                                                </div>
-                                                <div class="progress" style="height: 12px;">
-                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: <?php echo e($percent); ?>%"></div>
-                                                </div>
-                                            </div>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>                            
-                                        <?php if($employeeLeads->isEmpty()): ?>
-                                            <div class="text-center text-muted">No leads found</div>
-                                        <?php endif; ?>
-                                    </div>                            
-                                </div>
+
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100">                                    
+                            <div class="card-header bg-white fw-bold text-black">
+                                Leads By Lead Source
+                            </div>                                                                  
+                            <div class="card-body p-3" >                                        
+                                <div id="lead-source-donut" class="mb-3"></div>
+                                <div>
+                                    <h6 class="mb-3">Sources</h6>                                        
+                                    <?php $__currentLoopData = $leadSourceLeads; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lead): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <p class="f-13 mb-0">
+                                                <i class="ti ti-circle-filled me-1"
+                                                style="color: <?php echo e($chartColors[$loop->index % count($chartColors)]); ?>"></i>
+                                                <?php echo e($lead->source); ?>
+
+                                            </p>
+                                            <p class="f-13 fw-medium text-gray-9">
+                                                <?php echo e($lead->total); ?>
+
+                                            </p>
+                                        </div>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </div>                                                                    
                             </div>
-                            <div class="col-lg-4 col-md-6 mb-3">
-                                <div class="card shadow-sm border-0 h-100">                                    
-                                    <div class="card-header bg-white fw-bold text-black">
-                                        Leads By Labels
-                                    </div>                            
-                                    <div class="card-body p-3" style="max-height: 400px; overflow-y: auto;">
-                                        <?php $__currentLoopData = $labellead; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lead): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <?php
-                                                $percent = $labelleadTotal > 0 ? ($lead->total / $labelleadTotal * 100) : 0;                                              
-                                            ?>
-                                            <div class="mb-3">
-                                                <div class="d-flex justify-content-between mb-1">
-                                                    <span><strong><?php echo e($lead->label); ?></strong></span>
-                                                    <span><strong><?php echo e($lead->total); ?></strong></span>
-                                                </div>
-                                                <div class="progress" style="height: 12px;">
-                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: <?php echo e($percent); ?>%"></div>
-                                                </div>
-                                            </div>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 mb-3">
-                                <div class="card shadow-sm border-0 h-100">                                    
-                                    <div class="card-header bg-white fw-bold text-black">
-                                        Leads By SP Focused Product
-                                    </div>                                                                  
-                                    <div class="card-body p-3" style="max-height: 400px; overflow-y: auto;">                                        
-                                        <div id="donut-chart-2" class="mb-3"></div>
-                                        <div>
-                                            <h6 class="mb-3">Status</h6>                                        
-                                            <?php $__currentLoopData = $focusProductLeads; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lead): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <?php
-                                                    $color = $chartColors[$loop->index % count($chartColors)];
-                                                ?>
-                                        
-                                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                                    <p class="f-13 mb-0">
-                                                        <i class="ti ti-circle-filled me-1" style="color: <?php echo e($color); ?>"></i>
-                                                        <?php echo e($lead->focus_product); ?>
-
-                                                    </p>
-                                                    <p class="f-13 fw-medium text-gray-9">
-                                                        <?php echo e($lead->total); ?>
-
-                                                    </p>
-                                                </div>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        </div>                                                                    
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6 mb-3">
-                                <div class="card shadow-sm border-0 h-100">                                    
-                                    <div class="card-header bg-white fw-bold text-black">
-                                        Leads By Lead Source
-                                    </div>                                                                  
-                                    <div class="card-body p-3" style="max-height: 400px; overflow-y: auto;">                                        
-                                        <div id="lead-source-donut" class="mb-3"></div>
-                                        <div>
-                                            <h6 class="mb-3">Sources</h6>                                        
-                                            <?php $__currentLoopData = $leadSourceLeads; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lead): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                                    <p class="f-13 mb-0">
-                                                        <i class="ti ti-circle-filled me-1"
-                                                        style="color: <?php echo e($chartColors[$loop->index % count($chartColors)]); ?>"></i>
-                                                        <?php echo e($lead->source); ?>
-
-                                                    </p>
-                                                    <p class="f-13 fw-medium text-gray-9">
-                                                        <?php echo e($lead->total); ?>
-
-                                                    </p>
-                                                </div>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        </div>                                                                    
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 mb-3">
-                                <div class="card shadow-sm border-0 h-100">                                    
-                                    <div class="card-header bg-white fw-bold text-black">
-                                        Leads By Site Stage
-                                    </div>                                                                  
-                                    <div class="card-body p-3" style="max-height: 400px; overflow-y: auto;">                                        
-                                        <div id="site-stage-donut" class="mb-3"></div>
-                                        <?php $__currentLoopData = $siteStageLeads; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $stage): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>                                                                           
-                                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                                <p class="f-13 mb-0">
-                                                    <i class="ti ti-circle-filled me-1" style="color: <?php echo e($chartColors[$loop->index % count($chartColors)]); ?>"></i>
-                                                    <?php echo e($stage->stage); ?>
-
-                                                </p>
-                                                <p class="f-13 fw-medium text-gray-9">
-                                                    <?php echo e($stage->total); ?>
-
-                                                </p>
-                                            </div>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </div>                            
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 mb-3">
-                                <div class="card shadow-sm border-0 h-100">                                    
-                                    <div class="card-header bg-white fw-bold text-black">
-                                        Leads By Project Types
-                                    </div>                                                                  
-                                    <div class="card-body p-3" style="max-height: 400px; overflow-y: auto;">                                        
-                                        <div id="project-type-donut" class="mb-3"></div>
-                                        <?php $__currentLoopData = $projectTypeLeads; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $projectlead): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                                <p class="f-13 mb-0">
-                                                    <i class="ti ti-circle-filled me-1"
-                                                    style="color: <?php echo e($chartColors[$loop->index % count($chartColors)]); ?>"></i>
-                                                    <?php echo e($projectlead->project_type); ?>
-
-                                                </p>
-                                                <p class="f-13 fw-medium text-gray-9">
-                                                    <?php echo e($projectlead->total); ?>
-
-                                                </p>
-                                            </div>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </div>                            
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 mb-3">
-                                <div class="card shadow-sm border-0 h-100">                                    
-                                    <div class="card-header bg-white fw-bold text-black">
-                                        Leads Meetings By Day
-                                    </div>                                                                  
-                                    <div class="card-body p-3" style="max-height: 400px; overflow-y: auto;">                                        
-                                        <div id="meeting-day-donut" class="mb-3"></div>
-                                        <?php
-                                            $meetingColors = [
-                                                'today' => '#0d6efd',
-                                                'tomorrow' => '#f26522',
-                                                'missed' => '#dc3545',
-                                            ];
-                                        ?> 
-                                        <?php $__currentLoopData = $meetingTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => [$label, $color]): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                                <p class="mb-0 f-13">
-                                                    <i class="ti ti-circle-filled me-1" style="color: <?php echo e($meetingColors[$key]); ?>"></i>
-                                                    <?php echo e($label); ?>
-
-                                                </p>
-                                                <p class="fw-medium text-gray-9 mb-0">
-                                                    <?php echo e($meetingCounts[$key] ?? 0); ?>
-
-                                                </p>
-                                            </div>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </div>                            
-                                </div>
-                            </div>
-                            <div class="col-lg-8 col-md-6 mb-3">
-                                <div class="card shadow-sm border-0 h-100">                                    
-                                    <div class="card-header bg-white fw-bold text-black">
-                                        Leads Meetings By Month (<?php echo e(\Carbon\Carbon::now()->year); ?>)
-                                    </div>                                                                  
-                                    <div class="card-body p-1" style="max-height: 400px; overflow-y: auto;">                                        
-                                        <div id="monthly-meetings-bar"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 mb-3">
-                                <div class="card shadow-sm border-0 h-100">                                    
-                                    <div class="card-header bg-white fw-bold text-black">
-                                        Leads / Meetings By Week (<?php echo e(\Carbon\Carbon::now()->year); ?>)
-                                    </div>                                                                  
-                                    <div class="card-body p-1" style="max-height: 400px; overflow-y: auto;">                                        
-                                        <div id="weekly-meetings-bar"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 mb-3">
-                                <div class="card shadow-sm border-0 h-100">                                    
-                                    <div class="card-header bg-white fw-bold text-black">
-                                        New Comments This Week
-                                    </div>                                                                  
-                                    <div class="card-body p-1" style="max-height: 400px; overflow-y: auto;">                                        
-                                        <div id="weekly-comments-bar"></div>
-                                    </div>
-                                </div>
-                            </div>                          
                         </div>
-                    </div>        
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100">                                    
+                            <div class="card-header bg-white fw-bold text-black">
+                                Leads By Site Stage
+                            </div>                                                                  
+                            <div class="card-body p-3" >                                        
+                                <div id="site-stage-donut" class="mb-3"></div>
+                                <?php $__currentLoopData = $siteStageLeads; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $stage): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>                                                                           
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <p class="f-13 mb-0">
+                                            <i class="ti ti-circle-filled me-1" style="color: <?php echo e($chartColors[$loop->index % count($chartColors)]); ?>"></i>
+                                            <?php echo e($stage->stage); ?>
+
+                                        </p>
+                                        <p class="f-13 fw-medium text-gray-9">
+                                            <?php echo e($stage->total); ?>
+
+                                        </p>
+                                    </div>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100">                                    
+                            <div class="card-header bg-white fw-bold text-black">
+                                Leads By Project Types
+                            </div>                                                                  
+                            <div class="card-body p-3" >                                        
+                                <div id="project-type-donut" class="mb-3"></div>
+                                <?php $__currentLoopData = $projectTypeLeads; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $projectlead): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <p class="f-13 mb-0">
+                                            <i class="ti ti-circle-filled me-1"
+                                            style="color: <?php echo e($chartColors[$loop->index % count($chartColors)]); ?>"></i>
+                                            <?php echo e($projectlead->project_type); ?>
+
+                                        </p>
+                                        <p class="f-13 fw-medium text-gray-9">
+                                            <?php echo e($projectlead->total); ?>
+
+                                        </p>
+                                    </div>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100">                                    
+                            <div class="card-header bg-white fw-bold text-black">
+                                Leads Meetings By Day
+                            </div>                                                                  
+                            <div class="card-body p-3" >                                        
+                                <div id="meeting-day-donut" class="mb-3"></div>
+                                <?php
+                                    $meetingColors = [
+                                        'today' => '#0d6efd',
+                                        'tomorrow' => '#f26522',
+                                        'missed' => '#dc3545',
+                                    ];
+                                ?> 
+                                <?php $__currentLoopData = $meetingTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => [$label, $color]): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <p class="mb-0 f-13">
+                                            <i class="ti ti-circle-filled me-1" style="color: <?php echo e($meetingColors[$key]); ?>"></i>
+                                            <?php echo e($label); ?>
+
+                                        </p>
+                                        <p class="fw-medium text-gray-9 mb-0">
+                                            <?php echo e($meetingCounts[$key] ?? 0); ?>
+
+                                        </p>
+                                    </div>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100">                                    
+                            <div class="card-header bg-white fw-bold text-black">
+                                Leads Meetings By Month (<?php echo e(\Carbon\Carbon::now()->year); ?>)
+                            </div>                                                                  
+                            <div class="card-body p-1" >                                        
+                                <div id="monthly-meetings-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100">                                    
+                            <div class="card-header bg-white fw-bold text-black">
+                                Leads / Meetings By Week (<?php echo e(\Carbon\Carbon::now()->year); ?>)
+                            </div>                                                                  
+                            <div class="card-body p-1" >                                        
+                                <div id="weekly-meetings-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100">                                    
+                            <div class="card-header bg-white fw-bold text-black">
+                                New Comments This Week
+                            </div>                                                                  
+                            <div class="card-body p-1" >                                        
+                                <div id="weekly-comments-bar"></div>
+                            </div>
+                        </div>
+                    </div>                          
                 </div>
-            </div>
-        </div>
+            </div>        
+        </div>      
         <div class="row">
             <div class="col-lg-12 col-md-12 mb-3">
                     <div class="card shadow-sm border-0 h-100">
@@ -496,22 +508,19 @@
         </div>      
     </div>   
     <div id="leadViewSidebar" class="offcanvas offcanvas-end" tabindex="-1">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Lead Details</h5>
+        <div class="offcanvas-header bg-gray">
+            <div id="meeting_header"></div>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body">
+            <div id="leadDetails">                   
+            </div>
             <form id="meetingcreatform">
                 <input type="hidden" name="form_group_id" class="form-control" id="form_group_id">
-                <div id="leadDetails">
-                    <div class="text-center">
-                        <div class="spinner-border"></div>
-                    </div>
-                </div>
                 <div id="authhideshow">
                     <div class="row">
                         <?php if(auth()->user()->role === 'super admin'): ?>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <div class="form-group">
                                     <label class="form-label">Select User <span class="text-danger">*</span></label>
                                     <select name="emp_id" class="form-control" id="mt_emp_error" required>
@@ -540,8 +549,12 @@
                                     'auth_name' => auth()->check() ? auth()->user()->name : null,
                                     default     => $field->default_value,
                                 };
+                                $colClass = match ($type) {
+                                    'textarea' => 'col-12',
+                                    default    => 'col-md-3',
+                                };
                             ?>
-                            <div class="col-md-4 mb-3">
+                            <div class="<?php echo e($colClass); ?> mb-3">
                                 <?php if($type != 'hidden'): ?>
                                     <label class="form-label"><?php echo e($label); ?> <?php if($isRequired): ?> <span class="text-danger">*</span> <?php endif; ?> </label>
                                 <?php endif; ?>
@@ -555,9 +568,7 @@
                                     <input type="<?php echo e($type); ?>" name="<?php echo e($field->id); ?>" class="form-control" id="<?php echo e($name); ?>" value="<?php echo e($defaultValue); ?>">
                                 
                                 <?php elseif($type == 'textarea'): ?>
-                                    <textarea name="<?php echo e($field->id); ?>" class="form-control" id="<?php echo e($name); ?>" rows="3"
-                                        <?php echo e($isRequired); ?>>
-                                    </textarea>
+                                    <textarea name="<?php echo e($field->id); ?>" class="form-control" id="<?php echo e($name); ?>" rows="3" <?php echo e($isRequired); ?>></textarea>
 
                                 
                                 <?php elseif($type == 'select'): ?>
@@ -658,12 +669,25 @@
                 success: function (response) {
                     if (response.success) {
                         $('#lead_list').html(response.html);
-                        let table = $('#datalistTable').DataTable();
+                        let table = $('#datalistTable').DataTable({
+                            pageLength: 10,
+                            searching: true,
+                            lengthChange: true,
+                            info: true,
+                            paging: true,
+                            scrollY: '500px',
+                            scrollX: true,
+                            scrollCollapse: true,
+                            fixedHeader: true,
+                            autoWidth: false,
+                            columnDefs: [
+                                { targets: '_all', className: 'dt-wrap-text' }
+                            ]
+                        });
                     }
                 },
                 error: function () {
-                    $('#lead_list').html('<div class="text-center text-danger py-4">Error while loading leads</div>');
-                    toastr.error('Error while loading leads.');
+                    $('#lead_list').html('<div class="text-center text-dark py-4">No Data Found</div>');                   
                 }
             });
         }
@@ -1208,38 +1232,40 @@
                         $('#mobile_number').val(fields['Mobile Number']);
                     }
 
-                    let html = `
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <h4 class="mb-0">${fields['Site Name'] ?? 'N/A'}</h4>
-                            <h6 class="mb-0 text-muted">${fields['Area'] ?? ''}</h6>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
+                    let html = `                      
+                        <div class="row mb-2">
+                            <div class="col-md-12 mb-2">
                                 <h4>Lead Details</h4>
                             </div>
-
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-0">
                                 <p class="mb-2"><strong>Site Stage :</strong> ${fields['Site Stage'] ?? 'N/A'}</p>
                                 <p class="mb-2"><strong>Competition :</strong> ${fields['Competition'] ?? 'N/A'}</p>
                                 <p class="mb-2"><strong>No. of Towers :</strong> ${fields['No. of Towers'] ?? 'N/A'}</p>
                             </div>
-
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-0">
                                 <p class="mb-2"><strong>Project Type :</strong> ${fields['Project Type'] ?? 'N/A'}</p>
                                 <p class="mb-2"><strong>No. of Bathrooms :</strong> ${fields['No. of Bathrooms'] ?? 'N/A'}</p>
                                 <p class="mb-2"><strong>MEPF Consu :</strong> ${fields['MEPF Consu'] ?? 'N/A'}</p>
                             </div>
-
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-0">
                                 <p class="mb-2"><strong>SP Focused Product :</strong> ${fields['SP Focused Product'] ?? 'N/A'}</p>
                                 <p class="mb-2"><strong>No. of Floors :</strong> ${fields['No. of Floors'] ?? 'N/A'}</p>
                                 <p class="mb-2"><strong>Labels :</strong> ${fields['Labels'] ?? 'N/A'}</p>
                             </div>
                         </div>
-                        `;
+                    `;
 
                     $('#leadDetails').html(html);
+                    let htmlheader = `
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <h4 class="mb-0">${fields['Site Name'] ?? 'N/A'} , </h4>
+                            <h6 class="mb-0">${fields['Area'] ?? ''} , ${fields['Direction'] ?? ''}</h6>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <h6 class="mb-0">${fields['Contact Name'] ?? ''} , ${fields['Mobile Number'] ?? ''}</h6>                             
+                        </div>
+                        `;
+                    $('#meeting_header').html(htmlheader);        
 
                     let meetingHtml = '<h5 class="mb-3">Lead Meetings</h5>';
                     if (res.meetings && Object.keys(res.meetings).length) {
@@ -1301,10 +1327,7 @@
 
                                             <div class="col-3">
                                                 <div class="d-flex flex-column align-items-end gap-2">
-                                                    <div class="d-flex gap-2">
-                                                        ${otherData.attachment && otherData.attachment !== 'NULL' ? `
-                                                            <a href="${ASSET_URL}${otherData.attachment}" download class="btn btn-sm btn-outline-success">Download</a>
-                                                        ` : ''}
+                                                    <div class="d-flex gap-2">                                                       
                                                         <button class="btn btn-sm btn-outline-danger deleteMeetingBtn" data-id="${groupName}">Delete</button>
                                                     </div>
                                                     ${otherData.attachment && otherData.attachment !== 'NULL' ? `
@@ -1341,6 +1364,60 @@
             let groupId = $(this).data('group');
             loadLeadMeetings(groupId);
         });
+    </script>
+    <script>
+        let contactIndex = 1;
+        // ADD ROW
+        $('#addContactBtn').on('click', function () {
+            let contactIndex = 1;
+            let row = `
+                <div class="row contactRow align-items-end mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label">Person Name <span class="text-danger">*</span></label>
+                        <input type="text" name="contacts[${contactIndex}][name]" id="contacts_${contactIndex}_name" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                        <input type="number" name="contacts[${contactIndex}][mobile]" id="contacts_${contactIndex}_mobile" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Designation</label>
+                        <input type="text" name="contacts[${contactIndex}][designation]" id="contacts_${contactIndex}_designation" class="form-control">
+                    </div>
+
+                    <div class="col-md-1 text-end">
+                        <button type="button" class="btn btn-danger btn-sm removeRow">
+                            <i class="ti ti-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            $('#contactRepeater').append(row);
+            contactIndex++;
+        });
+
+        // REMOVE ROW
+        $(document).on('click', '.removeRow', function () {
+            $(this).closest('.contactRow').remove();
+        });
+
+        function toggleBulkDeleteBtn() {
+            let checkedCount = $('.rowCheckbox:checked').length;
+
+            if (checkedCount > 0) {
+                $('#bulkDeleteBtn').removeClass('disabled');
+            } else {
+                $('#bulkDeleteBtn').addClass('disabled');
+            }
+        }
+
+        // Checkbox change
+        $(document).on('change', '.rowCheckbox', function () {
+            toggleBulkDeleteBtn();
+        });       
     </script>
     <script>
         $(document).ready(function() {
@@ -1382,6 +1459,9 @@
                             icon: 'success',
                             title: 'Success',
                             text: res.message ?? 'Meeting saved successfully',
+                            showConfirmButton: false,  
+                            timer: 3000,             
+                            timerProgressBar: true
                         });
 
                         form.reset();

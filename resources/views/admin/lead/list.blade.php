@@ -10,7 +10,13 @@
         }
         table.table-bordered.dataTable thead tr:first-child th, table.table-bordered.dataTable thead tr:first-child td{
             padding:4px !important;
-        }       
+        }  
+        .select2-container--default .select2-selection--multiple {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right .75rem center;
+            background-size: 16px 12px;
+        }     
     </style>
     <div class="content">
         <div class="d-md-flex d-block align-items-center justify-content-between page-breadcrumb mb-2">
@@ -29,23 +35,21 @@
             <div>
                 <a href="javascript:void(0)" class="btn btn-primary btn-sm mt-2 mt-md-0" id="openLeadForm">
                     <i class="ti ti-plus"></i>
-                    <span>Lead Master</span>
-                </a>
-                <a href="javascript:void(0)" class="btn btn-info btn-sm mt-2 mt-md-0" id="SerializeTableForm">
-                    <i class="ti ti-arrows-exchange"></i>
-                    <span>Serialize Table</span>
-                </a>
+                    <span>New Lead</span>
+                </a> 
+                @role('super admin')              
                 <a href="javascript:void(0)" class="btn btn-success btn-sm mt-2 mt-md-0" id="leadExcelUploadBtn">
                     <i class="ti ti-file-upload"></i>
                     <span>Lead Excel Upload</span>
                 </a>     
                 <a href="javascript:void(0)" class="btn btn-warning btn-sm mt-2 mt-md-0" id="leadMeetingExcelUploadBtn">
                     <i class="ti ti-file-upload"></i>
-                    <span>Lead Meeting Excel Upload</span>
+                    <span>Meeting Excel Upload</span>
                 </a>                                        
                 <button id="bulkDeleteBtn" class="btn btn-danger btn-sm mt-2 mt-md-0 disabled">
                     <i class="ti ti-trash"></i> Delete Selected
                 </button>
+                @endrole
             </div>
         </div>
         <div class="row">
@@ -60,40 +64,81 @@
                         <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">                
                             <div class="accordion-body p-2">    
                                 <div class="card mb-1">
-                                    <div class="card-header">                
-                                        <div class="row g-2">
-                                            <div class="d-flex flex-wrap gap-1 align-items-center">
-                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
-                                                    <span class="fw-bold small">All Leads:</span>
-                                                    <span class="fw-bold text-primary">{{$all_leads}}</span>
-                                                </div>
-                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
-                                                    <span class="fw-bold small">Active:</span>
-                                                    <span class="fw-bold text-success">{{$total_active}}</span>
-                                                </div>
-                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
-                                                    <span class="fw-bold small">Closed:</span>
-                                                    <span class="fw-bold text-danger">{{$total_Closed}}</span>
-                                                </div>
-                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
-                                                    <span class="fw-bold small">Private:</span>
-                                                    <span class="fw-bold text-warning">{{$private_leads}}</span>
-                                                </div>
-                                                <div class="border rounded p-1 px-2 d-flex align-items-center gap-1">
-                                                    <span class="fw-bold small">Global:</span>
-                                                    <span class="fw-bold text-info">{{$globle_leads}}</span>
+                                    <div class="card-header">                                                        
+                                        <div class="row g-3">
+                                            <div class="col-xl-2 col-lg-3 col-md-6 d-flex">
+                                                <div class="card flex-fill mb-0">
+                                                    <div class="card-body d-flex align-items-center justify-content-between p-2">
+                                                        <div class="overflow-hidden">
+                                                            <h6 class="text-muted mb-1 text-truncate">All Leads</h6>
+                                                            <h4 class="mb-0">{{ $all_leads }}</h4>
+                                                        </div>
+                                                        <span class="avatar avatar-lg bg-primary flex-shrink-0">
+                                                            <i class="ti ti-chart-bar fs-16"></i>
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <div class="col-xl-2 col-lg-3 col-md-6 d-flex">
+                                                <div class="card flex-fill mb-0">
+                                                    <div class="card-body d-flex align-items-center justify-content-between p-2">
+                                                        <div class="overflow-hidden">
+                                                            <h6 class="text-muted mb-1 text-truncate">Active</h6>
+                                                            <h4 class="mb-0">{{ $total_active }}</h4>
+                                                        </div>
+                                                        <span class="avatar avatar-lg bg-success flex-shrink-0">
+                                                            <i class="ti ti-circle-check fs-16"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-3 col-md-6 d-flex">
+                                                <div class="card flex-fill mb-0">
+                                                    <div class="card-body d-flex align-items-center justify-content-between p-2">
+                                                        <div class="overflow-hidden">
+                                                            <h6 class="text-muted mb-1 text-truncate">Closed</h6>
+                                                            <h4 class="mb-0">{{ $total_Closed }}</h4>
+                                                        </div>
+                                                        <span class="avatar avatar-lg bg-danger flex-shrink-0">
+                                                            <i class="ti ti-circle-x fs-16"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-3 col-md-6 d-flex">
+                                                <div class="card flex-fill mb-0">
+                                                    <div class="card-body d-flex align-items-center justify-content-between p-2">
+                                                        <div class="overflow-hidden">
+                                                            <h6 class="text-muted mb-1 text-truncate">Private</h6>
+                                                            <h4 class="mb-0">{{ $private_leads }}</h4>
+                                                        </div>
+                                                        <span class="avatar avatar-lg bg-warning flex-shrink-0">
+                                                            <i class="ti ti-lock fs-16"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-3 col-md-6 d-flex">
+                                                <div class="card flex-fill mb-0">
+                                                    <div class="card-body d-flex align-items-center justify-content-between p-2">
+                                                        <div class="overflow-hidden">
+                                                            <h6 class="text-muted mb-1 text-truncate">Global</h6>
+                                                            <h4 class="mb-0">{{ $globle_leads }}</h4>
+                                                        </div>
+                                                        <span class="avatar avatar-lg bg-info flex-shrink-0">
+                                                            <i class="ti ti-world fs-16"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>                                        
                                         </div>
-                
-                                        <!-- Filters -->
-                                        <div class="row g-2 mt-2">
-                
+
+                                        <div class="row g-2 mt-1">                
                                             <div class="col-md-3">
-                                                <input type="date" id="filterNextMeetingDate" class="form-control">
+                                                <input type="text" id="filterNextMeetingDate" class="form-control" placeholder="Select date range" autocomplete="off">
                                             </div>
                                             <div class="col-md-3">
-                                                <select id="filterLabels" class="form-select select2" multiple data-placeholder="Select Labels">
+                                                <select id="filterLabels" class="select2" multiple data-placeholder="Select Labels">
                                                     @foreach($labels as $label)
                                                         <option value="{{ $label }}">{{ $label }}</option>
                                                     @endforeach
@@ -101,7 +146,7 @@
                                             </div>
                 
                                             <div class="col-md-3">
-                                                <select id="filterEmployee" class="form-select select2" multiple data-placeholder="Select Employee">
+                                                <select id="filterEmployee" class="select2" multiple data-placeholder="Select Employee">
                                                     @foreach($users as $user)
                                                         <option value="{{ $user->id }}">
                                                             {{ $user->name }}
@@ -111,7 +156,7 @@
                                             </div>
                 
                                             <div class="col-md-3">
-                                                <select id="filterArea" class="form-select select2" multiple data-placeholder="Select Area">
+                                                <select id="filterArea" class="select2" multiple data-placeholder="Select Area">
                                                     @foreach($areas as $val)
                                                         <option value="{{ $val }}">{{ $val }}</option>
                                                     @endforeach
@@ -119,7 +164,7 @@
                                             </div>
                 
                                             <div class="col-md-3">
-                                                <select id="filterLeadType" class="form-select select2" multiple data-placeholder="Select Lead Type">
+                                                <select id="filterLeadType" class="select2" multiple data-placeholder="Select Lead Type">
                                                     @foreach($leadTypes as $val)
                                                         <option value="{{ $val }}">{{ $val }}</option>
                                                     @endforeach
@@ -127,7 +172,7 @@
                                             </div>
                 
                                             <div class="col-md-3">
-                                                <select id="filterSiteStage" class="form-select select2" multiple data-placeholder="Select Site Stage">
+                                                <select id="filterSiteStage" class="select2" multiple data-placeholder="Select Site Stage">
                                                     @foreach($siteStages as $val)
                                                         <option value="{{ $val }}">{{ $val }}</option>
                                                     @endforeach
@@ -135,7 +180,7 @@
                                             </div>
                 
                                             <div class="col-md-3">
-                                                <select id="filterProjectType" class="form-select select2" multiple data-placeholder="Select Project Type">
+                                                <select id="filterProjectType" class="select2" multiple data-placeholder="Select Project Type">
                                                     @foreach($projectTypes as $val)
                                                         <option value="{{ $val }}">{{ $val }}</option>
                                                     @endforeach
@@ -143,7 +188,7 @@
                                             </div>
                 
                                             <div class="col-md-3">
-                                                <select id="filterCustomerType" class="form-select select2" multiple data-placeholder="Select Customer Type">
+                                                <select id="filterCustomerType" class="select2" multiple data-placeholder="Select Customer Type">
                                                     @foreach($customerTypes as $val)
                                                         <option value="{{ $val }}">{{ $val }}</option>
                                                     @endforeach
@@ -151,7 +196,7 @@
                                             </div>
                 
                                             <div class="col-md-3">
-                                                <select id="filterSPProduct" class="form-select select2" multiple data-placeholder="Select SP Focused Product">
+                                                <select id="filterSPProduct" class="select2" multiple data-placeholder="Select SP Focused Product">
                                                     @foreach($spProducts as $val)
                                                         <option value="{{ $val }}">{{ $val }}</option>
                                                     @endforeach
@@ -159,7 +204,7 @@
                                             </div>
                 
                                             <div class="col-md-3">
-                                                <select id="filterLeadSource" class="form-select select2" multiple data-placeholder="Select Lead Source">
+                                                <select id="filterLeadSource" class="select2" multiple data-placeholder="Select Lead Source">
                                                     @foreach($leadSources as $val)
                                                         <option value="{{ $val }}">{{ $val }}</option>
                                                     @endforeach
@@ -195,7 +240,17 @@
                                                 </select>
                                                 <input type="number" id="filterTower" class="form-control form-control-sm" placeholder="Tower">
                                             </div>
-                
+
+                                            <!-- Meeting NULL Filter -->
+                                            <div class="col-md-3 d-flex align-items-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="meetingNull">
+                                                    <label class="form-check-label" for="meetingNull">
+                                                        Meeting is NULL
+                                                    </label>
+                                                </div>
+                                            </div>
+
                                             <!-- Buttons -->
                                             <div class="col-md-3 d-flex gap-2">
                                                 <button id="applyFilters" class="btn btn-sm btn-primary w-50">Apply</button>
@@ -213,8 +268,9 @@
                     <table class="table table-bordered table-striped table-responsive-custom" id="datalistTable">
                         <thead class="table-light">
                             <tr class="bg-light">
+                                @role('super admin')  
                                 <th>#</th>
-                
+                                @endrole
                                 {{-- Table headers --}}
                                 @php
                                     $columns = !empty($fieldsorder) ? array_unique($fieldsorder) : $tablefield->pluck('field.name')->toArray();
@@ -223,8 +279,9 @@
                                 @foreach($columns as $col)
                                     <th>{{ $col }}</th>
                                 @endforeach
-                
+                                @role('super admin')  
                                 <th width="150">Actions</th>
+                                @endrole
                             </tr>
                         </thead>
                 
@@ -238,9 +295,11 @@
                                 @endphp
                 
                                 <tr>
+                                    @role('super admin')  
                                     <td>
                                         <input type="checkbox" class="rowCheckbox" value="{{ $groupId }}">
                                     </td>
+                                    @endrole
                 
                                     {{-- Table cells --}}
                                     @foreach($columns as $col)
@@ -253,7 +312,7 @@
                                             {{-- Lead Data --}}
                                             @if($leadRec)
                                                 @if($leadRec->field_name === 'Site Name')
-                                                    <a href="javascript:void(0)" class="text-primary viewLeadBtn" data-group="{{ $groupId }}">
+                                                    <a href="javascript:void(0)" class="text-info viewLeadBtn" data-group="{{ $groupId }}">
                                                         {{ $leadRec->field_value }}
                                                     </a>
                                                 @elseif($leadRec->field_name === 'Lead Type')
@@ -303,6 +362,7 @@
                                     @endforeach
                 
                                     {{-- Actions --}}
+                                    @role('super admin')  
                                     <td class="text-center">
                                         <a href="{{ route('admin.lead.master.edit', $groupId) }}" class="btn btn-info btn-sm text-white me-1">
                                             <i class="ti ti-edit"></i>
@@ -311,6 +371,7 @@
                                             <i class="ti ti-trash"></i>
                                         </button>
                                     </td>
+                                    @endrole
                                 </tr>
                             @endforeach
                         </tbody>
@@ -321,94 +382,21 @@
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Field Order Modal -->
-    <div class="modal fade" id="fieldOrderModal" tabindex="-1">
-        <div class="modal-dialog modal-md modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Set Field Order</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form id="sortcrateform">
-                    <div class="modal-body">
-                        <div class="col-md-12 mb-3">
-                            <label class="form-label">Field Order (Check & Drag to Sort)</label>                
-                            @php
-                                $savedFields = !empty($fieldsorder) ? array_unique($fieldsorder) : [];
-                                $allFields   = $tablefield->pluck('field.name')->toArray();
-                                $remainingFields = array_diff($allFields, $savedFields);
-                            @endphp
-
-                            <ul id="sortableFields" class="list-group mb-3">
-                                @foreach ($savedFields as $fieldName)
-                                    <li class="list-group-item d-flex align-items-center justify-content-between"
-                                        data-key="{{ $fieldName }}">
-
-                                        <div class="d-flex align-items-center gap-2">
-                                            <i class="ti ti-menu-2 text-muted drag-handle"></i>
-
-                                            <input type="checkbox"
-                                                class="field-checkbox"
-                                                value="{{ $fieldName }}"
-                                                checked>
-
-                                            <span>{{ $fieldName }}</span>
-                                        </div>
-                                    </li>
-                                @endforeach
-                                @foreach ($remainingFields as $fieldName)
-                                    <li class="list-group-item d-flex align-items-center justify-content-between"
-                                        data-key="{{ $fieldName }}">
-
-                                        <div class="d-flex align-items-center gap-2">
-                                            <i class="ti ti-menu-2 text-muted drag-handle"></i>
-
-                                            <input type="checkbox"
-                                                class="field-checkbox"
-                                                value="{{ $fieldName }}">
-
-                                            <span>{{ $fieldName }}</span>
-                                        </div>
-                                    </li>
-                                @endforeach
-                            </ul>
-                            <input type="hidden" name="field_order" id="fieldOrder">
-                        </div>
-                    </div>
-                
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                
-                        <button type="submit" class="btn btn-primary" id="saveFieldOrder">
-                            <span class="btn-text">Save Order</span>
-                            <span class="btn-loader d-none">
-                                <span class="spinner-border spinner-border-sm"></span>
-                                Saving...
-                            </span>
-                        </button>
-                    </div>
-                </form>                
-            </div>
-        </div>
-    </div>        
+    </div>       
     <div id="leadViewSidebar" class="offcanvas offcanvas-end" tabindex="-1">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Lead Details</h5>
+        <div class="offcanvas-header bg-gray">
+            <div id="meeting_header"></div>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body">
+            <div id="leadDetails">            
+            </div>
             <form id="meetingcreatform">
                 <input type="hidden" name="form_group_id" class="form-control" id="form_group_id">
-                <div id="leadDetails">
-                    <div class="text-center">
-                        <div class="spinner-border"></div>
-                    </div>
-                </div>
                 <div id="authhideshow">
                     <div class="row">
                         @if(auth()->user()->role === 'super admin')
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <div class="form-group">
                                     <label class="form-label">Select User <span class="text-danger">*</span></label>
                                     <select name="emp_id" class="form-control" id="mt_emp_error" required>
@@ -436,8 +424,12 @@
                                     'auth_name' => auth()->check() ? auth()->user()->name : null,
                                     default     => $field->default_value,
                                 };
+                                $colClass = match ($type) {
+                                    'textarea' => 'col-12',
+                                    default    => 'col-md-3',
+                                };
                             @endphp
-                            <div class="col-md-4 mb-3">
+                            <div class="{{ $colClass }} mb-3">
                                 @if ($type != 'hidden')
                                     <label class="form-label">{{ $label }} @if ($isRequired) <span class="text-danger">*</span> @endif </label>
                                 @endif
@@ -451,9 +443,7 @@
                                     <input type="{{ $type }}" name="{{ $field->id }}" class="form-control" id="{{ $name }}" value="{{$defaultValue}}">
                                 {{-- Textarea --}}
                                 @elseif ($type == 'textarea')
-                                    <textarea name="{{ $field->id }}" class="form-control" id="{{ $name }}" rows="3"
-                                        {{ $isRequired }}>
-                                    </textarea>
+                                    <textarea name="{{ $field->id }}" class="form-control" id="{{ $name }}" rows="3" {{ $isRequired }}></textarea>
 
                                 {{-- Select --}}
                                 @elseif ($type == 'select')
@@ -490,8 +480,7 @@
                                 @endif
                             </div>
                         @endforeach
-                        <div id="contactRepeater">
-                        </div>
+                        <div id="contactRepeater"></div>
                     </div>
                     <div class="text-end">
                         <button type="button" class="btn btn-info" id="addContactBtn">
@@ -510,8 +499,8 @@
         </div>
     </div>
     <div id="leadSidebarForm" class="offcanvas offcanvas-end lead-sidebar" tabindex="-1">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Lead Master</h5>
+        <div class="offcanvas-header bg-info py-2">
+            <h5 class="offcanvas-title text-light">New Lead</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body">
@@ -519,7 +508,7 @@
                 @csrf
                 <div class="row">
                     @if(auth()->user()->role === 'super admin')
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-2">
                             <div class="form-group">
                                 <label class="form-label">Select User <span class="text-danger">*</span></label>
                                 <select name="lead_emp_id" class="form-control" id="lead_emp_error" required>
@@ -545,7 +534,7 @@
                             $isRequired = $field->validation == 'required' ? 'required' : '';
                             $defaultValue = $field->default_value;
                         @endphp
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-2">
                             <label class="form-label">{{ $label }} 
                                 @if ($isRequired)
                                     <span class="text-danger">*</span>
@@ -558,7 +547,7 @@
                                                         
                             {{-- Textarea --}}
                             @elseif ($type == 'textarea')
-                                <textarea name="{{ $field->id }}" class="form-control" id="dy{{ $name }}" rows="3" {{ $isRequired }}></textarea>
+                                <textarea name="{{ $field->id }}" class="form-control" id="dy{{ $name }}" rows="1" {{ $isRequired }}></textarea>
 
                                 {{-- Select --}}
                             @elseif ($type == 'select')
@@ -589,13 +578,12 @@
                             @endif
                         </div>
                     @endforeach
-                </div>
-
-                <div class="text-end">
-                    <button type="submit" class="btn btn-primary" id="saveBtn">
-                        <span class="btn-text">Save</span>
-                        <span class="spinner-border spinner-border-sm d-none"></span>
-                    </button>
+                    <div class="col-md-3 mb-2 d-flex align-items-center justify-content-center">
+                        <button type="submit" class="btn btn-primary" id="saveBtn">
+                            <span class="btn-text">Save</span>
+                            <span class="spinner-border spinner-border-sm d-none"></span>
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -603,7 +591,6 @@
     <div class="modal fade" id="leadExcelModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-    
                 <div class="modal-header">
                     <h5 class="modal-title">Upload Lead Excel</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -621,10 +608,7 @@
                     </form>
                 </div>
     
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
-                        Cancel
-                    </button>
+                <div class="modal-footer">                   
                     <button type="button" class="btn btn-success" id="uploadExcelBtn">
                         Upload
                     </button>
@@ -667,6 +651,31 @@
             </div>
         </div>
     </div>    
+    <script>
+        $(function () {
+            $('#filterNextMeetingDate').daterangepicker({
+                autoUpdateInput: false,
+                locale: {
+                    format: 'YYYY-MM-DD',
+                    cancelLabel: 'Clear'
+                }
+            });
+
+            // Apply selected range
+            $('#filterNextMeetingDate').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(
+                    picker.startDate.format('YYYY-MM-DD') +
+                    ' to ' +
+                    picker.endDate.format('YYYY-MM-DD')
+                );
+            });
+
+            // Clear input
+            $('#filterNextMeetingDate').on('cancel.daterangepicker', function () {
+                $(this).val('');
+            });
+        });
+    </script>
     <script>        
     document.getElementById('lead_emp_error').addEventListener('change', function () {
         let empId = this.value;
@@ -736,92 +745,8 @@
         // Checkbox change
         $(document).on('change', '.rowCheckbox', function () {
             toggleBulkDeleteBtn();
-        });
-
-        document.getElementById('SerializeTableForm').addEventListener('click', function () {        
-            let modal = new bootstrap.Modal(
-                document.getElementById('fieldOrderModal')
-            );
-            modal.show();
-        });
-    </script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-    <script>
-        $(document).on('shown.bs.modal', '#fieldOrderModal', function () {
-        
-            let $sortable = $("#sortableFields");
-        
-            if (!$sortable.hasClass("ui-sortable")) {
-        
-                $sortable.sortable({
-                    handle: ".ti-menu-2",
-                    placeholder: "ui-state-highlight",
-                    update: function () {
-                        serializeFields();
-                    }
-                });
-        
-                $sortable.disableSelection();
-            }
-        
-            serializeFields();
-        });
-        
-        // Serialize ONLY checked fields (in sorted order)
-        function serializeFields() {
-            let order = [];
-        
-            $("#sortableFields li").each(function () {
-                let checkbox = $(this).find('.field-checkbox');
-        
-                if (checkbox.is(':checked')) {
-                    order.push($(this).data("key"));
-                }
-            });
-        
-            $("#fieldOrder").val(order.join(','));
-        }
-        
-        // Re-serialize on checkbox toggle
-        $(document).on('change', '.field-checkbox', function () {
-            serializeFields();
-        });
-        
-        // Save
-        $(document).on('click', '#saveFieldOrder', function (e) {
-            e.preventDefault();
-        
-            let $btn = $(this);
-            serializeFields();
-        
-            $btn.prop('disabled', true);
-            $btn.find('.btn-text').addClass('d-none');
-            $btn.find('.btn-loader').removeClass('d-none');
-        
-            $.ajax({
-                url: "{{ route('admin.lead.field.order.save') }}",
-                type: "POST",
-                data: $('#sortcrateform').serialize(),
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                success: function (res) {
-                    toastr.success(res.message ?? 'Field order saved successfully');
-                    $('#fieldOrderModal').modal('hide');
-                    location.reload();
-                },
-                error: function () {
-                    toastr.error('Failed to save field order');
-                },
-                complete: function () {
-                    $btn.prop('disabled', false);
-                    $btn.find('.btn-text').removeClass('d-none');
-                    $btn.find('.btn-loader').addClass('d-none');
-                }
-            });
-        });
-    </script>           
+        });       
+    </script>       
     <script>
         document.getElementById('openLeadForm').addEventListener('click', function() {
             let sidebar = new bootstrap.Offcanvas(document.getElementById('leadSidebarForm'));
@@ -875,9 +800,11 @@
                                 icon: "success",
                                 title: "Success",
                                 text: res.message,
-                                confirmButtonText: 'OK'
+                                showConfirmButton: false, 
+                                timer: 3000,               
+                                timerProgressBar: true
                             }).then(() => {
-                                location.reload();
+                                location.reload();     
                             });
                         }
                     },
@@ -1050,37 +977,39 @@
                     }
 
                     let html = `
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <h4 class="mb-0">${fields['Site Name'] ?? 'N/A'}</h4>
-                            <h6 class="mb-0 text-muted">${fields['Area'] ?? ''}</h6>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
+                        <div class="row mb-2">
+                            <div class="col-md-12 mb-2">
                                 <h4>Lead Details</h4>
                             </div>
-
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-0">
                                 <p class="mb-2"><strong>Site Stage :</strong> ${fields['Site Stage'] ?? 'N/A'}</p>
                                 <p class="mb-2"><strong>Competition :</strong> ${fields['Competition'] ?? 'N/A'}</p>
                                 <p class="mb-2"><strong>No. of Towers :</strong> ${fields['No. of Towers'] ?? 'N/A'}</p>
                             </div>
-
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-0">
                                 <p class="mb-2"><strong>Project Type :</strong> ${fields['Project Type'] ?? 'N/A'}</p>
                                 <p class="mb-2"><strong>No. of Bathrooms :</strong> ${fields['No. of Bathrooms'] ?? 'N/A'}</p>
                                 <p class="mb-2"><strong>MEPF Consu :</strong> ${fields['MEPF Consu'] ?? 'N/A'}</p>
                             </div>
-
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-0">
                                 <p class="mb-2"><strong>SP Focused Product :</strong> ${fields['SP Focused Product'] ?? 'N/A'}</p>
                                 <p class="mb-2"><strong>No. of Floors :</strong> ${fields['No. of Floors'] ?? 'N/A'}</p>
                                 <p class="mb-2"><strong>Labels :</strong> ${fields['Labels'] ?? 'N/A'}</p>
                             </div>
                         </div>
-                        `;
-
+                    `;
                     $('#leadDetails').html(html);
+
+                    let htmlheader = `
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <h4 class="mb-0">${fields['Site Name'] ?? 'N/A'} , </h4>
+                            <h6 class="mb-0">${fields['Area'] ?? ''} , ${fields['Direction'] ?? ''}</h6>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <h6 class="mb-0">${fields['Contact Name'] ?? ''} , ${fields['Mobile Number'] ?? ''}</h6>                             
+                        </div>
+                        `;
+                    $('#meeting_header').html(htmlheader);        
 
                     let meetingHtml = '<h5 class="mb-3">Lead Meetings</h5>';
                     if (res.meetings && Object.keys(res.meetings).length) {
@@ -1139,13 +1068,9 @@
                                                 <p class="mb-0"><strong>Employee Name:</strong> ${otherData.employee_name ?? '{{ Auth::user()->name }}'}</p>
                                                 <p class="mb-0"><strong>Comment By:</strong> ${otherData.comment_by ?? '-'}</p>
                                             </div>
-
                                             <div class="col-3">
                                                 <div class="d-flex flex-column align-items-end gap-2">
-                                                    <div class="d-flex gap-2">
-                                                        ${otherData.attachment && otherData.attachment !== 'NULL' ? `
-                                                            <a href="${ASSET_URL}${otherData.attachment}" download class="btn btn-sm btn-outline-success">Download</a>
-                                                        ` : ''}
+                                                    <div class="d-flex gap-2">                                                       
                                                         <button class="btn btn-sm btn-outline-danger deleteMeetingBtn" data-id="${groupName}">Delete</button>
                                                     </div>
                                                     ${otherData.attachment && otherData.attachment !== 'NULL' ? `
@@ -1223,6 +1148,9 @@
                             icon: 'success',
                             title: 'Success',
                             text: res.message ?? 'Meeting saved successfully',
+                            showConfirmButton: false,  
+                            timer: 3000,             
+                            timerProgressBar: true
                         });
 
                         form.reset();
@@ -1475,7 +1403,7 @@
 
             tower_op: $('#towerOp').val(),
             tower: $('#filterTower').val(),
-
+            meeting_null: $('#meetingNull').is(':checked') ? 1 : 0,
             _token: '{{ csrf_token() }}'
         };
     }

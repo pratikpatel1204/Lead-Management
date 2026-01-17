@@ -80,7 +80,7 @@
     </div>
     <div class="cs_copyright text-center cs_fs_124 cs_lh_lg cs_pt_36 cs_pb_36">
         <div class="container">
-            <p class="m-0">Copyright © 2023 <a href="index-2.html">bizmax</a>. All rights reserved.</p>
+            <p class="m-0">&copy; <a href="https://shineplastic.in/">Shine Plastics</a> <?php echo e(now()->year); ?>  | All Rights Reserved.</p>
         </div>
     </div>
 </footer>

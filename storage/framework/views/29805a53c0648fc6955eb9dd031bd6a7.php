@@ -1,6 +1,6 @@
-@extends('admin.layout.main-layout')
-@section('title', config('app.name') . ' || Employee List')
-@section('content')
+
+<?php $__env->startSection('title', config('app.name') . ' || Employee List'); ?>
+<?php $__env->startSection('content'); ?>
     <div class="content">
         <div class="d-md-flex d-block align-items-center justify-content-between page-breadcrumb mb-3">
             <div class="my-auto mb-2">
@@ -8,18 +8,18 @@
                 <nav>
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('admin.dashboard') }}"><i class="ti ti-smart-home"></i></a>
+                            <a href="<?php echo e(route('admin.dashboard')); ?>"><i class="ti ti-smart-home"></i></a>
                         </li>
                         <li class="breadcrumb-item">Employee</li>
                         <li class="breadcrumb-item active" aria-current="page">Employee List</li>
                     </ol>
                 </nav>
             </div>
-            @can('Create Employee')
-                <a href="{{ route('admin.create.employee') }}" class="btn btn-primary mt-2 mt-md-0">
+            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Create Employee')): ?>
+                <a href="<?php echo e(route('admin.create.employee')); ?>" class="btn btn-primary mt-2 mt-md-0">
                     + Add Employee
                 </a>
-            @endcan
+            <?php endif; ?>
         </div>
 
         <div class="row">
@@ -29,19 +29,21 @@
                         <h4 class="card-title">Employee List</h4>
                     </div>
                     <div class="card-body">
-                        @if (session('success'))
+                        <?php if(session('success')): ?>
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        @endif
+                                <?php echo e(session('success')); ?>
 
-                        @if (session('error'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                {{ session('error') }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
-                        @endif
+                        <?php endif; ?>
+
+                        <?php if(session('error')): ?>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <?php echo e(session('error')); ?>
+
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        <?php endif; ?>
                         <div class="table-responsive">
                             <table class="table table-bordered" id="empTable">
                                 <thead>
@@ -59,57 +61,58 @@
                                 </thead>
 
                                 <tbody>
-                                    @foreach ($employees as $emp)
+                                    <?php $__currentLoopData = $employees; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $emp): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $emp->employee_id ?? '' }}</td>
-                                            <td>{{ $emp->name }}</td>
-                                            <td>{{ $emp->email }}</td>
-                                            <td>{{ $emp->show_password }}</td>
-                                            <td>{{ $emp->mobile }}</td>
+                                            <td><?php echo e($loop->iteration); ?></td>
+                                            <td><?php echo e($emp->employee_id ?? ''); ?></td>
+                                            <td><?php echo e($emp->name); ?></td>
+                                            <td><?php echo e($emp->email); ?></td>
+                                            <td><?php echo e($emp->show_password); ?></td>
+                                            <td><?php echo e($emp->mobile); ?></td>
                                             <td>                                               
-                                                <span class="badge bg-success">{{ $emp->role ?? '' }}</span>                                                
+                                                <span class="badge bg-success"><?php echo e($emp->role ?? ''); ?></span>                                                
                                             </td>
                                             <td>
-                                                @if (!$emp->hasRole('super admin'))
+                                                <?php if(!$emp->hasRole('super admin')): ?>
                                                     <div class="form-check form-switch">
                                                         <input class="form-check-input status-toggle" type="checkbox"
-                                                            role="switch" data-id="{{ $emp->id }}"
-                                                            {{ $emp->status == 1 ? 'checked' : '' }}>
+                                                            role="switch" data-id="<?php echo e($emp->id); ?>"
+                                                            <?php echo e($emp->status == 1 ? 'checked' : ''); ?>>
                                                         <label class="form-check-label status-text">
-                                                            {{ $emp->status == 1 ? 'Active' : 'Inactive' }}
+                                                            <?php echo e($emp->status == 1 ? 'Active' : 'Inactive'); ?>
+
                                                         </label>
                                                     </div>
-                                                @else
-                                                    @if ($emp->status == 1)
+                                                <?php else: ?>
+                                                    <?php if($emp->status == 1): ?>
                                                         <span class="badge bg-primary">Active</span>
-                                                    @else
+                                                    <?php else: ?>
                                                         <span class="badge bg-danger">Inactive</span>
-                                                    @endif
-                                                @endif
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
                                             </td>
                                             <td>
-                                                <a href="javascript:void(0)" class="btn btn-sm btn-primary serializeBtn" data-id="{{ $emp->id }}">
+                                                <a href="javascript:void(0)" class="btn btn-sm btn-primary serializeBtn" data-id="<?php echo e($emp->id); ?>">
                                                     <i class="ti ti-arrows-exchange"></i>
                                                 </a>
-                                                @can('Edit Employee')
-                                                    @if (!$emp->hasRole('super admin'))
-                                                        <a href="{{ route('admin.employee.edit', $emp->id) }}" class="btn btn-sm btn-info">
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Edit Employee')): ?>
+                                                    <?php if(!$emp->hasRole('super admin')): ?>
+                                                        <a href="<?php echo e(route('admin.employee.edit', $emp->id)); ?>" class="btn btn-sm btn-info">
                                                             <i class="ti ti-edit"></i>
                                                         </a>
-                                                    @endif
-                                                @endcan
-                                                @can('Delete Employee')
-                                                    @if (!$emp->hasRole('super admin'))
-                                                        <button class="btn btn-sm btn-danger deleteEmployeeBtn" data-id="{{ $emp->id }}">
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Delete Employee')): ?>
+                                                    <?php if(!$emp->hasRole('super admin')): ?>
+                                                        <button class="btn btn-sm btn-danger deleteEmployeeBtn" data-id="<?php echo e($emp->id); ?>">
                                                             <i class="ti ti-trash"></i>
                                                         </button>
-                                                    @endif
-                                                @endcan
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
 
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
                             </table>
                         </div>
@@ -157,7 +160,7 @@
             $('#serializeData').html('<div class="text-center py-5"><div class="spinner-border"></div></div>');
         
             $.ajax({
-                url: "{{ route('admin.get.lead.serialize') }}",
+                url: "<?php echo e(route('admin.get.lead.serialize')); ?>",
                 type: "GET",
                 data: { id: empId },
                 success: function (response) {
@@ -179,12 +182,12 @@
             var label = $(this).closest('.form-check').find('.status-text');
 
             $.ajax({
-                url: "{{ route('admin.employee.update.status') }}",
+                url: "<?php echo e(route('admin.employee.update.status')); ?>",
                 method: "POST",
                 data: {
                     id: id,
                     status: status,
-                    _token: "{{ csrf_token() }}"
+                    _token: "<?php echo e(csrf_token()); ?>"
                 },
                 success: function(response) {
 
@@ -211,7 +214,7 @@
 
             $(document).on('click', '.deleteEmployeeBtn', function() {
                 let id = $(this).data('id');
-                let url = "{{ url('admin/employee-delete') }}/" + id;
+                let url = "<?php echo e(url('admin/employee-delete')); ?>/" + id;
                 let row = $(this).closest('tr'); // Get table row
 
                 Swal.fire({
@@ -228,7 +231,7 @@
                             url: url,
                             type: "DELETE",
                             data: {
-                                _token: "{{ csrf_token() }}"
+                                _token: "<?php echo e(csrf_token()); ?>"
                             },
                             success: function(res) {
                                 if (res.status) {
@@ -274,7 +277,7 @@
             `);
         
             $.ajax({
-                url: "{{ route('admin.get.lead.serialize') }}",
+                url: "<?php echo e(route('admin.get.lead.serialize')); ?>",
                 type: "GET",
                 data: { id: empId },
                 success: function (response) {
@@ -360,9 +363,9 @@
             $btn.find('.btn-loader').removeClass('d-none');
         
             $.ajax({
-                url: "{{ route('admin.lead.field.order.save') }}",
+                url: "<?php echo e(route('admin.lead.field.order.save')); ?>",
                 type: "POST",
-                data: $(this).serialize() + '&_token={{ csrf_token() }}',
+                data: $(this).serialize() + '&_token=<?php echo e(csrf_token()); ?>',
                 success: function (res) {        
                     toastr.success(res.message ?? 'Order saved successfully');
                     $('#serializeModal').modal('hide');
@@ -380,4 +383,6 @@
         });
     </script>
         
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layout.main-layout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\xampp\htdocs\Lead-Management\resources\views/admin/employees/list.blade.php ENDPATH**/ ?>

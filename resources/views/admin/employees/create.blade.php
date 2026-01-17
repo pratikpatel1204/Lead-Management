@@ -29,17 +29,17 @@
                         <form id="employeeForm" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Employee ID <span class="text-danger">*</span></label>
                                     <input type="text" name="employee_id" class="form-control" placeholder="Enter Employee ID">
                                     <span class="text-danger error-employee_id"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Employee Name <span class="text-danger">*</span></label>
                                     <input type="text" name="name" class="form-control" placeholder="Enter employee name">
                                     <span class="text-danger error-name"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Designation <span class="text-danger">*</span></label>
                                     <select name="role" class="form-select" id="designation" >
                                         <option value="">Select Designation</option>
@@ -50,37 +50,37 @@
                                     </select>
                                     <span class="text-danger error-role"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Email <span class="text-danger">*</span></label>
                                     <input type="email" name="email" class="form-control" placeholder="Enter email">
                                     <span class="text-danger error-email"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Password <span class="text-danger">*</span></label>
                                     <input type="password" name="password" class="form-control" placeholder="Enter password">
                                     <span class="text-danger error-password"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Personal Email</label>
                                     <input type="email" name="personal_email" class="form-control" placeholder="Enter personal email">
                                     <span class="text-danger error-personal_email"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
-                                    <input type="text" name="mobile" class="form-control" placeholder="Enter mobile number">
+                                    <input type="number" name="mobile" class="form-control" placeholder="Enter mobile number">
                                     <span class="text-danger error-mobile"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">WhatsApp Number <span class="text-danger">*</span></label>
-                                    <input type="text" name="whatsapp_number" class="form-control" placeholder="Enter WhatsApp number">
+                                    <input type="number" name="whatsapp_number" class="form-control" placeholder="Enter WhatsApp number">
                                     <span class="text-danger error-whatsapp_number"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Address <span class="text-danger">*</span></label>                                
                                     <textarea name="address" class="form-control" rows="3" placeholder="Enter address"></textarea>                                
                                     <span class="text-danger error-address"></span>
                                 </div>                                
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">State <span class="text-danger">*</span></label>
                                     <select class="form-select" id="state_id" name="state_id">
                                         <option value="">Select State</option>
@@ -90,51 +90,51 @@
                                     </select>
                                     <span class="text-danger error-state_id"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">City <span class="text-danger">*</span></label>
                                     <select class="form-select" id="city_id" name="city_id">
                                         <option value="">Select City</option>
                                     </select>
                                     <span class="text-danger error-city_id"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Pincode <span class="text-danger">*</span></label>
                                     <input type="text" name="pincode" class="form-control" placeholder="Enter pincode">
                                     <span class="text-danger error-pincode"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Reporting Manager <span class="text-danger">*</span></label>
                                     <select name="reporting_manager" class="form-select" id="reporting_manager" >
                                         <option value="">Select Manager</option>
                                     </select>
                                     <span class="text-danger error-reporting_manager"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">PAN Card Number</label>
                                     <input type="text" name="pan_number" class="form-control" placeholder="Enter PAN number">                                    
                                     <span class="text-danger error-pan_number"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">PAN Card Image</label>
                                     <input type="file" name="pan_image" class="form-control">
                                     <span class="text-danger error-pan_image"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Aadhar Card Number</label>
-                                    <input type="text" name="aadhar_number" class="form-control" placeholder="Enter Aadhar number">
+                                    <input type="number" name="aadhar_number" class="form-control" placeholder="Enter Aadhar number">
                                     <span class="text-danger error-aadhar_number"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Aadhar Card Image</label>
                                     <input type="file" name="aadhar_image" class="form-control">
                                     <span class="text-danger error-aadhar_image"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Profile Image</label>
                                     <input type="file" name="profile_image" class="form-control">
                                     <span class="text-danger error-profile_image"></span>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label d-block">Status</label>
 
                                     <div class="form-check">

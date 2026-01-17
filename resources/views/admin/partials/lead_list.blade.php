@@ -34,7 +34,7 @@
                             {{-- Lead Data --}}
                             @if($leadRec)
                                 @if($leadRec->field_name === 'Site Name')
-                                    <a href="javascript:void(0)" class="text-primary viewLeadBtn" data-group="{{ $groupId }}">
+                                    <a href="javascript:void(0)" class="text-info viewLeadBtn" data-group="{{ $groupId }}">
                                         {{ $leadRec->field_value }}
                                     </a>
                                 @elseif($leadRec->field_name === 'Lead Type')
